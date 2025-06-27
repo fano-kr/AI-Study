@@ -515,11 +515,11 @@ def predict_images_in_directory(model, directory_path, class_names, batch_size=3
         return []
     
     # 배치 처리를 위해 numpy 배열로 변환
-    image_arrays = np.array(image_arrays)
-    print(f"📊 총 {len(image_arrays)}개 이미지 발견")
+    np_image_arrays = np.array(image_arrays)
+    print(f"📊 총 {len(np_image_arrays)}개 이미지 발견")
     
     # 배치 예측 수행
-    predictions = model.predict(image_arrays, batch_size=batch_size, verbose=1)
+    predictions = model.predict(np_image_arrays, batch_size=batch_size, verbose=1)
     
     # 결과 생성
     results = []
@@ -639,5 +639,204 @@ print("   - 다른 사전훈련 모델 (ResNet, EfficientNet 등) 비교")
 
 print("="*60)
 print("🚀 수고하셨습니다! 성공적으로 Transfer Learning을 마스터했습니다!")
+
+# %% [markdown]
+# ## I. 테스트 디렉토리 예측 및 분석
+
+#!cp cats_and_dogs_filtered/validation/cats/* cats_and_dogs_filtered/test/
+#!cp cats_and_dogs_filtered/validation/dogs/* cats_and_dogs_filtered/test/
+
+# %%
+# 테스트 디렉토리 경로 설정
+test_path = os.path.join('cats_and_dogs_filtered', 'test')
+
+# 로컬 환경에서는 상대 경로로 시도
+if not os.path.exists(test_path):
+    test_path = './image/cats_and_dogs_filtered/test'
+
+# 테스트 디렉토리 예측 수행
+if os.path.exists(test_path):
+    print(f"🔍 테스트 디렉토리 예측 시작: {test_path}")
+    
+    # 지원하는 이미지 확장자
+    image_extensions = ('.png', '.jpg', '.jpeg', '.bmp', '.gif')
+    
+    # 이미지 파일 목록 수집
+    image_files = []
+    image_arrays = []
+    actual_classes = []
+    
+    for filename in os.listdir(test_path):
+        if filename.lower().endswith(image_extensions):
+            img_path = os.path.join(test_path, filename)
+            
+            try:
+                # 이미지 로드 및 전처리
+                img = tf.keras.utils.load_img(img_path, target_size=IMAGE_SIZE)
+                img_array = tf.keras.utils.img_to_array(img)
+                
+                image_files.append(filename)
+                image_arrays.append(img_array)
+                
+                # 파일명에서 실제 클래스 추출 (cat.xxxx.jpg -> cats, dog.xxxx.jpg -> dogs)
+                if filename.lower().startswith('cat'):
+                    actual_classes.append('cats')
+                elif filename.lower().startswith('dog'):
+                    actual_classes.append('dogs')
+                else:
+                    actual_classes.append('unknown')
+                
+            except Exception as e:
+                print(f"⚠️ 이미지 로드 실패: {filename} - {e}")
+                continue
+    
+    if image_arrays:
+        # 배치 처리를 위해 numpy 배열로 변환
+        np_image_arrays = np.array(image_arrays)
+        print(f"📊 총 {len(np_image_arrays)}개 이미지 발견")
+        
+        # 배치 예측 수행
+        print("🔮 예측 수행 중...")
+        predictions = model.predict(np_image_arrays, batch_size=32, verbose=1)
+        
+        # 결과 생성
+        test_results = []
+        for filename, pred, actual in zip(image_files, predictions, actual_classes):
+            confidence = pred[0]
+            predicted_class = class_names[int(confidence > 0.5)]
+            test_results.append((filename, predicted_class, confidence, actual))
+        
+        # 결과 분석
+        total_images = len(test_results)
+        correct_predictions = sum(1 for _, pred, _, actual in test_results 
+                                if pred == actual and actual != 'unknown')
+        
+        # 클래스별 분석
+        cats_images = [r for r in test_results if r[3] == 'cats']
+        dogs_images = [r for r in test_results if r[3] == 'dogs']
+        
+        cats_correct = sum(1 for _, pred, _, actual in cats_images if pred == actual)
+        dogs_correct = sum(1 for _, pred, _, actual in dogs_images if pred == actual)
+        
+        print("\n" + "="*60)
+        print("📊 테스트 결과 분석")
+        print("="*60)
+        print(f"📁 총 테스트 이미지: {total_images}개")
+        print(f"🐱 고양이 이미지: {len(cats_images)}개")
+        print(f"🐶 개 이미지: {len(dogs_images)}개")
+        
+        if len(cats_images) > 0:
+            cats_accuracy = cats_correct / len(cats_images)
+            print(f"🐱 고양이 정확도: {cats_accuracy:.4f} ({cats_correct}/{len(cats_images)})")
+        
+        if len(dogs_images) > 0:
+            dogs_accuracy = dogs_correct / len(dogs_images)
+            print(f"🐶 개 정확도: {dogs_accuracy:.4f} ({dogs_correct}/{len(dogs_images)})")
+        
+        if len(cats_images) + len(dogs_images) > 0:
+            overall_accuracy = correct_predictions / (len(cats_images) + len(dogs_images))
+            print(f"🎯 전체 정확도: {overall_accuracy:.4f} ({correct_predictions}/{len(cats_images) + len(dogs_images)})")
+        
+        # 예측 클래스별 개수
+        pred_counts = {}
+        for _, pred, _, _ in test_results:
+            pred_counts[pred] = pred_counts.get(pred, 0) + 1
+        
+        print(f"\n📈 예측 결과 분포:")
+        for class_name, count in pred_counts.items():
+            print(f"   - {class_name}: {count}개")
+        
+        # 신뢰도 분석
+        confidences = [conf for _, _, conf, _ in test_results]
+        print(f"\n📊 예측 신뢰도 통계:")
+        print(f"   - 평균 신뢰도: {np.mean(confidences):.4f}")
+        print(f"   - 최고 신뢰도: {np.max(confidences):.4f}")
+        print(f"   - 최저 신뢰도: {np.min(confidences):.4f}")
+        print(f"   - 표준편차: {np.std(confidences):.4f}")
+        
+        # 샘플 결과 출력
+        print(f"\n🔍 예측 결과 샘플 (처음 10개):")
+        print(f"{'파일명':<20} {'실제':<8} {'예측':<8} {'신뢰도':<8} {'결과'}")
+        print("-" * 60)
+        for i, (filename, pred, conf, actual) in enumerate(test_results[:10]):
+            result_mark = "✅" if pred == actual else "❌"
+            print(f"{filename:<20} {actual:<8} {pred:<8} {conf:<8.3f} {result_mark}")
+        
+        print("="*60)
+    else:
+        print("❌ 예측할 이미지를 찾을 수 없습니다.")
+else:
+    print(f"❌ 테스트 디렉토리를 찾을 수 없습니다: {test_path}")
+
+# %%
+# 테스트 결과를 상세 CSV 파일로 저장
+if 'test_results' in locals() and test_results:
+    # DataFrame 생성
+    df = pd.DataFrame(test_results, columns=['filename', 'predicted_class', 'confidence', 'actual_class'])
+    
+    # 정답 여부 추가
+    df['is_correct'] = df.apply(lambda row: row['predicted_class'] == row['actual_class'] 
+                               if row['actual_class'] != 'unknown' else None, axis=1)
+    
+    # 예측 카테고리 추가 (고신뢰도/저신뢰도)
+    df['confidence_level'] = df['confidence'].apply(lambda x: 'high' if x > 0.8 else 'medium' if x > 0.6 else 'low')
+    
+    # CSV 파일로 저장
+    output_filename = 'test_predictions_detailed.csv'
+    df.to_csv(output_filename, index=False, encoding='utf-8-sig')
+    
+    print(f"\n💾 상세 결과가 {output_filename}에 저장되었습니다.")
+    print(f"📊 저장된 데이터 미리보기:")
+    print(df.head(10))
+    
+    # 통계 요약
+    if df['is_correct'].notna().any():
+        accuracy = df['is_correct'].mean()
+        print(f"\n📈 저장된 데이터 통계:")
+        print(f"   - 정확도: {accuracy:.4f}")
+        print(f"   - 정답: {df['is_correct'].sum()}개")
+        print(f"   - 오답: {(~df['is_correct']).sum()}개")
+    
+    print(f"\n📊 신뢰도 레벨 분포:")
+    print(df['confidence_level'].value_counts())
+
+# %% [markdown]
+# ### 틀린 예측 분석
+
+# %%
+# 틀린 예측들 상세 분석
+if 'test_results' in locals() and test_results:
+    # 틀린 예측들만 필터링
+    incorrect_predictions = [(filename, pred, conf, actual) 
+                           for filename, pred, conf, actual in test_results 
+                           if pred != actual and actual != 'unknown']
+    
+    if incorrect_predictions:
+        print("\n❌ 틀린 예측 분석")
+        print("="*50)
+        print(f"총 {len(incorrect_predictions)}개의 틀린 예측")
+        
+        # 신뢰도별 틀린 예측 분석
+        high_conf_wrong = [r for r in incorrect_predictions if r[2] > 0.8]
+        medium_conf_wrong = [r for r in incorrect_predictions if 0.6 <= r[2] <= 0.8]
+        low_conf_wrong = [r for r in incorrect_predictions if r[2] < 0.6]
+        
+        print(f"\n📊 신뢰도별 틀린 예측:")
+        print(f"   - 고신뢰도(>0.8): {len(high_conf_wrong)}개")
+        print(f"   - 중신뢰도(0.6-0.8): {len(medium_conf_wrong)}개")
+        print(f"   - 저신뢰도(<0.6): {len(low_conf_wrong)}개")
+        
+        # 가장 확신있게 틀린 예측들
+        if high_conf_wrong:
+            print(f"\n🚨 가장 확신있게 틀린 예측들:")
+            sorted_wrong = sorted(high_conf_wrong, key=lambda x: x[2], reverse=True)
+            for filename, pred, conf, actual in sorted_wrong[:5]:
+                print(f"   - {filename}: {actual} → {pred} (신뢰도: {conf:.3f})")
+        
+        print("="*50)
+    else:
+        print("\n🎉 모든 예측이 정확합니다!")
+
+# %%
 
 

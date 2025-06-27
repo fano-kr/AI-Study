@@ -7,3 +7,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+image/cats_and_dogs_filtered/
+image/cats_dogs_mobilenetv2_savedmodel/
+image/cats_and_dogs_filtered.zip
+tabular/saved_models/
+text/model_output/

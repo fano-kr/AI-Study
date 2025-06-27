@@ -125,24 +125,24 @@ df[features].head()
 # %%
 X2 = df[features].copy()
 
-# 범주형 데이터 결측치 처리
-categorical_features = ['embarked', 'deck', 'who', 'class', 'sex']
-categorical_imputer = SimpleImputer(strategy='most_frequent')
-X2.loc[:, categorical_features] = categorical_imputer.fit_transform(X2[categorical_features])
+# 수치형 데이터 결측치 처리 (이미 학습된 imputer 사용)
+numeric_features = ['age', 'fare']
+X2.loc[:, numeric_features] = numeric_imputer.transform(X2[numeric_features])
 
-# 범주형 데이터 인코딩
-label_encoders = {}
+# 범주형 데이터 결측치 처리 (이미 학습된 imputer 사용)
+categorical_features = ['embarked', 'deck', 'who', 'class', 'sex']
+X2.loc[:, categorical_features] = categorical_imputer.transform(X2[categorical_features])
+
+# 범주형 데이터 인코딩 (이미 학습된 encoders 사용)
 for feature in categorical_features:
     # 문자열로 변환 후 인코딩
     X2[feature] = X2[feature].astype(str)
-    label_encoders[feature] = LabelEncoder()
-    encoded_values = label_encoders[feature].fit_transform(X2[feature])
+    encoded_values = label_encoders[feature].transform(X2[feature])
     X2.loc[:, feature] = encoded_values
 
-# 특성 스케일링
-scaler = StandardScaler()
+# 특성 스케일링 (이미 학습된 scaler 사용)
 X2 = pd.DataFrame(
-    scaler.fit_transform(X2),
+    scaler.transform(X2),
     columns=X2.columns,
     index=X2.index
 )

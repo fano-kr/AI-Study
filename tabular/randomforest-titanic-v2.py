@@ -136,7 +136,7 @@ for col in X_filled.columns:
 
 # 상호정보량 계산
 mi_scores = mutual_info_classif(X_filled, y_temp, random_state=42)
-mi_dict = dict(zip(X_temp.columns, mi_scores))c
+mi_dict = dict(zip(X_temp.columns, mi_scores))
 
 print("상호정보량 점수 (높은 순):")
 for feature, score in sorted(mi_dict.items(), key=lambda x: x[1], reverse=True):
