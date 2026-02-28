@@ -1,6 +1,5 @@
 # %% [markdown]
 # # Image - 분류 (Classification) 통합 템플릿
-# AICE Professional 시험 대비
 #
 # NUM_CLASSES = 2 → 이진분류 (Cats vs Dogs)
 # NUM_CLASSES >= 3 → 다중분류 (꽃, 동물 등)
