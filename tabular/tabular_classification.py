@@ -1,6 +1,5 @@
 # %% [markdown]
 # # Tabular - 분류 (Classification) 통합 템플릿
-# AICE Professional 시험 대비
 #
 # NUM_CLASSES = 2 → 이진분류 / NUM_CLASSES >= 3 → 다중분류
 # 코드 변경 없이 자동 대응

@@ -1,6 +1,5 @@
 # %% [markdown]
 # # Tabular - 회귀 (Regression) 템플릿
-# AICE Professional 시험 대비
 #
 # 평가지표: RMSE, MAE, R² Score
 # 대표 데이터셋: 주택 가격, BMI, 매출 예측 등
