@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 에디터
+.vscode/
+.idea/
+.DS_Store
+
+# 실습 산출물
+submission*.csv
+*.pkl
+*.keras
+*.h5
+best_model*
+text_bert_model/
+image_val_result.csv
+*_summary.csv
+*_result.csv
+*_comparison.csv
+
+# 데이터셋 (용량이 큼 - 노트북이 자동 다운로드)
+data/
+*.zip
+*.tgz
+flower_photos/
+cats_and_dogs_filtered/
