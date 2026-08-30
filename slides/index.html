@@ -459,6 +459,7 @@ kbd{
     <div class="meta">
       <span>Tabular · Text · Image</span>
       <span>실기 180분</span>
+      <span>Colab T4</span>
       <span>실측 검증 완료</span>
       <span>2026</span>
     </div>
@@ -516,7 +517,7 @@ print(f<span class="hlgood">"GPU: {gpus}"</span>)
 <span class="hlbad">assert</span> gpus, <span class="hlgood">"GPU 미연결!"</span></code></pre>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card"><span class="k">성능</span><h3>Colab 무료 T4 수준</h3><p>연습도 Colab에서 하세요. 시험 환경이 이와 비슷합니다.</p></div>
+        <div class="card"><span class="k">실행 환경</span><h3>Colab T4</h3><p>시험 환경이 이와 비슷합니다. <strong>연습도 T4에서</strong> 하세요. 이 과정의 노트북·템플릿은 전부 T4를 전제로 작성했습니다.</p></div>
         <div class="card good"><span class="k">횟수</span><h3>한 번이면 끝</h3><p>한 세션 안에서는 연결이 유지됩니다. <strong>문제가 몇 개든 다시 확인하지 않습니다.</strong></p></div>
       </div>
     </div>
@@ -803,8 +804,8 @@ yes         0  <span class="hlbad">273</span></code></pre>
         <table>
           <thead><tr><th></th><th>A · TF-IDF + ML</th><th>B · BERT</th></tr></thead>
           <tbody>
-            <tr><td><strong>시간</strong></td><td class="win">1~5분</td><td>20~40분</td></tr>
-            <tr><td><strong>자원</strong></td><td class="win">CPU로 충분</td><td>GPU 사실상 필수</td></tr>
+            <tr><td><strong>시간 (T4)</strong></td><td class="win">1~5분</td><td>20~40분</td></tr>
+            <tr><td><strong>성능</strong></td><td>짧은 문장에 강함</td><td class="win">문맥·뉘앙스에 우세</td></tr>
             <tr><td><strong>실패 위험</strong></td><td class="win">거의 없음</td><td class="no">OOM · 다운로드 · 시간초과</td></tr>
           </tbody>
         </table>
@@ -1078,7 +1079,7 @@ print(sub.isnull().sum())       <span class="cm"># 결측 없는가</span></code
       <div class="card"><span class="k">docs/</span><h3>교재 5편</h3></div>
       <div class="card"><span class="k">notebooks/</span><h3>실습 3종</h3></div>
       <div class="card"><span class="k">templates/</span><h3>세션 셀 1 + 도메인 4</h3></div>
-      <div class="card key"><span class="k">연습 환경</span><h3>Colab · T4</h3></div>
+      <div class="card key"><span class="k">실행 환경</span><h3>Colab T4</h3></div>
     </div>
   </div>
 </section>
