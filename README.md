@@ -21,10 +21,10 @@ AICE Professional 실기는 "새로운 모델을 발명하는 시험"이 아니�
 | 시간 | 차시 | 교재 | 실습 |
 |---|---|---|---|
 | 00–08 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
-| 08–26 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
-| 26–40 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
-| 40–53 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
-| 53–60 | 시험 당일 체크리스트 | [04-exam-day.md](docs/04-exam-day.md) | — |
+| 08–25 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
+| 25–38 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
+| 38–50 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
+| 50–60 | 시험 당일 — 순서·변수·시간 배분 | [04-exam-day.md](docs/04-exam-day.md) | — |
 
 Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/00-orientation.md)에 적어 두었습니다.
 
@@ -41,6 +41,7 @@ Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/
 | **GPU는 자동으로 안 붙는다** | 시작할 때 **한 번** 연결 코드 실행. 안 하면 조용히 CPU로 떨어져 수십 배 느려집니다 |
 | **자동 저장이 안 된다** | 셀마다 `Ctrl+S`. 특히 긴 학습 직전에 반드시 |
 | **파일명은 휴대폰번호_문제번호** | `01012345678_1.csv` / `01012345678_1.pkl` — 하이픈 없이 |
+| **커널이 하나다** | GPU 많이 쓰는 문제부터. 변수는 `p1_` 접두사로 문제별 분리 |
 
 세션당 한 번 정하는 것과 문제마다 바꾸는 것을 분리해 두면 실수가 줄어듭니다.
 
@@ -79,9 +80,13 @@ slides/      강의 진행용 발표자료 (HTML 27장, 브라우저로 바로 �
 노트북은 **강의 중에 따라 치는 축약본**이고, 템플릿은 **시험장에서 통째로 붙여넣는 전체본**입니다.
 강의를 다 들은 뒤 실제로 손에 남겨야 하는 건 `templates/` 쪽입니다.
 
+모든 도메인 템플릿의 변수에는 **`p1_` 접두사**가 붙어 있습니다.
+커널 하나로 여러 문제를 풀기 때문입니다. 2번 문제는 `Ctrl+H`로 `p1_` → `p2_` 일괄 치환하고
+`p2_PROB_NO = 2`만 고치면 됩니다.
+
 | 템플릿 | 용도 |
 |---|---|
-| [00_session_start.py](templates/00_session_start.py) | **세션당 한 번** — GPU 연결, PHONE, 시드, 남은 시간 확인 |
+| [00_session_start.py](templates/00_session_start.py) | **세션당 한 번** — GPU 연결, PHONE, 시드, 문제 순서 전략 |
 | [tabular_classification.py](templates/tabular_classification.py) | 정형 데이터 분류 (이진/다중 자동 대응) |
 | [tabular_regression.py](templates/tabular_regression.py) | 정형 데이터 회귀 |
 | [text_classification.py](templates/text_classification.py) | 텍스트 분류 (TF-IDF 우선, BERT 선택) |
