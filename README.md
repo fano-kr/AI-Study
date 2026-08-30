@@ -1,4 +1,4 @@
-# AICE Professional 1시간 속성 과정 (2026)
+# AICE Professional 속성 과정 (2026)
 
 Tabular · Text · Image 세 도메인의 **시험용 파이프라인 하나**를 몸에 익히는 60분짜리 압축 과정입니다.
 [fano-kr/AI-Study](https://github.com/fano-kr/AI-Study)의 실습 코드를 강의 순서에 맞게 정리·재구성했습니다.
@@ -16,17 +16,22 @@ AICE Professional 실기는 "새로운 모델을 발명하는 시험"이 아니�
 세 도메인에서 바뀌는 것은 **전처리와 모델뿐**이고, 나머지 뼈대는 그대로입니다.
 그 사실을 체감하는 순간이 이 과정의 목표 지점입니다.
 
-## 60분 타임라인
+## 타임라인 — 발표 45분 + Q&A 15분
 
-| 시간 | 차시 | 교재 | 실습 |
+| 시간 | 차시 | 교재 | 노트북 |
 |---|---|---|---|
-| 00–08 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
-| 08–25 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
-| 25–38 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
-| 38–50 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
-| 50–60 | 시험 당일 — 순서·변수·시간 배분 | [04-exam-day.md](docs/04-exam-day.md) | — |
+| 00–06 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
+| 06–19 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
+| 19–29 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
+| 29–38 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
+| 38–45 | 시험 당일 — 순서·변수·시간 배분 | [04-exam-day.md](docs/04-exam-day.md) | — |
+| **45–60** | **Q&A** | — | — |
 
 Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/00-orientation.md)에 적어 두었습니다.
+
+> **45분에서는 노트북을 라이브로 따라 치기 어렵습니다.**
+> 발표 중에는 필요한 셀만 시연하고, `notebooks/`는 **강의 후 각자 돌려 보는 자료**로 안내하세요.
+> 시간이 밀리면 회귀(01), BERT 함정(02), categorical(03) 슬라이드를 먼저 줄이면 흐름이 덜 끊깁니다.
 
 ## 시험 환경에서 놓치기 쉬운 네 가지
 
