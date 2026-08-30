@@ -1,6 +1,6 @@
 # 01. Tabular — 판단이 필요한 도메인
 
-**소요 20분** · 이전: [00. 오리엔테이션](00-orientation.md) · 다음: [02. Text](02-text.md)
+**소요 18분** · 이전: [00. 오리엔테이션](00-orientation.md) · 다음: [02. Text](02-text.md)
 **실습:** [notebooks/01_tabular_quickstart.ipynb](../notebooks/01_tabular_quickstart.ipynb)
 **템플릿:** [templates/tabular_classification.py](../templates/tabular_classification.py) · [templates/tabular_regression.py](../templates/tabular_regression.py)
 

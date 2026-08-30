@@ -39,6 +39,20 @@ RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
 
 # ============================================================
+# 0. 제출 설정  ★ 시험 시작하면 가장 먼저 채울 것
+# ============================================================
+# 모델과 예측 결과는 "휴대폰번호_문제번호" 로 저장해 제출합니다.
+#   01012345678_1.csv   (예측 결과)
+#   01012345678_1.pkl   (모델)
+# 파일명을 매번 손으로 치면 오타가 납니다. 여기서 한 번만 정하고 변수를 쓰세요.
+PHONE = '01012345678'      # ★ 본인 휴대폰 번호 (하이픈 없이)
+PROB_NO = 1                # ★ 문제 번호 (문제가 바뀌면 이 줄만 수정)
+
+SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
+SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'
+print(f"제출 파일: {SUBMIT_CSV} / {SUBMIT_MODEL}")
+
+# ============================================================
 # 1. 데이터 로드  ★
 # ============================================================
 # %%
@@ -314,13 +328,17 @@ if has_test_label:
     print(f"[Test] Acc={accuracy_score(y_cmp, test_predictions):.4f} "
           f"F1={f1_score(y_cmp, test_predictions, average='macro'):.4f}")
 
-submission.to_csv('submission.csv', index=False)
-print(f"[저장] submission.csv ({len(submission)}건)")
+submission.to_csv(SUBMIT_CSV, index=False)
+print(f"[저장] {SUBMIT_CSV} ({len(submission)}건)")
 print(submission.head())
 
 # 제출 전 점검: 행 수 == len(df_test), 컬럼명 일치, index=False, 결측 없음
 assert len(submission) == len(df_test), "행 수 불일치!"
 
 # %%
-joblib.dump(best_model, 'tabular_classification_model.pkl')
-print("모델 저장 완료")
+joblib.dump(best_model, SUBMIT_MODEL)
+print(f"모델 저장 완료: {SUBMIT_MODEL}")
+
+import os
+print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
+# 파일이 실제로 만들어졌는지 눈으로 확인. to_csv 가 조용히 다른 경로에 쓰는 일이 있습니다.

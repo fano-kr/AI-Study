@@ -27,7 +27,26 @@ np.random.seed(RANDOM_SEED)
 tf.random.set_seed(RANDOM_SEED)
 
 print(f"TensorFlow {tf.__version__}")
-print(f"GPU: {tf.config.list_physical_devices('GPU')}")
+# 시험 환경의 GPU 는 자동으로 붙지 않습니다. 연결 코드를 직접 실행해야 합니다.
+# GPU 가 없어도 코드는 조용히 CPU 로 돌아가므로 assert 로 멈춰 세웁니다.
+# !nvidia-smi
+gpus = tf.config.list_physical_devices('GPU')
+print(f"GPU: {gpus}")
+assert gpus, "GPU 미연결! 런타임 설정을 확인하세요"
+
+# ============================================================
+# 0. 제출 설정  ★ 시험 시작하면 가장 먼저 채울 것
+# ============================================================
+# 모델과 예측 결과는 "휴대폰번호_문제번호" 로 저장해 제출합니다.
+#   01012345678_1.csv   (예측 결과)
+#   01012345678_1.pkl   (모델)
+PHONE = '01012345678'      # ★ 본인 휴대폰 번호 (하이픈 없이)
+PROB_NO = 1                # ★ 문제 번호 (문제가 바뀌면 이 줄만 수정)
+
+SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
+SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'          # sklearn 계열
+SUBMIT_KERAS = f'{PHONE}_{PROB_NO}.keras'        # 딥러닝 (문제가 형식을 지정하면 그쪽을 따를 것)
+print(f"제출 파일: {SUBMIT_CSV} / {SUBMIT_MODEL}")
 
 # ============================================================
 # 1. 하이퍼파라미터
@@ -285,13 +304,15 @@ def predict_test_directory(model, test_dir, class_names,
 # --- 시험 환경: 별도 test 폴더가 있는 경우 ★ ---
 # TEST_DIR = './test'
 # submission = predict_test_directory(model, TEST_DIR, class_names)
-# submission.to_csv('submission.csv', index=False)
-# print(f"[저장] submission.csv ({len(submission)}건)")
+# submission.to_csv(SUBMIT_CSV, index=False)
+# print(f"[저장] {SUBMIT_CSV} ({len(submission)}건)")
 
 # --- test 폴더가 없으면 검증 결과를 제출물로 ---
-val_result.to_csv('submission.csv', index=False)
-print(f"[저장] submission.csv ({len(val_result)}건)")
+val_result.to_csv(SUBMIT_CSV, index=False)
+print(f"[저장] {SUBMIT_CSV} ({len(val_result)}건)")
 
 # %%
-model.save('image_classification_model.keras')
-print('모델 저장 완료')
+model.save(SUBMIT_KERAS)
+print(f"모델 저장 완료: {SUBMIT_KERAS}")
+
+print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])

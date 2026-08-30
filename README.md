@@ -20,13 +20,40 @@ AICE Professional 실기는 "새로운 모델을 발명하는 시험"이 아니�
 
 | 시간 | 차시 | 교재 | 실습 |
 |---|---|---|---|
-| 00–06 | 오리엔테이션 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
-| 06–26 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
-| 26–41 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
-| 41–55 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
-| 55–60 | 시험 당일 체크리스트 | [04-exam-day.md](docs/04-exam-day.md) | — |
+| 00–08 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
+| 08–26 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
+| 26–40 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
+| 40–53 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
+| 53–60 | 시험 당일 체크리스트 | [04-exam-day.md](docs/04-exam-day.md) | — |
 
 Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/00-orientation.md)에 적어 두었습니다.
+
+## 시험 환경에서 놓치기 쉬운 네 가지
+
+모델 실력과 무관하게 점수를 잃는 지점입니다. 자세한 내용은 [00-orientation.md](docs/00-orientation.md)와
+[04-exam-day.md](docs/04-exam-day.md)에 있습니다.
+
+| | 내용 |
+|---|---|
+| **분석 자료가 주어진다** | 컬럼 설명·요구사항 문서를 먼저 읽으세요. 누수 컬럼이 거기서 드러납니다 |
+| **GPU는 자동으로 안 붙는다** | 시작하자마자 연결 코드를 실행. 안 하면 조용히 CPU로 돌아갑니다 (Colab 무료 T4 수준) |
+| **자동 저장이 안 된다** | 셀마다 `Ctrl+S`. 특히 긴 학습 직전에 반드시 |
+| **파일명은 휴대폰번호_문제번호** | `01012345678_1.csv` / `01012345678_1.pkl` — 하이픈 없이 |
+
+```python
+# 시험 시작 후 첫 셀
+!nvidia-smi
+import tensorflow as tf
+gpus = tf.config.list_physical_devices('GPU')
+assert gpus, "GPU 미연결!"          # 없으면 조용히 CPU로 도니 멈춰 세운다
+
+PHONE, PROB_NO = '01012345678', 1   # 여기서 한 번만 정하고 변수를 쓴다
+SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
+SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'
+```
+
+**연습은 Colab에서 하세요.** 시험 환경이 Colab과 비슷합니다.
+로컬 주피터에만 익숙하면 런타임 설정·파일 업로드·단축키에서 시간을 씁니다.
 
 ## 폴더 구조
 
@@ -49,6 +76,14 @@ templates/   시험장에서 복사해 쓰는 완성 파이프라인 (길고, �
 
 ## 시작하기
 
+### Colab (권장 — 시험 환경과 가장 가깝습니다)
+
+1. [Colab](https://colab.research.google.com/)에서 `파일 → 노트북 업로드`로 `notebooks/`의 파일을 올립니다
+2. `런타임 → 런타임 유형 변경 → T4 GPU`
+3. 첫 셀부터 순서대로 실행
+
+이미지·BERT 실습은 GPU가 사실상 필수이고, 시험 환경도 이와 비슷합니다.
+
 ### 로컬
 
 ```bash
@@ -58,11 +93,6 @@ jupyter lab notebooks/
 
 `requirements.txt`는 Tabular/Text(TF-IDF)까지만 필수로 두었습니다.
 TensorFlow와 transformers는 무겁기 때문에 주석으로 분리해 두었으니, Image·BERT 실습을 할 때만 설치하세요.
-
-### Colab (Image·BERT 실습 권장)
-
-이미지 실습과 BERT 실습은 GPU가 있는 편이 훨씬 빠릅니다.
-Colab에서 `런타임 → 런타임 유형 변경 → GPU`로 바꾼 뒤 노트북을 업로드해 실행하세요.
 
 ## 사전 지식
 

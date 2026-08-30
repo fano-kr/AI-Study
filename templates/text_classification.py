@@ -31,6 +31,20 @@ RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
 
 # ============================================================
+# 0. 제출 설정  ★ 시험 시작하면 가장 먼저 채울 것
+# ============================================================
+# 모델과 예측 결과는 "휴대폰번호_문제번호" 로 저장해 제출합니다.
+#   01012345678_1.csv   (예측 결과)
+#   01012345678_1.pkl   (모델)
+PHONE = '01012345678'      # ★ 본인 휴대폰 번호 (하이픈 없이)
+PROB_NO = 1                # ★ 문제 번호 (문제가 바뀌면 이 줄만 수정)
+
+SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
+SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'          # sklearn 계열
+SUBMIT_KERAS = f'{PHONE}_{PROB_NO}.keras'        # 딥러닝 (문제가 형식을 지정하면 그쪽을 따를 것)
+print(f"제출 파일: {SUBMIT_CSV} / {SUBMIT_MODEL}")
+
+# ============================================================
 # 1. 데이터 로드  ★
 # ============================================================
 # %%
@@ -181,12 +195,14 @@ if TARGET in df_test.columns:
     print(f"[Test] Acc={accuracy_score(df_test[TARGET], y_pred_test):.4f} "
           f"F1={f1_score(df_test[TARGET], y_pred_test, average='macro'):.4f}")
 
-submit_df.to_csv('submission.csv', index=False)
-print(f"[저장] submission.csv ({len(submit_df)}건)")
+submit_df.to_csv(SUBMIT_CSV, index=False)
+print(f"[저장] {SUBMIT_CSV} ({len(submit_df)}건)")
 
-import joblib
-joblib.dump(best_ml_model, 'text_tfidf_model.pkl')
-joblib.dump(tfidf, 'text_tfidf_vectorizer.pkl')
+import joblib, os
+# 벡터라이저와 모델을 함께 담아야 나중에 그대로 예측할 수 있습니다
+joblib.dump({'model': best_ml_model, 'vectorizer': tfidf}, SUBMIT_MODEL)
+print(f"모델 저장 완료: {SUBMIT_MODEL}")
+print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
 
 # %% [markdown]
 # ---
@@ -203,7 +219,11 @@ import tensorflow as tf
 from transformers import BertTokenizerFast, TFBertForSequenceClassification
 
 tf.random.set_seed(RANDOM_SEED)
-print(f"GPU: {tf.config.list_physical_devices('GPU')}")
+# BERT 는 GPU 없이는 사실상 불가능합니다. 여기서 반드시 확인하세요.
+# !nvidia-smi
+gpus = tf.config.list_physical_devices('GPU')
+print(f"GPU: {gpus}")
+assert gpus, "GPU 미연결! 방법 A 결과로 제출하거나 런타임 설정을 확인하세요"
 
 # ★ 데이터 언어에 맞춰 선택할 것. 한국어에 영어 모델을 쓰면 성능이 무너진다.
 BERT_MODEL_NAME = 'klue/bert-base'        # 한국어
@@ -288,9 +308,9 @@ bert_submit['predicted'] = test_pred_labels
 if label_map:
     bert_submit['predicted_name'] = bert_submit['predicted'].map(label_map)
 
-bert_submit.to_csv('submission.csv', index=False)
-print(f"[갱신] submission.csv ({len(bert_submit)}건)")
+bert_submit.to_csv(SUBMIT_CSV, index=False)
+print(f"[갱신] {SUBMIT_CSV} ({len(bert_submit)}건)")
 
-bert_model.save_pretrained('text_bert_model')
-tokenizer.save_pretrained('text_bert_model')
-print("BERT 모델 저장 완료")
+bert_model.save_pretrained(f'{PHONE}_{PROB_NO}_bert')
+tokenizer.save_pretrained(f'{PHONE}_{PROB_NO}_bert')
+print(f"BERT 모델 저장 완료: {PHONE}_{PROB_NO}_bert/")
