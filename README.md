@@ -69,7 +69,7 @@ SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'
 docs/        강의 교재 (읽는 자료, 차시별 1개)
 notebooks/   강의 중 함께 실행하는 축약 실습 (빠르게 끝나도록 데이터를 줄여 둠)
 templates/   시험장에서 복사해 쓰는 완성 파이프라인 (길고, 주석이 많고, 빈칸이 표시되어 있음)
-slides/      강의 진행용 발표자료 (HTML 27장, 브라우저로 바로 열림)
+slides/      강의 진행용 발표자료 (HTML 23장, 브라우저로 바로 열림)
 ```
 
 [slides/index.html](slides/index.html)을 브라우저에서 열면 발표 모드로 실행됩니다.

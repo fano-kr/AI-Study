@@ -454,14 +454,12 @@ kbd{
   <div class="body">
     <div class="title-rule"></div>
     <h1>하나의 파이프라인,<br>세 개의 도메인</h1>
-    <p class="lede">AICE Professional 실기를 60분 안에 훑는 속성 과정.
-      새 알고리즘을 배우는 시간이 아니라, <strong>정해진 순서를 시간 안에 정확히 밟는 법</strong>을 익히는 시간입니다.</p>
+    <p class="lede">새 알고리즘을 배우는 시간이 아니라,
+      <strong>정해진 순서를 시간 안에 정확히 밟는 법</strong>을 익히는 시간입니다.</p>
     <div class="meta">
       <span>Tabular · Text · Image</span>
       <span>실기 180분</span>
       <span>Colab T4</span>
-      <span>실측 검증 완료</span>
-      <span>2026</span>
     </div>
     <div class="hint" style="margin-top:1em">
       <span><kbd>→</kbd> 다음</span><span><kbd>←</kbd> 이전</span><span><kbd>O</kbd> 목차</span>
@@ -475,98 +473,31 @@ kbd{
   <div class="body">
     <div class="eyebrow">이 시험의 성격</div>
     <h2>점수를 잃는 곳은<br>모델이 아니라 절차다</h2>
-    <div class="grid g3">
-      <div class="card"><span class="k">요구 형태 · 180분</span><p>“train.csv로 학습하고, test.csv 예측 결과를 파일로 저장하시오.”</p></div>
-      <div class="card"><span class="k">실제 실패 원인</span><p>전처리를 test에 적용 안 함 · 스케일러를 test로 fit · 제출 형식 불일치</p></div>
-      <div class="card key"><span class="k">그래서</span><h3>0.93 → 0.95보다<br>끝까지 도는 코드</h3></div>
-    </div>
-    <p class="dim">이 과정의 모든 선택은 이 기준으로 내려져 있습니다.</p>
+    <div class="quote">0.93을 0.95로 올리는 것보다<br>끝까지 도는 코드가 먼저다.</div>
+    <p class="dim">전처리를 test에 적용 안 함 · 스케일러를 test로 fit · 제출 형식 불일치 —
+      실제 실점은 대부분 여기서 납니다.</p>
   </div>
 </section>
 
 <!-- 3 ------------------------------------------------------- -->
-<section class="slide" data-min="2" data-track="0" data-title="시험 환경 네 가지">
+<section class="slide" data-min="3" data-track="0" data-title="시험 환경 다섯 가지">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 환경</div>
     <h2>실력과 무관하게<br>점수를 잃는 다섯 지점</h2>
-    <div class="grid g4">
-      <div class="card"><span class="k">01 · 자료</span><h3>분석 자료가 주어진다</h3><p>컬럼 설명·요구사항 문서가 함께 나옵니다. <strong>먼저 읽으세요.</strong> 누수 컬럼이 거기서 드러납니다.</p></div>
-      <div class="card bad"><span class="k">02 · GPU</span><h3>자동으로 안 붙는다</h3><p>시작할 때 <strong>한 번</strong> 연결 코드를 실행. 안 하면 <strong>조용히 CPU로</strong> 돌아갑니다.</p></div>
-      <div class="card bad"><span class="k">03 · 저장</span><h3>자동 저장이 없다</h3><p>미저장 상태에서 세션이 끊기면 <strong>전부 사라집니다.</strong></p></div>
-      <div class="card"><span class="k">04 · 제출</span><h3>휴대폰번호_문제번호</h3><p><code>01012345678_1.csv</code><br><code>01012345678_1.pkl</code></p></div>
-      <div class="card bad"><span class="k">05 · 커널</span><h3>커널이 하나다</h3><p>GPU 많이 쓰는 문제부터. 변수는 <code>p1_</code> 접두사로 <strong>문제별 분리</strong>.</p></div>
+    <div class="grid g3">
+      <div class="card"><span class="k">01 · 자료</span><h3>분석 자료가 주어진다</h3><p>먼저 읽으세요. 누수 컬럼이 거기서 드러납니다.</p></div>
+      <div class="card bad"><span class="k">02 · GPU</span><h3>자동으로 안 붙는다</h3><p>시작할 때 <strong>한 번</strong>. 안 하면 조용히 CPU로 떨어집니다.</p></div>
+      <div class="card bad"><span class="k">03 · 저장</span><h3>자동 저장이 없다</h3><p>세션이 끊기면 전부 사라집니다.</p></div>
+      <div class="card"><span class="k">04 · 제출</span><h3><code>01012345678_1.csv</code></h3><p>휴대폰번호_문제번호. 하이픈 없이.</p></div>
+      <div class="card bad"><span class="k">05 · 커널</span><h3>커널이 하나다</h3><p>GPU 많이 쓰는 문제부터. 변수는 <code>p1_</code>로 분리.</p></div>
     </div>
+    <p class="dim">마지막 차시에서 각각을 다시 다룹니다.</p>
   </div>
 </section>
 
 <!-- 4 ------------------------------------------------------- -->
-<section class="slide" data-min="4" data-track="0" data-title="GPU 연결 — 첫 번째 셀">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">세션 시작 셀 · 180분 중 딱 한 번</div>
-    <h2>GPU가 없어도<br>에러는 나지 않는다</h2>
-    <div class="grid g2">
-      <div>
-        <pre><code><span class="cm">!nvidia-smi</span>
-
-<span class="hl">import</span> tensorflow <span class="hl">as</span> tf
-gpus = tf.config.list_physical_devices(<span class="hlgood">'GPU'</span>)
-print(f<span class="hlgood">"GPU: {gpus}"</span>)
-
-<span class="cm"># 없으면 조용히 CPU로 도니 멈춰 세운다</span>
-<span class="hlbad">assert</span> gpus, <span class="hlgood">"GPU 미연결!"</span></code></pre>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card"><span class="k">실행 환경</span><h3>Colab T4</h3><p>시험 환경이 이와 비슷합니다. <strong>연습도 T4에서</strong> 하세요. 이 과정의 노트북·템플릿은 전부 T4를 전제로 작성했습니다.</p></div>
-        <div class="card good"><span class="k">횟수</span><h3>한 번이면 끝</h3><p>한 세션 안에서는 연결이 유지됩니다. <strong>문제가 몇 개든 다시 확인하지 않습니다.</strong></p></div>
-      </div>
-    </div>
-    <p class="dim">Tabular만 푼다 해도 <strong>확인은 무조건 먼저.</strong> 문제를 다 읽고 “이미지 문제가 있네” 하고 되돌아가면 이미 늦습니다.</p>
-  </div>
-</section>
-
-<!-- 5 ------------------------------------------------------- -->
-<section class="slide" data-min="5" data-track="0" data-title="저장과 제출 파일명">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">저장 · 파일명</div>
-    <h2>세션당 한 번과<br>문제마다를 분리한다</h2>
-    <div class="grid g2">
-      <div>
-        <pre><code><span class="cm"># ── 세션 시작 셀 · 180분 중 한 번 ──</span>
-PHONE   = <span class="hlgood">'01012345678'</span>  <span class="cm"># 하이픈 없이</span>
-
-<span class="cm"># ── 각 문제 템플릿 맨 위 · 문제마다 ──</span>
-PROB_NO = <span class="hl">1</span>
-
-SUBMIT_CSV   = f<span class="hlgood">'{PHONE}_{PROB_NO}.csv'</span>
-SUBMIT_MODEL = f<span class="hlgood">'{PHONE}_{PROB_NO}.pkl'</span>
-
-submission.to_csv(SUBMIT_CSV, index=<span class="hl">False</span>)
-joblib.dump(best_model, SUBMIT_MODEL)
-
-<span class="cm"># 실제로 만들어졌는지 눈으로 확인</span>
-print([f <span class="hl">for</span> f <span class="hl">in</span> os.listdir(<span class="hlgood">'.'</span>)
-       <span class="hl">if</span> f.startswith(PHONE)])</code></pre>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card key"><span class="k">저장 타이밍</span><h3>규칙으로 정해 둘 것</h3>
-          <ul style="font-size:.92em">
-            <li>셀 하나 완성할 때마다</li>
-            <li>단계가 끝날 때마다</li>
-            <li><strong>긴 학습 시작 직전에 반드시</strong></li>
-            <li>제출 파일을 만든 직후</li>
-          </ul>
-        </div>
-        <p class="dim">시험장에서 새로 생기는 습관이 아닙니다. <strong>연습할 때부터</strong> 손이 저장하게 만드세요.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 6 ------------------------------------------------------- -->
-<section class="slide" data-min="6" data-track="0" data-title="공통 파이프라인">
+<section class="slide" data-min="5" data-track="0" data-title="공통 파이프라인">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">이 과정의 척추</div>
@@ -581,131 +512,97 @@ print([f <span class="hl">for</span> f <span class="hl">in</span> os.listdir(<sp
       <div class="step"><span class="n">7</span><span class="t">평가</span></div>
       <div class="step"><span class="n">8</span><span class="t">제출</span></div>
     </div>
-    <p>도메인이 바뀌어도 <strong>3번과 5번만</strong> 달라집니다. 나머지 여섯 단계는 코드가 그대로 재사용됩니다.</p>
     <div class="tw">
       <table>
-        <thead><tr><th>단계</th><th>Tabular</th><th>Text</th><th>Image</th></tr></thead>
+        <thead><tr><th>바뀌는 단계</th><th>Tabular</th><th>Text</th><th>Image</th></tr></thead>
         <tbody>
-          <tr><td><strong>3 · 전처리</strong></td><td>결측 · 인코딩 · 스케일링</td><td>정제 → TF-IDF / 토크나이저</td><td>리사이즈 → 정규화 → 증강</td></tr>
-          <tr><td><strong>5 · 모델</strong></td><td>RF · XGB · LGBM</td><td>LinearSVC · LogReg · BERT</td><td>MobileNetV2 전이학습</td></tr>
+          <tr><td><strong>3 · 전처리</strong></td><td>결측 · 인코딩 · 스케일링</td><td>정제 → 벡터화</td><td>리사이즈 → 증강</td></tr>
+          <tr><td><strong>5 · 모델</strong></td><td>RF · XGB · LGBM</td><td>LinearSVC · BERT</td><td>MobileNetV2</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="dim">템플릿 네 파일이 서로 닮아 보인다면, 그건 실수가 아니라 의도입니다.</p>
+    <p>나머지 <strong>여섯 단계는 코드가 그대로</strong> 재사용됩니다.
+      템플릿 네 개가 닮아 보인다면 실수가 아니라 의도입니다.</p>
   </div>
 </section>
 
-<!-- 7 ------------------------------------------------------- -->
+<!-- 5 ------------------------------------------------------- -->
 <section class="slide" data-min="7" data-track="0" data-title="세 가지 습관">
   <div class="gutter"></div>
   <div class="body">
-    <div class="eyebrow">나머지를 다 잊어도 이건 남길 것</div>
+    <div class="eyebrow">나머지를 다 잊어도 이것만은</div>
     <h2>세 가지 습관</h2>
     <div class="grid g3">
       <div class="card key">
         <span class="k">습관 1</span><h3>시드를 고정한다</h3>
-        <pre style="font-size:.82em"><code>RANDOM_SEED = 42
-np.random.seed(RANDOM_SEED)
-tf.random.set_seed(RANDOM_SEED)</code></pre>
-        <p>돌릴 때마다 점수가 달라지면 “방금 바꾼 게 효과가 있었는지” 판단할 수 없습니다.</p>
+        <pre style="font-size:.8em"><code>RANDOM_SEED = 42</code></pre>
+        <p>점수가 매번 달라지면 개선 여부를 판단할 수 없습니다.</p>
       </div>
       <div class="card key">
-        <span class="k">습관 2</span><h3>train에서 fit,<br>test는 transform</h3>
-        <pre style="font-size:.82em"><code>scaler.<span class="hlgood">fit_transform</span>(X)
-scaler.<span class="hlgood">transform</span>(X_test)</code></pre>
-        <p>test로 fit하면 검증 점수가 <strong>오히려 올라갑니다.</strong> 그래서 틀렸다는 걸 눈치채기 어렵습니다.</p>
+        <span class="k">습관 2</span><h3>train은 fit,<br>test는 transform</h3>
+        <pre style="font-size:.8em"><code>fit_transform(X)
+<span class="hlgood">transform</span>(X_test)</code></pre>
+        <p>test로 fit하면 점수가 <strong>오히려 올라</strong> 발견이 어렵습니다.</p>
       </div>
       <div class="card key">
         <span class="k">습관 3</span><h3>이진/다중을<br>분기하지 않는다</h3>
-        <pre style="font-size:.82em"><code>NUM_CLASSES = \
+        <pre style="font-size:.8em"><code>NUM_CLASSES = \
   df[TARGET].nunique()</code></pre>
-        <p>시험장에서 “아 3개짜리네, 코드 고쳐야겠다” 하는 순간 5분이 날아갑니다.</p>
+        <p>"아 3개짜리네" 하고 코드 고치는 순간 5분이 날아갑니다.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 8 ------------------------------------------------------- -->
+<!-- 6 ------------------------------------------------------- -->
 <section class="slide chapter" data-min="8" data-track="1" data-title="TABULAR">
   <div class="gutter"></div>
   <div class="body">
     <div class="num">08′ — 25′ · 17분</div>
     <h1>Tabular</h1>
     <p class="lede">코드가 어려운 게 아니라 <strong>결정이 많은</strong> 도메인.
-      이 차시는 그 결정들을 “고민”이 아니라 “규칙”으로 바꿉니다.</p>
-    <div class="tags">
-      <span class="tag a">컬럼 요약표</span><span class="tag a">누수 탐지</span>
-      <span class="tag a">전처리 순서</span><span class="tag a">모델 비교</span><span class="tag a">회귀 3차이</span>
-    </div>
+      그 결정들을 고민이 아니라 규칙으로 바꿉니다.</p>
   </div>
 </section>
 
-<!-- 9 ------------------------------------------------------- -->
-<section class="slide" data-min="9" data-track="1" data-title="EDA는 전처리 계획서다">
+<!-- 7 ------------------------------------------------------- -->
+<section class="slide" data-min="10" data-track="1" data-title="EDA와 누수">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Tabular · EDA</div>
     <h2>산점도 말고, 표 하나</h2>
     <div class="grid g2">
       <div>
-        <pre><code>col_summary = pd.DataFrame({
-    <span class="hlgood">'dtype'</span>:       df.dtypes,
-    <span class="hlgood">'miss_pct'</span>:   (df.isnull().mean()*100).round(1),
-    <span class="hlgood">'nunique'</span>:     df.nunique(),
-    <span class="hlgood">'nunique_pct'</span>:(df.nunique()/len(df)*100).round(1),
-    <span class="hlgood">'sample'</span>:      df.iloc[0],
-})
-print(col_summary.to_string())</code></pre>
-        <p class="dim">EDA의 목적은 단 하나 — <strong>어느 컬럼을 어떻게 처리할지 정하는 것.</strong></p>
+        <pre><code>pd.DataFrame({
+    <span class="hlgood">'miss_pct'</span>:    (df.isnull().mean()*100).round(1),
+    <span class="hlgood">'nunique_pct'</span>: (df.nunique()/len(df)*100).round(1),
+    <span class="hlgood">'dtype'</span>:        df.dtypes,
+})</code></pre>
+        <p class="dim">EDA의 목적은 감상이 아니라 <strong>어느 컬럼을 버릴지 정하는 것</strong>입니다.</p>
       </div>
       <div class="tw">
         <table>
-          <thead><tr><th>신호</th><th>의미</th><th>조치</th></tr></thead>
+          <thead><tr><th>신호</th><th>정체</th><th>조치</th></tr></thead>
           <tbody>
-            <tr><td class="num">miss ≥ 70%</td><td>정보량 부족</td><td class="no">제거</td></tr>
+            <tr><td class="num">결측 ≥ 70%</td><td>정보 부족</td><td class="no">제거</td></tr>
             <tr><td class="num">고유값 ≥ 95%</td><td>ID · 이름</td><td class="no">제거</td></tr>
-            <tr><td class="num">고유값 = 1</td><td>분산 0</td><td class="no">제거</td></tr>
-            <tr><td class="num">타겟상관 ≥ .95</td><td><strong>누수 의심</strong></td><td class="no">제거</td></tr>
+            <tr><td class="num">타겟상관 ≥ .95</td><td><strong>누수</strong></td><td class="no">제거</td></tr>
             <tr><td>의미 중복</td><td>class vs pclass</td><td class="no">하나만</td></tr>
           </tbody>
         </table>
       </div>
     </div>
+    <div class="quote" style="max-width:32em">정확도 0.99를 넘으면<br>기뻐하기 전에 누수를 의심하세요.</div>
   </div>
 </section>
 
-<!-- 10 ------------------------------------------------------ -->
-<section class="slide" data-min="11" data-track="1" data-title="누수 — 정확도 100%는 경고다">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">Tabular · 데이터 누수</div>
-    <h2>정확도 100%는<br>축하가 아니라 경고</h2>
-    <div class="grid g2">
-      <div>
-        <pre><code>&gt;&gt;&gt; pd.crosstab(df[<span class="hlgood">'alive'</span>], df[<span class="hlgood">'survived'</span>])
-
-survived    0    1
-alive
-no        <span class="hlbad">439</span>    0
-yes         0  <span class="hlbad">273</span></code></pre>
-        <p><code>alive</code>는 타겟 <code>survived</code>를 yes/no로 바꿔 놓은 것에 불과합니다.
-          모델이 잘한 게 아니라 <strong>답안지를 보고 푼 것</strong>입니다.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card good"><span class="k">탐지기</span><h3>feature_importances_</h3><p>한 컬럼이 압도적으로 솟아 있으면 거의 확실합니다. 특성 중요도는 <strong>누수 탐지기</strong>로도 씁니다.</p></div>
-        <div class="card"><span class="k">더 빠른 길</span><h3>분석 자료를 읽는다</h3><p>“결과를 사후 기록한 컬럼”이라 적혀 있으면 상관계수를 볼 것도 없습니다.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 11 ------------------------------------------------------ -->
-<section class="slide" data-min="13" data-track="1" data-title="전처리 순서와 인코딩">
+<!-- 8 ------------------------------------------------------- -->
+<section class="slide" data-min="14" data-track="1" data-title="전처리 순서와 인코딩">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Tabular · 전처리</div>
     <h2>순서를 외워 두면<br>매번 고민하지 않는다</h2>
-    <div class="pipe" style="margin-bottom:.2em">
+    <div class="pipe">
       <div class="step"><span class="n">a</span><span class="t">제거</span></div>
       <div class="step"><span class="n">b</span><span class="t">분리</span></div>
       <div class="step"><span class="n">c</span><span class="t">결측</span></div>
@@ -717,47 +614,43 @@ yes         0  <span class="hlbad">273</span></code></pre>
       <table>
         <thead><tr><th></th><th>LabelEncoder</th><th>OneHotEncoder</th></tr></thead>
         <tbody>
-          <tr><td><strong>적합</strong></td><td>순서 있는 범주 (low/mid/high)</td><td>순서 없는 범주 (색상, 도시)</td></tr>
-          <tr><td><strong>트리 모델</strong></td><td class="win">충분함 — 분기로 알아서 처리</td><td class="lose">차원만 늘어남</td></tr>
-          <tr><td><strong>선형 모델</strong></td><td class="lose">위험 — 없는 순서를 만들어냄</td><td class="win">적합</td></tr>
+          <tr><td><strong>트리 모델</strong></td><td class="win">충분함</td><td class="lose">차원만 늘어남</td></tr>
+          <tr><td><strong>선형 모델</strong></td><td class="lose">없는 순서를 만듦</td><td class="win">적합</td></tr>
         </tbody>
       </table>
     </div>
-    <p>시험 주력은 트리 모델이므로 <strong>LabelEncoder가 기본값.</strong>
-      단, test에만 있는 미지의 값은 <code>-1</code>로 보내 에러를 막습니다.</p>
-    <pre><code>X_test[col] = X_test[col].astype(str).map(
-    <span class="hl">lambda</span> v, _le=le: _le.transform([v])[0] <span class="hl">if</span> v <span class="hl">in</span> _le.classes_ <span class="hl">else</span> <span class="hlbad">-1</span>
-)</code></pre>
+    <p>시험 주력은 트리 모델 → <strong>LabelEncoder가 기본값.</strong>
+      단, test에만 있는 값은 <code>-1</code>로 보내 에러를 막습니다.</p>
   </div>
 </section>
 
-<!-- 12 ------------------------------------------------------ -->
-<section class="slide" data-min="17" data-track="1" data-title="모델 비교 — CV를 함께 본다">
+<!-- 9 ------------------------------------------------------- -->
+<section class="slide" data-min="18" data-track="1" data-title="모델 비교 — CV를 함께">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Tabular · 모델 선택</div>
-    <h2>고민하지 말고 다 돌린다.<br>단, CV를 함께 본다</h2>
+    <h2>다 돌린다.<br>단, CV를 함께 본다</h2>
     <div class="grid g2">
       <div class="tw">
         <table>
-          <thead><tr><th>모델</th><th>Accuracy</th><th>CV_Acc</th><th>판단</th></tr></thead>
+          <thead><tr><th>모델</th><th>Accuracy</th><th>CV</th><th></th></tr></thead>
           <tbody>
-            <tr><td>GradientBoosting</td><td class="num">0.8182</td><td class="num">0.8190</td><td class="win">일치 → 신뢰</td></tr>
-            <tr><td>RandomForest</td><td class="num">0.8112</td><td class="num">0.7856</td><td class="no">벌어짐 → 운</td></tr>
-            <tr><td>LogisticRegression</td><td class="num">0.7692</td><td class="num">0.7979</td><td class="lose">과소평가</td></tr>
+            <tr><td>GradientBoosting</td><td class="num">0.818</td><td class="num">0.819</td><td class="win">신뢰</td></tr>
+            <tr><td>RandomForest</td><td class="num">0.811</td><td class="num">0.786</td><td class="no">운이 좋았을 뿐</td></tr>
           </tbody>
         </table>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card key"><span class="k">왜 둘 다 보나</span><h3>Accuracy는 한 번,<br>CV는 다섯 번</h3><p>둘이 크게 벌어지면 <strong>val 분할이 유리하게 걸린 것</strong>이지 모델이 좋은 게 아닙니다. CV가 높은 쪽을 고르세요.</p></div>
-        <div class="card"><span class="k">튜닝</span><h3>1위 하나만</h3><p>5개를 전부 GridSearch하면 시간이 남지 않습니다. 파라미터 3개 × 값 3개가 현실적 상한.</p></div>
+      <div class="card key">
+        <span class="k">왜 둘 다</span><h3>Accuracy는 한 번,<br>CV는 다섯 번</h3>
+        <p>둘이 벌어지면 val 분할이 유리하게 걸린 것입니다. <strong>CV가 높은 쪽</strong>을 고르세요.</p>
       </div>
     </div>
+    <p class="dim">튜닝은 <strong>1위 하나만.</strong> 5개를 전부 GridSearch하면 시간이 남지 않습니다.</p>
   </div>
 </section>
 
-<!-- 13 ------------------------------------------------------ -->
-<section class="slide" data-min="21" data-track="1" data-title="회귀는 세 군데만 다르다">
+<!-- 10 ------------------------------------------------------ -->
+<section class="slide" data-min="22" data-track="1" data-title="회귀는 세 군데만 다르다">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Tabular · 회귀</div>
@@ -767,192 +660,136 @@ yes         0  <span class="hlbad">273</span></code></pre>
         <thead><tr><th></th><th>분류</th><th>회귀</th></tr></thead>
         <tbody>
           <tr><td><strong>모델</strong></td><td><code>...Classifier</code></td><td><code>...Regressor</code></td></tr>
-          <tr><td><strong>분할</strong></td><td><code>stratify=y</code></td><td>없음 — 연속값이라 불가</td></tr>
+          <tr><td><strong>분할</strong></td><td><code>stratify=y</code></td><td>없음 (연속값)</td></tr>
           <tr><td><strong>지표</strong></td><td>Accuracy · F1 · AUC</td><td>RMSE · MAE · R²</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="grid g3">
-      <div class="card"><span class="k">R²</span><h3>0.9↑ 매우 우수</h3><p>음수면 평균으로 찍는 것만도 못하다는 뜻.</p></div>
-      <div class="card"><span class="k">RMSE ≫ MAE</span><h3>큰 오차가 존재</h3><p>이상치 처리나 로그 변환을 검토하라는 신호.</p></div>
-      <div class="card good"><span class="k">치우친 타겟</span><h3>log1p → expm1</h3><p><code>np.log1p(y)</code>로 학습하고 예측 후 되돌리면 자주 먹힙니다.</p></div>
-    </div>
+    <p><strong>RMSE ≫ MAE</strong>면 큰 오차가 있다는 신호 → 이상치 처리나 로그 변환.
+      타겟이 치우쳐 있으면 <code>log1p</code>로 학습하고 <code>expm1</code>로 되돌립니다.</p>
   </div>
 </section>
 
-<!-- 14 ------------------------------------------------------ -->
+<!-- 11 ------------------------------------------------------ -->
 <section class="slide chapter" data-min="25" data-track="2" data-title="TEXT">
   <div class="gutter"></div>
   <div class="body">
     <div class="num">25′ — 38′ · 13분</div>
     <h1>Text</h1>
-    <p class="lede">길이 두 개 있습니다. <strong>어느 길로 갈지 먼저 정하는 것</strong>이 실력입니다.</p>
-    <div class="tags">
-      <span class="tag p">방법 A · TF-IDF</span><span class="tag d">방법 B · BERT</span>
-      <span class="tag a">한국어 함정</span>
-    </div>
+    <p class="lede">길이 두 개 있습니다.
+      <strong>어느 길로 갈지 먼저 정하는 것</strong>이 실력입니다.</p>
   </div>
 </section>
 
-<!-- 15 ------------------------------------------------------ -->
-<section class="slide" data-min="26" data-track="2" data-title="A를 먼저, B는 보험">
+<!-- 12 ------------------------------------------------------ -->
+<section class="slide" data-min="27" data-track="2" data-title="A를 먼저, B는 보험">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Text · 전략</div>
     <h2>A를 먼저. B는 보험.</h2>
-    <div class="grid g2">
-      <div class="tw">
-        <table>
-          <thead><tr><th></th><th>A · TF-IDF + ML</th><th>B · BERT</th></tr></thead>
-          <tbody>
-            <tr><td><strong>시간 (T4)</strong></td><td class="win">1~5분</td><td>20~40분</td></tr>
-            <tr><td><strong>성능</strong></td><td>짧은 문장에 강함</td><td class="win">문맥·뉘앙스에 우세</td></tr>
-            <tr><td><strong>실패 위험</strong></td><td class="win">거의 없음</td><td class="no">OOM · 다운로드 · 시간초과</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="card key">
-        <span class="k">순서가 중요한 이유</span>
-        <h3>시험은 시간 제한 경기다</h3>
-        <p>BERT부터 시작했다가 30분 뒤 OOM으로 죽으면 <strong>제출할 게 아무것도 없습니다.</strong>
-          A를 먼저 끝내 두면 B가 실패해도 이미 제출물이 손에 있습니다.</p>
-      </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th></th><th>A · TF-IDF + ML</th><th>B · BERT</th></tr></thead>
+        <tbody>
+          <tr><td><strong>시간 (T4)</strong></td><td class="win">1~5분</td><td>20~40분</td></tr>
+          <tr><td><strong>실패 위험</strong></td><td class="win">거의 없음</td><td class="no">OOM · 다운로드 · 시간초과</td></tr>
+        </tbody>
+      </table>
     </div>
-    <pre><code>A 실행 (5분) → 제출 파일 확보 → 점수 확인
+    <pre><code>A 실행 (5분) → 제출 파일 확보
    ├─ 0.90 이상 <span class="hlgood">→ 끝. 다음 문제로.</span>
-   └─ 0.85 미만 &amp; 30분+ 남음 <span class="hl">→ B 시도 → 더 좋으면 덮어쓰기</span></code></pre>
+   └─ 0.85 미만 &amp; 30분+ 남음 <span class="hl">→ B 시도</span></code></pre>
+    <p>BERT부터 시작했다가 30분 뒤 OOM으로 죽으면 <strong>제출할 게 아무것도 없습니다.</strong></p>
   </div>
 </section>
 
-<!-- 16 ------------------------------------------------------ -->
-<section class="slide" data-min="29" data-track="2" data-title="한국어 함정 — 공백 토큰화">
+<!-- 13 ------------------------------------------------------ -->
+<section class="slide" data-min="31" data-track="2" data-title="한국어 함정 — 문자 n-gram">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Text · 이 차시의 핵심</div>
     <h2>한국어에서 TF-IDF가<br>낮게 나오는 진짜 이유</h2>
-    <p><code>TfidfVectorizer</code>의 기본 토큰화는 <strong>공백 기준</strong>입니다. 그런데 한국어는 조사와 어미가 붙습니다.</p>
-    <pre><code>"영화<span class="hlbad">가</span>"   "영화<span class="hlbad">는</span>"   "영화<span class="hlbad">를</span>"   "영화<span class="hlbad">도</span>"
-                                    <span class="cm">→ 전부 다른 피처로 흩어진다</span></code></pre>
-    <p>정석은 형태소 분석기(KoNLPy, Mecab)지만 <strong>시험 환경에 설치돼 있으리라는 보장이 없습니다.</strong>
-      설치 없이 쓸 수 있는 우회로가 있습니다.</p>
-    <pre><code>tfidf = TfidfVectorizer(
-    analyzer=<span class="hlgood">'char_wb'</span>,   <span class="cm"># 단어 경계를 존중하는 문자 n-gram</span>
-    ngram_range=<span class="hlgood">(2, 4)</span>,   <span class="cm"># 2~4글자 조각</span>
-    max_features=50000, min_df=2, sublinear_tf=<span class="hl">True</span>,
-)</code></pre>
-  </div>
-</section>
+    <pre><code>"영화<span class="hlbad">가</span>"  "영화<span class="hlbad">는</span>"  "영화<span class="hlbad">를</span>"  "영화<span class="hlbad">도</span>"   <span class="cm">→ 전부 다른 피처로 흩어진다</span>
 
-<!-- 17 ------------------------------------------------------ -->
-<section class="slide" data-min="32" data-track="2" data-title="실측 — 문자 n-gram의 이득">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">Text · 실측 결과</div>
-    <h2>한국어 데이터셋 두 개,<br>같은 방향</h2>
+<span class="cm"># 형태소 분석기는 시험 환경에 없을 수 있다. 대신:</span>
+TfidfVectorizer(analyzer=<span class="hlgood">'char_wb'</span>, ngram_range=<span class="hlgood">(2, 4)</span>, max_features=50000)</code></pre>
     <div class="tw">
       <table>
-        <thead><tr><th>데이터</th><th>단어 (1,2)-gram</th><th>문자 char_wb (2,4)</th><th>차이</th></tr></thead>
+        <thead><tr><th>한국어 데이터</th><th>단어 (1,2)</th><th>문자 (2,4)</th><th>차이</th></tr></thead>
         <tbody>
-          <tr><td>NSMC 감성분석 · 2클래스 · 3만 건</td><td class="num lose">0.781</td><td class="num win">0.847</td><td class="num win">+6.6%p</td></tr>
-          <tr><td>KLUE-YNAT 뉴스 토픽 · 7클래스</td><td class="num lose">0.670</td><td class="num win">0.785</td><td class="num win">+11.6%p</td></tr>
+          <tr><td>NSMC 감성분석 · 2클래스</td><td class="num lose">0.781</td><td class="num win">0.847</td><td class="num win">+6.6%p</td></tr>
+          <tr><td>KLUE-YNAT 토픽 · 7클래스</td><td class="num lose">0.670</td><td class="num win">0.785</td><td class="num win">+11.6%p</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="grid g3">
-      <div class="card"><span class="k">왜 되나</span><p>조사·어미가 붙어도 <code>재미없</code>, <code>최악이</code> 같은 조각은 그대로 잡힙니다.</p></div>
-      <div class="card"><span class="k">대가</span><p>피처 5배, 벡터화 3배 느림. <strong>몇 초 수준</strong>이라 시험에서는 거의 항상 이득.</p></div>
-      <div class="card good"><span class="k">기억할 것</span><h3>모델을 바꾸기 전에<br>analyzer를 바꿔라</h3></div>
-    </div>
-    <p class="dim">문장이 짧고 클래스가 많은 YNAT에서 차이가 더 벌어집니다.</p>
+    <div class="quote" style="max-width:34em">모델을 바꾸기 전에<br>analyzer를 바꿔 보세요.</div>
   </div>
 </section>
 
-<!-- 18 ------------------------------------------------------ -->
+<!-- 14 ------------------------------------------------------ -->
 <section class="slide" data-min="35" data-track="2" data-title="BERT 세 가지 함정">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Text · 방법 B</div>
     <h2>BERT는 세 개만<br>정확히 기억하면 된다</h2>
     <div class="grid g3">
-      <div class="card bad"><span class="k">01</span><h3>lr = 2e-5</h3><p>협상 대상이 아닙니다. Tabular에서 쓰던 <code>1e-3</code>을 넣으면 사전학습 지식이 <strong>첫 배치에서 파괴</strong>됩니다.</p></div>
-      <div class="card bad"><span class="k">02</span><h3>from_logits=True</h3><p>이 모델은 softmax를 거치지 않은 logits를 뱉습니다. 빠뜨리면 손실이 이상하게 계산되고 학습이 안 됩니다.</p></div>
-      <div class="card bad"><span class="k">03</span><h3>from_pt=True</h3><p>HF의 한국어 모델 다수가 PyTorch 가중치만 올라와 있습니다. TF에서 쓰려면 필요합니다.</p></div>
+      <div class="card bad"><span class="k">01</span><h3>lr = 2e-5</h3><p>협상 대상 아님. <code>1e-3</code>을 넣으면 사전학습 지식이 첫 배치에 파괴됩니다.</p></div>
+      <div class="card bad"><span class="k">02</span><h3>from_logits=True</h3><p>softmax 전 logits를 뱉습니다. 빠뜨리면 학습이 안 됩니다.</p></div>
+      <div class="card bad"><span class="k">03</span><h3>from_pt=True</h3><p>한국어 모델 다수가 PyTorch 가중치만 있습니다.</p></div>
     </div>
-    <div class="grid g2">
-      <div class="card"><span class="k">모델 선택</span><h3>klue/bert-base</h3><p>한국어 데이터에 <code>bert-base-uncased</code>를 쓰면 토크나이저가 한글을 <code>[UNK]</code>로 처리해 성능이 무너집니다.</p></div>
-      <div class="card"><span class="k">OOM이 나면</span><p>BATCH 32 → 16 → 8, MAX_LENGTH 128 → 64,<br>그래도 안 되면 <strong>방법 A로 후퇴</strong> (미련 갖지 말 것)</p></div>
-    </div>
+    <p>모델은 <code>klue/bert-base</code>. 한국어에 <code>bert-base-uncased</code>를 쓰면
+      토크나이저가 한글을 <code>[UNK]</code>로 처리해 성능이 무너집니다.</p>
   </div>
 </section>
 
-<!-- 19 ------------------------------------------------------ -->
+<!-- 15 ------------------------------------------------------ -->
 <section class="slide chapter" data-min="38" data-track="3" data-title="IMAGE">
   <div class="gutter"></div>
   <div class="body">
     <div class="num">38′ — 50′ · 12분</div>
     <h1>Image</h1>
-    <p class="lede">판단할 게 가장 적은 도메인. 대신 <strong>레시피를 정확히</strong> 따라야 합니다.
-      CNN을 처음부터 학습시키는 선택지는 시험에 없습니다.</p>
-    <div class="tags">
-      <span class="tag a">2단계 전이학습</span><span class="tag a">categorical 통일</span><span class="tag d">예측 순서 함정</span>
-    </div>
+    <p class="lede">판단할 게 가장 적은 도메인. 대신 <strong>레시피를 정확히</strong> 따라야 합니다.</p>
   </div>
 </section>
 
-<!-- 20 ------------------------------------------------------ -->
-<section class="slide" data-min="39" data-track="3" data-title="2단계 전이학습">
+<!-- 16 ------------------------------------------------------ -->
+<section class="slide" data-min="40" data-track="3" data-title="2단계 전이학습">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Image · 학습 구조</div>
     <h2>학습률을 100배 낮추는 것이<br>Phase 2의 전부</h2>
     <div class="grid g2">
-      <div class="card key">
-        <span class="k">Phase 1 · Feature Extraction</span>
+      <div class="card key"><span class="k">Phase 1 · Feature Extraction</span>
         <h3>base 동결 · <span class="mono">lr = 1e-3</span></h3>
-        <p>ImageNet이 이미 아는 “선·질감·모서리”는 그대로 두고, 새 분류 헤드만 학습합니다. 빠르게 수렴합니다.</p>
-      </div>
-      <div class="card key">
-        <span class="k">Phase 2 · Fine-Tuning</span>
+        <p>ImageNet이 아는 특징은 그대로 두고 분류 헤드만 학습.</p></div>
+      <div class="card key"><span class="k">Phase 2 · Fine-Tuning</span>
         <h3>상위 30층 해제 · <span class="mono">lr = 1e-5</span></h3>
-        <p>높은 학습률로 base를 풀면 ImageNet 가중치가 <strong>첫 배치에 파괴</strong>됩니다. “미세 조정”이라는 이름이 붙은 이유입니다.</p>
-      </div>
+        <p>학습률이 높으면 ImageNet 가중치가 <strong>첫 배치에 파괴</strong>됩니다.</p></div>
     </div>
     <pre><code>base_model.trainable = <span class="hl">True</span>
-<span class="hl">for</span> layer <span class="hl">in</span> base_model.layers[:-30]:
-    layer.trainable = <span class="hl">False</span>
+<span class="hl">for</span> layer <span class="hl">in</span> base_model.layers[:-30]: layer.trainable = <span class="hl">False</span>
 
-model.compile(optimizer=Adam(<span class="hlbad">1e-5</span>), ...)   <span class="cm"># trainable 을 바꿨으면 반드시 재컴파일</span></code></pre>
-    <p class="dim">상위 30개만 푸는 이유 — 하위 레이어는 범용 특징이라 어떤 과제에나 유효합니다. 전부 풀면 과적합합니다.</p>
+model.compile(optimizer=Adam(<span class="hlbad">1e-5</span>), ...)   <span class="cm"># trainable 바꿨으면 반드시 재컴파일</span></code></pre>
   </div>
 </section>
 
-<!-- 21 ------------------------------------------------------ -->
-<section class="slide" data-min="43" data-track="3" data-title="categorical 통일">
+<!-- 17 ------------------------------------------------------ -->
+<section class="slide" data-min="44" data-track="3" data-title="categorical 통일">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Image · 습관 3이 값을 하는 곳</div>
-    <h2>2클래스인데<br><span class="mono" style="font-family:'IBM Plex Mono',monospace">sigmoid</span>가 한 번도 안 나온다</h2>
-    <div class="grid g2">
-      <div>
-        <pre><code>train_ds = image_dataset_from_directory(
-    data_dir,
-    label_mode=<span class="hlgood">'categorical'</span>,   <span class="cm"># 이진/다중 통일</span>
-    ...)
-
-outputs = Dense(NUM_CLASSES, activation=<span class="hlgood">'softmax'</span>)(x)
-
-model.compile(loss=<span class="hlgood">'categorical_crossentropy'</span>, ...)</code></pre>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card good"><span class="k">얻는 것</span><h3>클래스가 2개든 7개든<br>코드가 같다</h3><p>데이터 경로 말고는 고칠 게 없어야 정상입니다.</p></div>
-        <div class="card bad"><span class="k">기본값을 쓰면</span><h3>'int' / 'binary'</h3><p>클래스 수가 바뀔 때마다 손실 함수와 출력층을 고쳐야 합니다.</p></div>
-      </div>
-    </div>
+    <h2>2클래스인데<br><span class="mono">sigmoid</span>가 한 번도 안 나온다</h2>
+    <pre><code>image_dataset_from_directory(..., label_mode=<span class="hlgood">'categorical'</span>)
+Dense(NUM_CLASSES, activation=<span class="hlgood">'softmax'</span>)
+model.compile(loss=<span class="hlgood">'categorical_crossentropy'</span>)</code></pre>
+    <p>클래스가 2개든 7개든 <strong>고칠 코드가 없습니다.</strong>
+      기본값 <code>'int'</code>·<code>'binary'</code>를 쓰면 클래스 수가 바뀔 때마다
+      출력층과 손실 함수를 손대야 합니다.</p>
   </div>
 </section>
 
-<!-- 22 ------------------------------------------------------ -->
-<section class="slide" data-min="46" data-track="3" data-title="예측 순서 함정">
+<!-- 18 ------------------------------------------------------ -->
+<section class="slide" data-min="47" data-track="3" data-title="예측 순서 함정">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Image · 가장 위험한 함정</div>
@@ -960,30 +797,26 @@ model.compile(loss=<span class="hlgood">'categorical_crossentropy'</span>, ...)<
     <pre><code>val_ds = image_dataset_from_directory(..., shuffle=<span class="hlbad">True</span>)
 preds  = model.predict(val_ds)
 filenames = val_ds.file_paths        <span class="hlbad"># ← preds 와 순서가 다르다!</span></code></pre>
-    <p><code>shuffle=True</code>인 데이터셋은 반복할 때마다 순서가 바뀝니다.
-      그런데 <code>file_paths</code>는 원래 정렬 순서 그대로입니다.
-      둘을 나란히 붙이면 <strong>파일명과 예측이 어긋난 채 제출</strong>됩니다.</p>
-    <pre><code><span class="cm"># 해결 — 순서가 보장되는 예측 전용 데이터셋을 따로 만든다</span>
+    <pre><code><span class="cm"># 해결 — 순서가 보장되는 예측 전용 데이터셋</span>
 val_pred_ds = (tf.data.Dataset.from_tensor_slices(val_ds.file_paths)
-               .map(_load_image, num_parallel_calls=AUTOTUNE)
-               .batch(BATCH_SIZE).prefetch(AUTOTUNE))
-
-preds = model.predict(val_pred_ds)   <span class="hlgood"># file_paths 와 1:1 대응 보장</span></code></pre>
+               .map(_load_image).batch(BATCH_SIZE))</code></pre>
+    <p><code>shuffle=True</code>는 반복할 때마다 순서가 바뀌는데 <code>file_paths</code>는 정렬 순서 그대로입니다.
+      <strong>파일명과 예측이 어긋난 채 제출</strong>되고, 검증 점수는 정상이라 발견이 어렵습니다.</p>
   </div>
 </section>
 
-<!-- 23 ------------------------------------------------------ -->
+<!-- 19 ------------------------------------------------------ -->
 <section class="slide chapter" data-min="50" data-track="4" data-title="시험 당일">
   <div class="gutter"></div>
   <div class="body">
     <div class="num">50′ — 60′ · 10분</div>
     <h1>시험 당일</h1>
-    <p class="lede">3시간을 어떻게 쓸 것인가, 그리고 절대 하지 말아야 할 것들.</p>
+    <p class="lede">180분을 어떻게 쓸 것인가. 그리고 커널이 하나라는 사실이 무엇을 바꾸는가.</p>
   </div>
 </section>
 
-<!-- 문제 순서 ------------------------------------------------ -->
-<section class="slide" data-min="51" data-track="4" data-title="문제 순서 — GPU 우선">
+<!-- 20 ------------------------------------------------------ -->
+<section class="slide" data-min="52" data-track="4" data-title="문제 순서 — GPU 우선">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 순서</div>
@@ -991,33 +824,27 @@ preds = model.predict(val_pred_ds)   <span class="hlgood"># file_paths 와 1:1 �
     <div class="grid g2">
       <div class="tw">
         <table>
-          <thead><tr><th>순서</th><th>유형</th><th>학습</th><th>그 시간에</th></tr></thead>
+          <thead><tr><th>순서</th><th>유형</th><th>학습</th></tr></thead>
           <tbody>
-            <tr><td class="num"><strong>1</strong></td><td><strong>이미지</strong></td><td class="num">10~30분</td><td class="win">다음 문제 코드 작성</td></tr>
-            <tr><td class="num"><strong>2</strong></td><td><strong>텍스트 BERT</strong></td><td class="num">20~40분</td><td class="win">정형 문제 코드 작성</td></tr>
-            <tr><td class="num">3</td><td>텍스트 TF-IDF</td><td class="num">몇 분</td><td class="lose">—</td></tr>
-            <tr><td class="num">4</td><td>정형</td><td class="num">몇 분</td><td class="lose">—</td></tr>
+            <tr><td class="num"><strong>1</strong></td><td><strong>이미지</strong></td><td class="num">10~30분</td></tr>
+            <tr><td class="num"><strong>2</strong></td><td><strong>텍스트 BERT</strong></td><td class="num">20~40분</td></tr>
+            <tr><td class="num">3</td><td>텍스트 TF-IDF</td><td class="num lose">몇 분</td></tr>
+            <tr><td class="num">4</td><td>정형</td><td class="num lose">몇 분</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="card key">
-        <span class="k">이유</span>
-        <h3>학습이 도는 동안<br>손이 빈다</h3>
-        <p>이미지 <code>fit()</code>을 먼저 걸어 두면 그 30분이 정형 문제를 짜는 시간이 됩니다.
-          순서를 뒤집으면 정형을 다 푼 뒤에야 학습이 시작되고, <strong>그 30분은 화면만 보게 됩니다.</strong>
-          같은 작업량인데 30분이 사라집니다.</p>
-      </div>
+      <div class="card key"><span class="k">이유</span><h3>학습이 도는 동안<br>손이 빈다</h3>
+        <p>정형부터 풀면 그걸 다 끝낸 뒤에야 학습이 시작되고,
+          <strong>그 30분은 화면만 보게 됩니다.</strong></p></div>
     </div>
-    <pre><code><span class="cm"># 커널이 하나라는 뜻을 정확히</span>
-18분  이미지 fit() 실행  <span class="hl">─┐</span>
-                          <span class="hl">│</span>  학습 중에는 다른 셀을 <span class="hlbad">실행</span>할 수 없다. <span class="hlgood">작성</span>은 할 수 있다.
-48분  학습 종료          <span class="hl">─┘</span>
-48분  대기하던 정형 셀이 <span class="hlgood">자동으로 이어서 실행</span></code></pre>
+    <pre><code><span class="cm"># 커널이 하나라는 뜻</span>
+18분  이미지 fit() 실행 <span class="hl">─┐</span>  학습 중엔 다른 셀을 <span class="hlbad">실행</span> 못 한다. <span class="hlgood">작성</span>은 된다.
+48분  학습 종료         <span class="hl">─┘</span>  대기하던 셀이 자동으로 이어서 실행</code></pre>
   </div>
 </section>
 
-<!-- 변수 이름 ------------------------------------------------ -->
-<section class="slide" data-min="53" data-track="4" data-title="변수 이름 — 커널은 하나다">
+<!-- 21 ------------------------------------------------------ -->
+<section class="slide" data-min="54" data-track="4" data-title="변수 이름 — 커널은 하나다">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 변수</div>
@@ -1025,34 +852,29 @@ preds = model.predict(val_pred_ds)   <span class="hlgood"># file_paths 와 1:1 �
     <div class="grid g2">
       <div>
         <pre><code><span class="cm"># 1번 문제 (이미지)</span>
-X_train = ...        <span class="cm"># 이미지 배치</span>
+X_train = ...
 
 <span class="cm"># 2번 문제 (정형) — 같은 커널</span>
-X_train = ...        <span class="hlbad"># 1번 문제의 X_train 이 사라졌다</span></code></pre>
-        <p>여기서 1번 문제로 돌아가 셀 하나만 다시 돌리면
-          <strong>에러 없이 틀린 결과</strong>가 나옵니다. 누수와 같은 종류의 사고입니다.</p>
+X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
+        <p>1번으로 돌아가 셀 하나만 다시 돌리면 <strong>에러 없이 틀린 결과</strong>가 나옵니다.</p>
       </div>
       <div>
-        <pre><code><span class="cm"># 템플릿은 모든 변수에 접두사가 붙어 있다</span>
-<span class="hlgood">p1_</span>PROB_NO = 1
+        <pre><code><span class="hlgood">p1_</span>PROB_NO = 1
 <span class="hlgood">p1_</span>X_train, <span class="hlgood">p1_</span>X_val = ...
 <span class="hlgood">p1_</span>best_model = ...</code></pre>
         <div class="card good" style="margin-top:12px">
-          <span class="k">2번 문제에 쓸 때</span>
-          <h3>찾아 바꾸기 한 번</h3>
-          <p><code>Ctrl+H</code> → <code>p1_</code>을 <code>p2_</code>로 전체 바꾸기<br>
-            그리고 <strong><code>p2_PROB_NO = 2</code></strong> — 숫자도 함께</p>
+          <span class="k">2번 문제에 쓸 때</span><h3>찾아 바꾸기 한 번</h3>
+          <p><code>Ctrl+H</code> → <code>p1_</code>을 <code>p2_</code>로<br>
+            그리고 <strong><code>p2_PROB_NO = 2</code></strong></p>
         </div>
       </div>
     </div>
-    <p class="dim">마지막 줄을 가장 자주 놓칩니다. 빠뜨리면 2번 결과가
-      <code>{PHONE}_1.csv</code>로 저장되어 <strong>1번 제출물을 덮어씁니다.</strong>
-      접두사가 없는 것은 세션 공용 셋뿐입니다 — <code>PHONE</code>, <code>RANDOM_SEED</code>, <code>remaining()</code>.</p>
+    <p class="dim">마지막 줄을 놓치면 2번 결과가 <strong>1번 제출물을 덮어씁니다.</strong></p>
   </div>
 </section>
 
-<!-- 24 ------------------------------------------------------ -->
-<section class="slide" data-min="55" data-track="4" data-title="180분 배분 — 2문제">
+<!-- 22 ------------------------------------------------------ -->
+<section class="slide" data-min="56" data-track="4" data-title="180분 배분">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 총 180분 · 이미지 + 정형</div>
@@ -1061,99 +883,34 @@ X_train = ...        <span class="hlbad"># 1번 문제의 X_train 이 사라졌�
       <table>
         <thead><tr><th>시각</th><th>무엇을</th></tr></thead>
         <tbody>
-          <tr><td class="num">0–3</td><td><strong>세션 시작 셀</strong> — GPU 연결(한 번), PHONE, 시드</td></tr>
-          <tr><td class="num">3–18</td><td><strong>이미지</strong>: 분석 자료 정독 → 데이터 로드 → 모델 구축</td></tr>
+          <tr><td class="num">0–3</td><td>세션 시작 셀 — GPU 연결(한 번), PHONE, 시드</td></tr>
+          <tr><td class="num">3–18</td><td><strong>이미지</strong>: 자료 정독 → 데이터 로드 → 모델 구축</td></tr>
           <tr><td class="num"><strong>18</strong></td><td><strong class="win">fit() 실행</strong> — 여기서부터 손이 빈다</td></tr>
-          <tr><td class="num">18–48</td><td>학습이 도는 동안 <strong>정형 문제 셀을 작성</strong>해 대기열에 (<code>p2_</code> 접두사로)</td></tr>
-          <tr><td class="num">48–55</td><td>이미지 평가 → <code>{PHONE}_1.csv</code> 저장</td></tr>
-          <tr><td class="num">55–75</td><td>대기하던 정형 셀 실행 → <code>{PHONE}_2.csv</code> 저장</td></tr>
-          <tr><td class="num">75–150</td><td><strong>점수가 낮은 쪽부터</strong> 튜닝, 오르면 제출 파일 갱신</td></tr>
+          <tr><td class="num">18–48</td><td>학습 중 <strong>정형 문제 셀 작성</strong> (<code>p2_</code>로)</td></tr>
+          <tr><td class="num">48–75</td><td>이미지 저장 → 대기하던 정형 셀 실행 → 정형 저장</td></tr>
+          <tr><td class="num">75–150</td><td><strong>점수 낮은 쪽부터</strong> 튜닝</td></tr>
           <tr><td class="num">150–180</td><td>여유분, 최종 점검 및 제출</td></tr>
         </tbody>
       </table>
     </div>
-    <p>완벽한 모델을 만들다 시간이 끝나는 것이 <strong>가장 흔한 실패</strong>입니다.
-      문제가 둘이면 앞 문제에 <strong>90분을 넘기지 마세요.</strong>
-      한 문제를 0.95까지 올리는 것보다 두 문제를 0.85씩 내는 쪽이 거의 항상 유리합니다.</p>
+    <p><strong>40분 시점에 이미 제출 가능한 파일이 있어야 합니다.</strong>
+      완벽한 모델을 만들다 시간이 끝나는 것이 가장 흔한 실패입니다.</p>
   </div>
 </section>
 
-<!-- 25 ------------------------------------------------------ -->
-<section class="slide" data-min="57" data-track="4" data-title="절대 하지 말 것">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">시험 당일 · 금지</div>
-    <h2>절대 하지 말 것</h2>
-    <div class="tw">
-      <table>
-        <thead><tr><th>금지</th><th>왜</th></tr></thead>
-        <tbody>
-          <tr><td class="no">GPU 연결 확인 생략</td><td>CPU로 조용히 돌아가 시간을 다 씀</td></tr>
-          <tr><td class="no">한 문제에 90분 초과</td><td>다른 문항이 통째로 날아감</td></tr>
-          <tr><td class="no">정형 문제부터 풀기</td><td>이미지 학습 30분 동안 할 일이 없어짐</td></tr>
-          <tr><td class="no">접두사 없이 여러 문제 풀기</td><td>앞 문제 변수를 덮어써 조용히 틀린 결과</td></tr>
-          <tr><td class="no">저장 안 하고 긴 학습 시작</td><td>세션이 끊기면 코드가 전부 사라짐</td></tr>
-          <tr><td class="no">파일명을 매번 손으로 타이핑</td><td>오타 하나로 채점 불가</td></tr>
-          <tr><td class="no">분석 자료 안 읽고 코드부터</td><td>누수 컬럼을 놓치고, 요구 지표를 잘못 맞춤</td></tr>
-          <tr><td class="no"><code>scaler.fit_transform(X_test)</code></td><td>누수. 검증 점수는 오히려 올라가서 발견이 어려움</td></tr>
-          <tr><td class="no">분할 전에 SMOTE</td><td>검증 데이터에 합성 샘플이 섞여 점수가 거짓이 됨</td></tr>
-          <tr><td class="no">5개 모델 전부 GridSearch</td><td>시간 초과</td></tr>
-          <tr><td class="no">BERT부터 시작</td><td>실패 시 제출물이 없음</td></tr>
-          <tr><td class="no">shuffle된 데이터셋으로 이미지 예측</td><td>파일명과 예측이 어긋남</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- 26 ------------------------------------------------------ -->
-<section class="slide" data-min="58" data-track="4" data-title="제출 전 최종 점검">
-  <div class="gutter"></div>
-  <div class="body">
-    <div class="eyebrow">시험 당일 · 제출 전</div>
-    <h2>마지막 30초</h2>
-    <div class="grid g2">
-      <div>
-        <pre><code><span class="hl">import</span> os
-print(os.listdir(<span class="hlgood">'.'</span>))          <span class="cm"># 파일이 실제로 있는가</span>
-
-sub = pd.read_csv(SUBMIT_CSV)
-print(sub.shape)                <span class="cm"># == len(df_test) 인가</span>
-print(sub.columns.tolist())     <span class="cm"># 요구된 컬럼명인가</span>
-print(sub.isnull().sum())       <span class="cm"># 결측 없는가</span></code></pre>
-      </div>
-      <div class="card good">
-        <span class="k">체크리스트</span>
-        <ul>
-          <li>파일명이 <code>휴대폰번호_문제번호</code> 규칙과 일치 (하이픈 없음)</li>
-          <li>모델 파일과 CSV 파일이 <strong>둘 다</strong> 저장됨</li>
-          <li>행 수가 test와 일치</li>
-          <li><code>index=False</code>로 저장</li>
-          <li>타겟이 문자열이었다면 원래 라벨로 복원</li>
-          <li><strong>노트북 저장 완료</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 27 ------------------------------------------------------ -->
-<section class="slide" data-min="59" data-track="4" data-title="한 문장">
+<!-- 23 ------------------------------------------------------ -->
+<section class="slide" data-min="58" data-track="4" data-title="한 문장">
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">정리</div>
     <div class="quote">끝까지 도는 코드를 먼저 만들고,<br>남는 시간으로 점수를 올린다.</div>
-    <p>세 도메인의 템플릿, 시드 고정, <code>fit</code>/<code>transform</code> 규칙, <code>NUM_CLASSES</code> 통일,
-      GPU 확인과 수시 저장 — 전부 <strong>“막히지 않고 끝까지 가기 위한” 장치</strong>입니다.
-      실력을 점수로 바꾸는 데 필요한 것들이지, 실력 그 자체가 아닙니다.</p>
-    <p class="dim">시험장에서 새로운 걸 시도하지 마세요. 템플릿 네 파일을 손에 익혀 두는 것이,
-      알고리즘을 하나 더 아는 것보다 확실하게 점수가 됩니다.</p>
-    <div class="grid g4" style="margin-top:.6em">
-      <div class="card"><span class="k">docs/</span><h3>교재 5편</h3></div>
-      <div class="card"><span class="k">notebooks/</span><h3>실습 3종</h3></div>
-      <div class="card"><span class="k">templates/</span><h3>세션 셀 1 + 도메인 4</h3></div>
-      <div class="card key"><span class="k">실행 환경</span><h3>Colab T4</h3></div>
+    <div class="grid g3">
+      <div class="card bad"><span class="k">가장 많이 잃는 곳 1</span><h3>test로 fit</h3><p>검증 점수는 올라가서 발견이 어렵습니다.</p></div>
+      <div class="card bad"><span class="k">2</span><h3>완벽주의</h3><p>한 문제 0.95보다 두 문제 0.85가 유리합니다.</p></div>
+      <div class="card bad"><span class="k">3</span><h3>제출 형식</h3><p>행 수 · 컬럼명 · <code>index=False</code> · 파일명.</p></div>
     </div>
+    <p class="dim">시험장에서 새로운 걸 시도하지 마세요.
+      템플릿 다섯 파일을 손에 익혀 두는 것이 알고리즘을 하나 더 아는 것보다 확실합니다.</p>
   </div>
 </section>
 
