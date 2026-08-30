@@ -27,25 +27,26 @@ np.random.seed(RANDOM_SEED)
 tf.random.set_seed(RANDOM_SEED)
 
 print(f"TensorFlow {tf.__version__}")
-# 시험 환경의 GPU 는 자동으로 붙지 않습니다. 연결 코드를 직접 실행해야 합니다.
-# GPU 가 없어도 코드는 조용히 CPU 로 돌아가므로 assert 로 멈춰 세웁니다.
-# !nvidia-smi
-gpus = tf.config.list_physical_devices('GPU')
-print(f"GPU: {gpus}")
-assert gpus, "GPU 미연결! 런타임 설정을 확인하세요"
+# GPU 는 세션 시작 셀(00_session_start.py)에서 이미 확인했습니다.
+# 여기서 다시 하지 않습니다.
 
 # ============================================================
-# 0. 제출 설정  ★ 시험 시작하면 가장 먼저 채울 것
+# 0. 문제 설정  ★ 이 문제에서 바꾸는 것은 PROB_NO 한 줄뿐
 # ============================================================
-# 모델과 예측 결과는 "휴대폰번호_문제번호" 로 저장해 제출합니다.
-#   01012345678_1.csv   (예측 결과)
-#   01012345678_1.pkl   (모델)
-PHONE = '01012345678'      # ★ 본인 휴대폰 번호 (하이픈 없이)
-PROB_NO = 1                # ★ 문제 번호 (문제가 바뀌면 이 줄만 수정)
+# GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 한 번만 합니다.
+# 여기서 다시 확인하지 않습니다.
+PROB_NO = 1                # ★ 문제 번호
+
+# 세션 시작 셀을 실행했다면 PHONE 은 이미 정의돼 있습니다.
+# 이 파일만 단독으로 연습할 때를 위한 기본값입니다.
+try:
+    PHONE
+except NameError:
+    PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
 SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
-SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'          # sklearn 계열
-SUBMIT_KERAS = f'{PHONE}_{PROB_NO}.keras'        # 딥러닝 (문제가 형식을 지정하면 그쪽을 따를 것)
+SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'      # sklearn 계열
+SUBMIT_KERAS = f'{PHONE}_{PROB_NO}.keras'    # 딥러닝 (문제가 형식을 지정하면 그쪽을)
 print(f"제출 파일: {SUBMIT_CSV} / {SUBMIT_MODEL}")
 
 # ============================================================

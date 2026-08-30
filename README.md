@@ -33,21 +33,28 @@ Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/
 모델 실력과 무관하게 점수를 잃는 지점입니다. 자세한 내용은 [00-orientation.md](docs/00-orientation.md)와
 [04-exam-day.md](docs/04-exam-day.md)에 있습니다.
 
+시험 시간은 **총 180분**입니다.
+
 | | 내용 |
 |---|---|
 | **분석 자료가 주어진다** | 컬럼 설명·요구사항 문서를 먼저 읽으세요. 누수 컬럼이 거기서 드러납니다 |
-| **GPU는 자동으로 안 붙는다** | 시작하자마자 연결 코드를 실행. 안 하면 조용히 CPU로 돌아갑니다 (Colab 무료 T4 수준) |
+| **GPU는 자동으로 안 붙는다** | 시작할 때 **한 번** 연결 코드 실행. 안 하면 조용히 CPU로 돌아갑니다 (Colab 무료 T4 수준) |
 | **자동 저장이 안 된다** | 셀마다 `Ctrl+S`. 특히 긴 학습 직전에 반드시 |
 | **파일명은 휴대폰번호_문제번호** | `01012345678_1.csv` / `01012345678_1.pkl` — 하이픈 없이 |
 
+세션당 한 번 정하는 것과 문제마다 바꾸는 것을 분리해 두면 실수가 줄어듭니다.
+
 ```python
-# 시험 시작 후 첫 셀
+# ── 세션 시작 셀 (templates/00_session_start.py) — 180분 중 딱 한 번 ──
 !nvidia-smi
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')
 assert gpus, "GPU 미연결!"          # 없으면 조용히 CPU로 도니 멈춰 세운다
 
-PHONE, PROB_NO = '01012345678', 1   # 여기서 한 번만 정하고 변수를 쓴다
+PHONE = '01012345678'
+
+# ── 각 문제 템플릿 맨 위 — 문제마다 이 한 줄만 ──
+PROB_NO = 1
 SUBMIT_CSV = f'{PHONE}_{PROB_NO}.csv'
 SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'
 ```
@@ -74,6 +81,7 @@ slides/      강의 진행용 발표자료 (HTML 27장, 브라우저로 바로 �
 
 | 템플릿 | 용도 |
 |---|---|
+| [00_session_start.py](templates/00_session_start.py) | **세션당 한 번** — GPU 연결, PHONE, 시드, 남은 시간 확인 |
 | [tabular_classification.py](templates/tabular_classification.py) | 정형 데이터 분류 (이진/다중 자동 대응) |
 | [tabular_regression.py](templates/tabular_regression.py) | 정형 데이터 회귀 |
 | [text_classification.py](templates/text_classification.py) | 텍스트 분류 (TF-IDF 우선, BERT 선택) |
@@ -109,6 +117,7 @@ TensorFlow와 transformers는 무겁기 때문에 주석으로 분리해 두었�
 
 ## 주의
 
-시험 시간·문항 수·채점 기준 같은 운영 정보는 회차마다 바뀝니다.
-이 교재의 숫자는 학습 설계를 위한 기준일 뿐이므로, **응시 전 [AICE 공식 사이트](https://aice.study/)에서 반드시 확인**하세요.
+이 교재는 시험 시간을 **180분**으로 놓고 시간 배분을 설계했습니다.
+문항 수·채점 기준 같은 나머지 운영 정보는 회차마다 바뀔 수 있으므로,
+**응시 전 [AICE 공식 사이트](https://aice.study/)에서 확인**하세요.
 이 저장소가 보장하는 것은 운영 정보가 아니라 **코드 파이프라인**입니다.

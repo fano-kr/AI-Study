@@ -458,6 +458,7 @@ kbd{
       새 알고리즘을 배우는 시간이 아니라, <strong>정해진 순서를 시간 안에 정확히 밟는 법</strong>을 익히는 시간입니다.</p>
     <div class="meta">
       <span>Tabular · Text · Image</span>
+      <span>실기 180분</span>
       <span>실측 검증 완료</span>
       <span>2026</span>
     </div>
@@ -474,7 +475,7 @@ kbd{
     <div class="eyebrow">이 시험의 성격</div>
     <h2>점수를 잃는 곳은<br>모델이 아니라 절차다</h2>
     <div class="grid g3">
-      <div class="card"><span class="k">요구 형태</span><p>“train.csv로 학습하고, test.csv 예측 결과를 파일로 저장하시오.”</p></div>
+      <div class="card"><span class="k">요구 형태 · 180분</span><p>“train.csv로 학습하고, test.csv 예측 결과를 파일로 저장하시오.”</p></div>
       <div class="card"><span class="k">실제 실패 원인</span><p>전처리를 test에 적용 안 함 · 스케일러를 test로 fit · 제출 형식 불일치</p></div>
       <div class="card key"><span class="k">그래서</span><h3>0.93 → 0.95보다<br>끝까지 도는 코드</h3></div>
     </div>
@@ -490,7 +491,7 @@ kbd{
     <h2>실력과 무관하게<br>점수를 잃는 네 지점</h2>
     <div class="grid g4">
       <div class="card"><span class="k">01 · 자료</span><h3>분석 자료가 주어진다</h3><p>컬럼 설명·요구사항 문서가 함께 나옵니다. <strong>먼저 읽으세요.</strong> 누수 컬럼이 거기서 드러납니다.</p></div>
-      <div class="card bad"><span class="k">02 · GPU</span><h3>자동으로 안 붙는다</h3><p>연결 코드를 직접 실행해야 합니다. 안 하면 <strong>조용히 CPU로</strong> 돌아갑니다.</p></div>
+      <div class="card bad"><span class="k">02 · GPU</span><h3>자동으로 안 붙는다</h3><p>시작할 때 <strong>한 번</strong> 연결 코드를 실행. 안 하면 <strong>조용히 CPU로</strong> 돌아갑니다.</p></div>
       <div class="card bad"><span class="k">03 · 저장</span><h3>자동 저장이 없다</h3><p>미저장 상태에서 세션이 끊기면 <strong>전부 사라집니다.</strong></p></div>
       <div class="card"><span class="k">04 · 제출</span><h3>휴대폰번호_문제번호</h3><p><code>01012345678_1.csv</code><br><code>01012345678_1.pkl</code></p></div>
     </div>
@@ -501,7 +502,7 @@ kbd{
 <section class="slide" data-min="4" data-track="0" data-title="GPU 연결 — 첫 번째 셀">
   <div class="gutter">In [<b>4</b>]</div>
   <div class="body">
-    <div class="eyebrow">시험 시작 후 첫 번째 셀</div>
+    <div class="eyebrow">세션 시작 셀 · 180분 중 딱 한 번</div>
     <h2>GPU가 없어도<br>에러는 나지 않는다</h2>
     <div class="grid g2">
       <div>
@@ -516,10 +517,10 @@ print(f<span class="hlgood">"GPU: {gpus}"</span>)
       </div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div class="card"><span class="k">성능</span><h3>Colab 무료 T4 수준</h3><p>연습도 Colab에서 하세요. 시험 환경이 이와 비슷합니다.</p></div>
-        <div class="card bad"><span class="k">빠뜨리면</span><h3>수십 배 느려짐</h3><p>전이학습·BERT가 CPU로 돌면 “왜 이렇게 오래 걸리지” 하다 시험이 끝납니다.</p></div>
+        <div class="card good"><span class="k">횟수</span><h3>한 번이면 끝</h3><p>한 세션 안에서는 연결이 유지됩니다. <strong>문제가 몇 개든 다시 확인하지 않습니다.</strong></p></div>
       </div>
     </div>
-    <p class="dim">Tabular만 푼다 해도 <strong>확인은 무조건 먼저.</strong> 문제를 다 읽고 되돌아가면 이미 늦습니다.</p>
+    <p class="dim">Tabular만 푼다 해도 <strong>확인은 무조건 먼저.</strong> 문제를 다 읽고 “이미지 문제가 있네” 하고 되돌아가면 이미 늦습니다.</p>
   </div>
 </section>
 
@@ -528,11 +529,14 @@ print(f<span class="hlgood">"GPU: {gpus}"</span>)
   <div class="gutter">In [<b>5</b>]</div>
   <div class="body">
     <div class="eyebrow">저장 · 파일명</div>
-    <h2>변수로 한 번만 정하고<br>절대 손으로 치지 않는다</h2>
+    <h2>세션당 한 번과<br>문제마다를 분리한다</h2>
     <div class="grid g2">
       <div>
-        <pre><code>PHONE   = <span class="hlgood">'01012345678'</span>  <span class="cm"># 하이픈 없이</span>
-PROB_NO = <span class="hl">1</span>              <span class="cm"># 문제가 바뀌면 이 줄만</span>
+        <pre><code><span class="cm"># ── 세션 시작 셀 · 180분 중 한 번 ──</span>
+PHONE   = <span class="hlgood">'01012345678'</span>  <span class="cm"># 하이픈 없이</span>
+
+<span class="cm"># ── 각 문제 템플릿 맨 위 · 문제마다 ──</span>
+PROB_NO = <span class="hl">1</span>
 
 SUBMIT_CSV   = f<span class="hlgood">'{PHONE}_{PROB_NO}.csv'</span>
 SUBMIT_MODEL = f<span class="hlgood">'{PHONE}_{PROB_NO}.pkl'</span>
@@ -980,23 +984,25 @@ preds = model.predict(val_pred_ds)   <span class="hlgood"># file_paths 와 1:1 �
 <section class="slide" data-min="54" data-track="4" data-title="3시간 배분">
   <div class="gutter">In [<b>24</b>]</div>
   <div class="body">
-    <div class="eyebrow">시험 당일 · 시간 배분</div>
+    <div class="eyebrow">시험 당일 · 총 180분</div>
     <h2>40분 시점에 이미<br>제출 파일이 있어야 한다</h2>
     <div class="tw">
       <table>
-        <thead><tr><th>구간</th><th>할 일</th></tr></thead>
+        <thead><tr><th>배정</th><th>누적</th><th>할 일</th></tr></thead>
         <tbody>
-          <tr><td class="num"><strong>0–5분</strong></td><td><strong>GPU 연결</strong>, PHONE/PROB_NO 설정, 저장</td></tr>
-          <tr><td class="num"><strong>5–20분</strong></td><td><strong>분석 자료 정독</strong>, 데이터 로드, 컬럼 요약표, 제거 컬럼 결정</td></tr>
-          <tr><td class="num"><strong>20–40분</strong></td><td>전처리 → 분할 → <strong class="win">기본 모델 1개로 끝까지 돌려 제출 파일 저장</strong></td></tr>
-          <tr><td class="num">40–90분</td><td>모델 비교, 1위 선정</td></tr>
-          <tr><td class="num">90–140분</td><td>튜닝, 성능이 오르면 제출 파일 갱신</td></tr>
-          <tr><td class="num">140–170분</td><td>남은 문항 처리, 피처 엔지니어링</td></tr>
-          <tr><td class="num">170–180분</td><td>최종 점검 및 제출</td></tr>
+          <tr><td class="num"><strong>3분</strong></td><td class="num">0–3</td><td><strong>세션 시작 셀</strong> — GPU 연결(한 번), PHONE, 시드</td></tr>
+          <tr><td class="num"><strong>17분</strong></td><td class="num">3–20</td><td><strong>분석 자료 정독</strong>, 데이터 로드, 컬럼 요약표, 제거 컬럼 결정</td></tr>
+          <tr><td class="num"><strong>20분</strong></td><td class="num">20–40</td><td>전처리 → 분할 → <strong class="win">기본 모델 1개로 끝까지 돌려 제출 파일 저장</strong></td></tr>
+          <tr><td class="num">50분</td><td class="num">40–90</td><td>모델 비교, 1위 선정</td></tr>
+          <tr><td class="num">50분</td><td class="num">90–140</td><td>튜닝, 성능이 오르면 제출 파일 갱신</td></tr>
+          <tr><td class="num">30분</td><td class="num">140–170</td><td>남은 문항 처리, 피처 엔지니어링</td></tr>
+          <tr><td class="num">10분</td><td class="num">170–180</td><td>최종 점검 및 제출</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="dim">완벽한 모델을 만들다 시간이 끝나는 것이 <strong>가장 흔한 실패</strong>입니다.</p>
+    <p>완벽한 모델을 만들다 시간이 끝나는 것이 <strong>가장 흔한 실패</strong>입니다.
+      문제가 둘이면 앞 문제에 <strong>90분을 넘기지 마세요.</strong>
+      한 문제를 0.95까지 올리는 것보다 두 문제를 0.85씩 내는 쪽이 거의 항상 유리합니다.</p>
   </div>
 </section>
 
@@ -1011,6 +1017,7 @@ preds = model.predict(val_pred_ds)   <span class="hlgood"># file_paths 와 1:1 �
         <thead><tr><th>금지</th><th>왜</th></tr></thead>
         <tbody>
           <tr><td class="no">GPU 연결 확인 생략</td><td>CPU로 조용히 돌아가 시간을 다 씀</td></tr>
+          <tr><td class="no">한 문제에 90분 초과</td><td>다른 문항이 통째로 날아감</td></tr>
           <tr><td class="no">저장 안 하고 긴 학습 시작</td><td>세션이 끊기면 코드가 전부 사라짐</td></tr>
           <tr><td class="no">파일명을 매번 손으로 타이핑</td><td>오타 하나로 채점 불가</td></tr>
           <tr><td class="no">분석 자료 안 읽고 코드부터</td><td>누수 컬럼을 놓치고, 요구 지표를 잘못 맞춤</td></tr>
@@ -1070,7 +1077,7 @@ print(sub.isnull().sum())       <span class="cm"># 결측 없는가</span></code
     <div class="grid g4" style="margin-top:.6em">
       <div class="card"><span class="k">docs/</span><h3>교재 5편</h3></div>
       <div class="card"><span class="k">notebooks/</span><h3>실습 3종</h3></div>
-      <div class="card"><span class="k">templates/</span><h3>시험용 4종</h3></div>
+      <div class="card"><span class="k">templates/</span><h3>세션 셀 1 + 도메인 4</h3></div>
       <div class="card key"><span class="k">연습 환경</span><h3>Colab · T4</h3></div>
     </div>
   </div>
