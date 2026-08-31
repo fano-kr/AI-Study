@@ -9,18 +9,20 @@
 # 런타임이 재시작되면 GPU 연결이 끊기고 커널 변수도 전부 사라집니다.
 # 자세한 복구 절차는 이 파일 맨 아래 7절에 있습니다.
 #
-#   00_session_start.py        ← 지금 이 셀. 세션당 1회
-#   tabular_classification.py  ← 문제마다 붙여넣기
-#   tabular_regression.py
-#   text_classification.py
-#   image_classification.py
+#   00_session_start.py           ← 지금 이 셀. 세션당 1회
+#   01_tabular_classification.py  ← 1번 문제 (회귀면 01_tabular_regression.py)
+#   02_text_classification.py     ← 2번 문제
+#   03_image_classification.py    ← 3번 문제
 #
 # ── 문제 푸는 순서: GPU 를 많이 쓰는 것부터 ──
 #
-#   1순위  이미지 (전이학습)      학습 10~30분
-#   2순위  텍스트 BERT            학습 20~40분
-#   3순위  텍스트 TF-IDF          몇 분
-#   4순위  정형 (Tabular)         몇 분
+#   1순위  이미지 (3번 문제)        학습 10~30분
+#   2순위  텍스트 BERT (2번 문제)   학습 20~40분
+#   3순위  텍스트 TF-IDF (2번 문제) 몇 분
+#   4순위  정형 (1번 문제)          몇 분
+#
+# 문제 번호(1 Tabular · 2 Text · 3 Image)와 푸는 순서는 별개입니다.
+# 번호는 제출 파일명과 변수 접두사에만 쓰입니다.
 #
 # 이유는 학습이 도는 동안 손이 비기 때문입니다.
 # 이미지 문제의 fit() 을 먼저 걸어 두고, 그 시간에 정형 문제의 전처리 코드를 작성합니다.
@@ -33,14 +35,12 @@
 #
 # ── 변수 이름 규칙 ──
 #
-# 커널 하나를 여러 문제가 공유하므로 전역 변수가 서로 덮어씁니다.
-# 도메인 템플릿의 모든 변수에는 p1_ 접두사가 붙어 있습니다.
+# 커널 하나를 세 문제가 공유하므로 전역 변수가 서로 덮어씁니다.
+# 템플릿마다 시험 순서대로 접두사가 미리 붙어 있습니다.
+#   1번 Tabular = p1_ · 2번 Text = p2_ · 3번 Image = p3_
+# 순서가 다르게 나올 때만 Ctrl+H 로 접두사와 PROB_NO 를 맞추면 됩니다.
 #
-#   2번 문제에 쓸 때 (Colab: 편집 > 찾기 및 바꾸기, Ctrl+H)
-#     p1_  ->  p2_        전체 바꾸기
-#     p2_PROB_NO = 2      숫자도 함께 수정
-#
-# 이 셀에서 정한 PHONE, RANDOM_SEED 는 세션 공용이라 접두사가 없습니다.
+# 이 셀에서 정한 PHONE, RANDOM_SEED, check_submission 은 세션 공용이라 접두사가 없습니다.
 
 # ============================================================
 # 1. GPU 연결 확인  ★ 여기서 한 번만
@@ -212,10 +212,10 @@ def check_submission(csv_path, n_rows=None, required_cols=None,
 #
 # | 순서 | 문제 유형 | 학습 시간 | 그 시간에 할 일 |
 # |---|---|---|---|
-# | 1 | 이미지 | 10~30분 | 다음 문제의 전처리 코드 작성 |
-# | 2 | 텍스트 BERT | 20~40분 | 정형 문제 코드 작성 |
-# | 3 | 텍스트 TF-IDF | 몇 분 | — |
-# | 4 | 정형 | 몇 분 | — |
+# | 1 | 이미지 (3번 문제) | 10~30분 | 다음 문제의 코드 작성 |
+# | 2 | 텍스트 BERT (2번) | 20~40분 | 정형 문제 코드 작성 |
+# | 3 | 텍스트 TF-IDF (2번) | 몇 분 | — |
+# | 4 | 정형 (1번) | 몇 분 | — |
 #
 # 정형 문제를 먼저 다 풀면, 이미지 학습 30분 동안 할 일이 없어집니다.
 # 긴 학습을 **먼저 걸어 두는 것**이 180분을 버는 유일한 방법입니다.
@@ -239,12 +239,10 @@ def check_submission(csv_path, n_rows=None, required_cols=None,
 # 필요한 것만 주석을 풀어 실행하세요.
 
 # import joblib
-# p1_best_model = joblib.load(f'{PHONE}_1.pkl')                     # sklearn 계열
-# p1_model = tf.keras.models.load_model(f'{PHONE}_1.keras')         # 딥러닝
-#
-# 텍스트는 벡터라이저가 함께 저장돼 있습니다
-# p1_bundle = joblib.load(f'{PHONE}_1.pkl')
-# p1_best_ml_model, p1_tfidf = p1_bundle['model'], p1_bundle['vectorizer']
+# p1_best_model = joblib.load(f'{PHONE}_1.pkl')                     # 1번 Tabular
+# p2_bundle = joblib.load(f'{PHONE}_2.pkl')                         # 2번 Text (모델+벡터라이저)
+# p2_best_ml_model, p2_tfidf = p2_bundle['model'], p2_bundle['vectorizer']
+# p3_model = tf.keras.models.load_model(f'{PHONE}_3.keras')         # 3번 Image
 
 import os
 _done = sorted(f for f in os.listdir('.') if f.startswith(PHONE))

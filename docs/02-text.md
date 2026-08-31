@@ -2,7 +2,7 @@
 
 **소요 10분** · 이전: [01. Tabular](01-tabular.md) · 다음: [03. Image](03-image.md)
 **실습:** [notebooks/02_text_quickstart.ipynb](../notebooks/02_text_quickstart.ipynb)
-**템플릿:** [templates/text_classification.py](../templates/text_classification.py)
+**템플릿 (문제 2):** [02_text_classification.py](../templates/02_text_classification.py)
 
 ---
 

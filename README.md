@@ -44,7 +44,7 @@ Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/
 | **중간저장은 코드만 지킨다** | 변수와 GPU는 안 지켜집니다. 학습 결과는 **파일로** 따로 |
 | **파일명은 휴대폰번호_문제번호** | `01012345678_1.csv` / `01012345678_1.pkl` — 하이픈 없이 |
 | **CSV의 값은 label로 복원** | 인코딩 숫자(0/1/2) 그대로 내면 **0점**. 컬럼명도 요구 그대로 |
-| **커널이 하나다** | GPU 많이 쓰는 문제부터. 변수는 `p1_` 접두사로 문제별 분리 |
+| **커널이 하나다** | GPU 많이 쓰는 문제부터. 변수는 `p1_`/`p2_`/`p3_`로 문제별 분리 (시험 순서대로 미리 세팅) |
 
 세션 단위로 정하는 것과 문제마다 바꾸는 것을 분리해 두면 실수가 줄어듭니다.
 
@@ -78,16 +78,17 @@ slides/      발표자료 (HTML 23장)
 준비물은 이 네 벌이 전부입니다. **이진분류 템플릿은 없습니다** —
 클래스 2개인 다중분류가 곧 이진분류라서, Text·Image는 다중 한 벌로 준비합니다.
 
-도메인 템플릿의 모든 변수에는 **`p1_` 접두사**가 붙어 있습니다. 커널 하나로 여러 문제를 풀기 때문입니다.
-2번 문제는 `Ctrl+H`로 `p1_` → `p2_` 일괄 치환하고 `p2_PROB_NO = 2`만 고치면 됩니다.
+시험 문제 순서는 **1번 Tabular · 2번 Text · 3번 Image**로 고정입니다.
+파일명과 변수 접두사(`p1_`·`p2_`·`p3_`), `PROB_NO`가 이 순서에 미리 맞춰져 있어
+표준 케이스에서는 치환 없이 그대로 붙여넣으면 됩니다.
 
 | 템플릿 | 용도 |
 |---|---|
 | [00_session_start.py](templates/00_session_start.py) | GPU 연결, PHONE, 시드, **제출물 검증 `check_submission()`**, 문제 순서, 복구 절차 |
-| [tabular_classification.py](templates/tabular_classification.py) | 정형 데이터 분류 (이진/다중 자동 대응) |
-| [tabular_regression.py](templates/tabular_regression.py) | 정형 데이터 회귀 |
-| [text_classification.py](templates/text_classification.py) | 텍스트 분류 (TF-IDF 우선, BERT 선택) |
-| [image_classification.py](templates/image_classification.py) | 이미지 분류 (MobileNetV2 전이학습) |
+| [01_tabular_classification.py](templates/01_tabular_classification.py) | **문제 1** — 정형 분류 (이진/다중 자동 대응) |
+| [01_tabular_regression.py](templates/01_tabular_regression.py) | **문제 1** — 정형 회귀 |
+| [02_text_classification.py](templates/02_text_classification.py) | **문제 2** — 텍스트 분류 (TF-IDF 우선, BERT 선택) |
+| [03_image_classification.py](templates/03_image_classification.py) | **문제 3** — 이미지 분류 (MobileNetV2 전이학습) |
 
 발표자료는 [slides/index.html](slides/index.html)을 브라우저에서 열면 됩니다.
 <kbd>←</kbd> <kbd>→</kbd> 이동, <kbd>O</kbd> 목차. 하단 막대는 슬라이드 수가 아니라

@@ -2,7 +2,7 @@
 
 **소요 9분** · 이전: [02. Text](02-text.md) · 다음: [04. 시험 당일](04-exam-day.md)
 **실습:** [notebooks/03_image_quickstart.ipynb](../notebooks/03_image_quickstart.ipynb)
-**템플릿:** [templates/image_classification.py](../templates/image_classification.py)
+**템플릿 (문제 3):** [03_image_classification.py](../templates/03_image_classification.py)
 
 ---
 

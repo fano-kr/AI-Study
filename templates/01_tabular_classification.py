@@ -16,16 +16,13 @@
 #
 # ★ 표시가 있는 곳만 문제에 맞게 고치면 됩니다.
 #
-# ── 변수 이름 규칙: 왜 p1_ 이 붙어 있나 ──
-# 시험은 주피터 커널 하나에서 여러 문제를 풉니다. 전역 변수는 커널 전체가 공유하므로,
-# 접두사가 없으면 2번 문제의 X_train 이 1번 문제의 X_train 을 그대로 덮어씁니다.
-# 1번 문제로 돌아와 셀 하나만 다시 돌리는 순간 조용히 틀린 결과가 나옵니다.
-#
-#   2번 문제에 쓸 때 (Colab: 편집 > 찾기 및 바꾸기, Ctrl+H)
-#     p1_  ->  p2_        전체 바꾸기
-#     p2_PROB_NO = 2      숫자도 함께 수정   ← 이 한 줄을 가장 자주 놓칩니다
-#
-# PHONE, RANDOM_SEED 는 세션 공용이라 접두사가 없습니다.
+# ── 변수 이름 규칙 ──
+# 커널 하나에서 세 문제를 풀므로, 전역 변수가 서로 덮어쓰지 않도록
+# 템플릿마다 시험 순서대로 접두사를 붙여 두었습니다.
+#   1번 Tabular = p1_ · 2번 Text = p2_ · 3번 Image = p3_
+# 실제 순서가 다르게 나오면 Ctrl+H 전체 바꾸기로 접두사를 맞추고 PROB_NO 도 함께 고치세요.
+# 안 고치면 다른 문제의 제출물을 덮어씁니다.
+# PHONE, RANDOM_SEED, check_submission 은 세션 공용이라 접두사가 없습니다.
 
 # %%
 import numpy as np
@@ -50,11 +47,11 @@ RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
 
 # ============================================================
-# 0. 문제 설정  ★ 이 문제에서 바꾸는 것은 p1_PROB_NO 한 줄뿐
+# 0. 문제 설정
 # ============================================================
 # GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 합니다. 여기서 다시 하지 않습니다.
 # 단, 세션이 튕기면 GPU 연결이 끊기고 변수가 전부 사라지므로 그 셀부터 다시 실행해야 합니다.
-p1_PROB_NO = 1                # ★ 문제 번호
+p1_PROB_NO = 1                # ★ 시험 순서: Tabular = 1번
 
 # 세션 시작 셀을 실행했다면 PHONE 은 이미 정의돼 있습니다.
 # 이 파일만 단독으로 연습할 때를 위한 기본값입니다.
@@ -165,19 +162,8 @@ if p1_cat_cols:
 print(f"결측 남은 개수 - train {p1_X.isnull().sum().sum()} / test {p1_X_test.isnull().sum().sum()}")
 
 # %%
-# --- 3-5. [선택] 이상치 클리핑 (IQR) — 선형 모델에서만 효과적
-# for p1_col in p1_num_cols:
-#     Q1, Q3 = p1_X[p1_col].quantile(0.25), p1_X[p1_col].quantile(0.75)
-#     lower, upper = Q1 - 1.5 * (Q3 - Q1), Q3 + 1.5 * (Q3 - Q1)
-#     p1_X[p1_col] = p1_X[p1_col].clip(lower, upper)
-#     p1_X_test[p1_col] = p1_X_test[p1_col].clip(lower, upper)   # train 기준으로 test 도 클리핑
-
-# --- 3-6. [선택] 피처 엔지니어링 — train/test 에 똑같이 적용할 것
-# p1_X['family_size'] = p1_X['sibsp'] + p1_X['parch'] + 1
-# p1_X_test['family_size'] = p1_X_test['sibsp'] + p1_X_test['parch'] + 1
-
-# %%
-# --- 3-7. 인코딩 (LabelEncoder: 트리 모델에 충분하고 빠름)
+# [선택] 이상치 클리핑·피처 엔지니어링은 점수가 부족할 때만 — 코드는 docs/01-tabular.md
+# --- 3-5. 인코딩 (LabelEncoder: 트리 모델에 충분하고 빠름)
 # test 에만 있는 미지의 값은 -1 로 보내 에러를 막는다
 p1_label_encoders = {}
 for p1_col in p1_cat_cols:
@@ -188,26 +174,20 @@ for p1_col in p1_cat_cols:
     )
     p1_label_encoders[p1_col] = p1_le
 
-# --- [선택] 순서 없는 범주 + 선형 모델이면 OneHot 이 유리
-# ohe_cols = [c for c in p1_cat_cols if p1_X[c].nunique() <= 10]
-# p1_X = pd.get_dummies(p1_X, columns=ohe_cols, drop_first=True)
-# p1_X_test = pd.get_dummies(p1_X_test, columns=ohe_cols, drop_first=True)
-# p1_X_test = p1_X_test.reindex(columns=p1_X.columns, fill_value=0)   # 컬럼 불일치 방지
+# [선택] 선형 모델 주력이면 OneHot — 코드는 docs/01-tabular.md
 
 # %%
-# --- 3-8. 스케일링 (트리 모델엔 불필요하지만 선형 모델 비교를 위해 적용)
+# --- 3-6. 스케일링 (트리 모델엔 불필요하지만 선형 모델 비교를 위해 적용)
 p1_scaler = StandardScaler()
 p1_X_scaled = pd.DataFrame(p1_scaler.fit_transform(p1_X), columns=p1_X.columns)
 p1_X_test_scaled = pd.DataFrame(p1_scaler.transform(p1_X_test), columns=p1_X_test.columns)
 
 # %%
-# --- 3-9. 클래스 불균형 확인
+# --- 3-7. 클래스 불균형 확인
 p1_minority_ratio = p1_y.value_counts(normalize=True).min()
 print(f"소수 클래스 비율: {p1_minority_ratio:.2%}")
 if p1_minority_ratio < 0.2:
-    print("  -> 불균형. class_weight='balanced' 또는 SMOTE 검토")
-# from imblearn.over_sampling import SMOTE       # 분할 이후 p1_X_train 에만 적용할 것
-# p1_X_train, p1_y_train = SMOTE(random_state=RANDOM_SEED).fit_resample(p1_X_train, p1_y_train)
+    print("  -> 불균형. class_weight='balanced' 검토 (SMOTE 는 분할 뒤 train 에만)")
 
 # ============================================================
 # 4. Train / Validation 분할
@@ -301,10 +281,6 @@ p1_f1_final = f1_score(p1_y_val, p1_y_val_pred, average='macro')
 print(f"Accuracy {p1_acc_final:.4f} / F1(macro) {p1_f1_final:.4f}")
 print(classification_report(p1_y_val, p1_y_val_pred))
 
-# 성능 등급: Acc 0.95↑ 매우우수 / 0.90↑ 우수 / 0.85↑ 양호 / 0.80↑ 보통 / 미만 미흡
-p1_grade = next((g for t, g in [(0.95, '매우 우수'), (0.90, '우수'),
-                             (0.85, '양호'), (0.80, '보통')] if p1_acc_final >= t), '미흡')
-print(f"-> {p1_grade}")
 if p1_acc_final - p1_f1_final > 0.1:
     print("Accuracy >> F1 : 소수 클래스를 못 맞히는 중 -> class_weight/SMOTE 검토")
 
