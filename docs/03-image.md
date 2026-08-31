@@ -195,6 +195,9 @@ submission.to_csv('submission.csv', index=False)
 
 `sorted()`로 파일명을 정렬해 두면 채점 기준 파일과 순서를 맞추기 쉽습니다.
 
+예측값은 `class_names` 문자열이므로 label 복원이 자동입니다.
+`np.argmax` 결과(0/1/2)를 그대로 내면 **0점**이니, 반드시 `class_names[i]`를 거치세요.
+
 ## 8. 성능이 안 나올 때
 
 | 증상 | 원인 | 조치 |

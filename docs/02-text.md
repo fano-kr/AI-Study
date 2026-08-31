@@ -199,9 +199,13 @@ submit_df['predicted_name'] = submit_df['predicted'].map(label_map)   # 라벨�
 submit_df.to_csv(SUBMIT_CSV, index=False)
 ```
 
+문제가 label명('긍정'/'부정' 등)을 요구하면 반드시 매핑해서 내세요.
+**숫자 그대로 내면 0점입니다.**
+
 ---
 
-**정리** — A로 점수를 확보한 뒤 B로 올립니다.
+**정리** — 이진·다중을 가리지 않고 **다중분류 한 벌**로 준비합니다(클래스 2개인 다중이 곧 이진).
+A로 점수를 확보한 뒤 B로 올립니다.
 BERT는 `2e-5`, `from_logits=True`, `from_pt=True` 셋만 기억하면 나머지는 템플릿이 처리합니다.
 
 다음: [03. Image — 2단계 전이학습](03-image.md)

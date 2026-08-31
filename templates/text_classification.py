@@ -205,6 +205,7 @@ print(f"-> {p1_grade}")
 p1_y_pred_test = p1_best_ml_model.predict(p1_X_test)
 p1_submit_df = p1_df_test.copy()
 p1_submit_df['predicted'] = p1_y_pred_test
+# ★ 문제가 label명('긍정'/'부정' 등)을 요구하면 반드시 매핑 — 숫자 그대로 내면 0점
 if p1_label_map:
     p1_submit_df['predicted_name'] = p1_submit_df['predicted'].map(p1_label_map)
 

@@ -284,6 +284,7 @@ plt.tight_layout(); plt.show()
 p1_val_result = pd.DataFrame({
     'filename': p1_val_filenames,
     'actual_name': p1_val_true_names,
+    # ★ argmax 결과(0/1/2)가 아니라 class_names 문자열로 — 숫자 그대로 내면 0점
     'predicted_name': [p1_class_names[p1_i] for p1_i in p1_all_preds],
     'confidence': p1_all_confs,
     'correct': (p1_all_labels == p1_all_preds).astype(int),

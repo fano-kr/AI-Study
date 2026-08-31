@@ -329,12 +329,14 @@ if hasattr(p1_best_model, 'feature_importances_'):
 # ============================================================
 # %%
 p1_test_predictions = p1_best_model.predict(p1_X_test_scaled)
+
+# ★ label 복원 필수 — 인코딩된 숫자(0/1/2) 그대로 내면 그 문제는 0점
 if p1_target_encoder:
     p1_test_pred_labels = p1_target_encoder.inverse_transform(p1_test_predictions)
 else:
     p1_test_pred_labels = p1_test_predictions
 
-# ★ 문제가 요구하는 컬럼 구성으로 맞출 것
+# ★ 컬럼명도 문제가 요구하는 이름 그대로 (다르면 채점 불가)
 p1_submission = p1_df_test.copy()
 p1_submission['predicted'] = p1_test_pred_labels
 

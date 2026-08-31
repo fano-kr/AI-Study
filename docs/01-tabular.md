@@ -224,12 +224,16 @@ submission = pd.DataFrame({'id': df_test['id'], 'predicted': test_predictions})
 submission.to_csv(SUBMIT_CSV, index=False)
 ```
 
+**컬럼명과 값이 요구된 label과 다르면 그 문제는 0점입니다.**
+모델 출력(0/1/2)을 그대로 내지 말고 `inverse_transform`으로 복원하세요.
+모델이 아무리 좋아도 여기서 틀리면 소용없습니다.
+
 **제출 직전 점검**
 
 1. 행 수가 `len(df_test)`와 같은가
 2. 컬럼명이 문제에서 요구한 이름과 같은가
-3. `index=False`를 넣었는가 (안 넣으면 컬럼이 하나 더 생김)
-4. 타겟이 문자열이었다면 라벨로 복원했는가
+3. 값이 원래 label로 복원됐는가 (**미복원 = 0점**)
+4. `index=False`를 넣었는가 (안 넣으면 컬럼이 하나 더 생김)
 
 ---
 
