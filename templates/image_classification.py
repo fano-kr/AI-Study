@@ -38,14 +38,14 @@ np.random.seed(RANDOM_SEED)
 tf.random.set_seed(RANDOM_SEED)
 
 print(f"TensorFlow {tf.__version__}")
-# GPU 는 세션 시작 셀(00_session_start.py)에서 이미 확인했습니다.
-# 여기서 다시 하지 않습니다.
+# GPU 는 세션 시작 셀(00_session_start.py)에서 확인합니다.
+# 세션이 튕겼다면 그 셀부터 다시 실행하세요 (재연결 시 CPU 로 붙는 경우가 있습니다).
 
 # ============================================================
 # 0. 문제 설정  ★ 이 문제에서 바꾸는 것은 p1_PROB_NO 한 줄뿐
 # ============================================================
-# GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 한 번만 합니다.
-# 여기서 다시 확인하지 않습니다.
+# GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 합니다. 여기서 다시 하지 않습니다.
+# 단, 세션이 튕기면 GPU 연결이 끊기고 변수가 전부 사라지므로 그 셀부터 다시 실행해야 합니다.
 p1_PROB_NO = 1                # ★ 문제 번호
 
 # 세션 시작 셀을 실행했다면 PHONE 은 이미 정의돼 있습니다.
@@ -203,7 +203,8 @@ p1_model.summary()
 # %%
 p1_callbacks = [
     tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
-    tf.keras.callbacks.ModelCheckpoint('best_model.keras', save_best_only=True,
+    # 학습 도중 세션이 튕겨도 여기까지의 최고 성능 가중치는 파일로 남는다
+    tf.keras.callbacks.ModelCheckpoint(f'{PHONE}_{p1_PROB_NO}_ckpt.keras', save_best_only=True,
                                        monitor='val_accuracy', mode='max'),
     tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-7),
 ]
@@ -327,4 +328,7 @@ print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_val_result)}건)")
 p1_model.save(p1_SUBMIT_KERAS)
 print(f"모델 저장 완료: {p1_SUBMIT_KERAS}")
 
-print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
+# 체크포인트(_ckpt)는 튕김 대비용 작업 파일입니다. 제출물과 구분해서 확인하세요.
+_files = [f for f in os.listdir('.') if f.startswith(PHONE)]
+print("제출물   :", [f for f in _files if '_ckpt' not in f])
+print("작업 파일:", [f for f in _files if '_ckpt' in f])

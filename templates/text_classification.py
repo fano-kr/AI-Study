@@ -45,8 +45,8 @@ np.random.seed(RANDOM_SEED)
 # ============================================================
 # 0. 문제 설정  ★ 이 문제에서 바꾸는 것은 p1_PROB_NO 한 줄뿐
 # ============================================================
-# GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 한 번만 합니다.
-# 여기서 다시 확인하지 않습니다.
+# GPU 확인과 PHONE 은 세션 시작 셀(00_session_start.py)에서 합니다. 여기서 다시 하지 않습니다.
+# 단, 세션이 튕기면 GPU 연결이 끊기고 변수가 전부 사라지므로 그 셀부터 다시 실행해야 합니다.
 p1_PROB_NO = 1                # ★ 문제 번호
 
 # 세션 시작 셀을 실행했다면 PHONE 은 이미 정의돼 있습니다.
@@ -236,7 +236,7 @@ import tensorflow as tf
 from transformers import BertTokenizerFast, TFBertForSequenceClassification
 
 tf.random.set_seed(RANDOM_SEED)
-# GPU 는 세션 시작 셀에서 이미 확인했습니다. 여기서 다시 하지 않습니다.
+# GPU 는 세션 시작 셀에서 확인합니다. 세션이 튕겼다면 그 셀부터 다시 실행하세요.
 
 # ★ 데이터 언어에 맞춰 선택할 것. 한국어에 영어 모델을 쓰면 성능이 무너진다.
 p1_BERT_MODEL_NAME = 'klue/bert-base'        # 한국어

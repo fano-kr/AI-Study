@@ -43,15 +43,15 @@ Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/
 | | 내용 |
 |---|---|
 | **분석 자료가 주어진다** | 컬럼 설명·요구사항 문서를 먼저 읽으세요. 누수 컬럼이 거기서 드러납니다 |
-| **GPU는 자동으로 안 붙는다** | 시작할 때 **한 번** 연결 코드 실행. 안 하면 조용히 CPU로 떨어져 수십 배 느려집니다 |
-| **자동 저장이 안 된다** | 셀마다 `Ctrl+S`. 특히 긴 학습 직전에 반드시 |
+| **GPU는 자동으로 안 붙는다** | 시작할 때 한 번. **세션이 튕기면 다시** — 재연결 시 CPU로 붙기도 합니다 |
+| **중간저장은 코드만 지킨다** | 변수와 GPU는 안 지켜집니다. 학습 결과는 **파일로** 따로 |
 | **파일명은 휴대폰번호_문제번호** | `01012345678_1.csv` / `01012345678_1.pkl` — 하이픈 없이 |
 | **커널이 하나다** | GPU 많이 쓰는 문제부터. 변수는 `p1_` 접두사로 문제별 분리 |
 
-세션당 한 번 정하는 것과 문제마다 바꾸는 것을 분리해 두면 실수가 줄어듭니다.
+세션 단위로 정하는 것과 문제마다 바꾸는 것을 분리해 두면 실수가 줄어듭니다.
 
 ```python
-# ── 세션 시작 셀 (templates/00_session_start.py) — 180분 중 딱 한 번 ──
+# ── 세션 시작 셀 (templates/00_session_start.py) — 시작할 때, 그리고 튕길 때마다 ──
 !nvidia-smi
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')
@@ -91,7 +91,7 @@ slides/      강의 진행용 발표자료 (HTML 23장, 브라우저로 바로 �
 
 | 템플릿 | 용도 |
 |---|---|
-| [00_session_start.py](templates/00_session_start.py) | **세션당 한 번** — GPU 연결, PHONE, 시드, 문제 순서 전략 |
+| [00_session_start.py](templates/00_session_start.py) | GPU 연결, PHONE, 시드, 문제 순서 전략, **튕겼을 때 복구 절차** |
 | [tabular_classification.py](templates/tabular_classification.py) | 정형 데이터 분류 (이진/다중 자동 대응) |
 | [tabular_regression.py](templates/tabular_regression.py) | 정형 데이터 회귀 |
 | [text_classification.py](templates/text_classification.py) | 텍스트 분류 (TF-IDF 우선, BERT 선택) |
