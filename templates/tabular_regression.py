@@ -296,11 +296,22 @@ p1_submission.to_csv(p1_SUBMIT_CSV, index=False)
 print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건)")
 print(p1_submission.head())
 
-assert len(p1_submission) == len(p1_df_test), "행 수 불일치!"
-
 # %%
 joblib.dump(p1_best_model, p1_SUBMIT_MODEL)
 print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
 
-import os
-print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
+# ============================================================
+# 10. 제출물 검증  ★ 문제를 끝낼 때마다
+# ============================================================
+# %%
+# 회귀는 label 복원이 없으므로 행 수 / 결측 / index / 모델 파일만 점검합니다.
+try:
+    check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                     model_path=p1_SUBMIT_MODEL)
+except NameError:
+    import os
+    p1__sub = pd.read_csv(p1_SUBMIT_CSV)
+    assert len(p1__sub) == len(p1_df_test), "행 수 불일치!"
+    assert not p1__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
+    assert os.path.getsize(p1_SUBMIT_MODEL) > 0, "모델 파일 없음!"
+    print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")

@@ -333,3 +333,38 @@ print(f"모델 저장 완료: {p1_SUBMIT_KERAS}")
 _files = [f for f in os.listdir('.') if f.startswith(PHONE)]
 print("제출물   :", [f for f in _files if '_ckpt' not in f])
 print("작업 파일:", [f for f in _files if '_ckpt' in f])
+
+# ============================================================
+# 10. 제출물 검증  ★ 문제를 끝낼 때마다
+# ============================================================
+# %%
+# label 미복원(0점) 방지: 예측 컬럼 값이 class_names 문자열인지까지 확인.
+# (별도 test 폴더로 제출했다면 n_rows 를 그 파일 수로 바꿀 것)
+try:
+    check_submission(p1_SUBMIT_CSV, n_rows=len(p1_val_result),
+                     label_col='predicted_name', allowed_labels=p1_class_names,
+                     model_path=p1_SUBMIT_KERAS)
+except NameError:
+    p1__sub = pd.read_csv(p1_SUBMIT_CSV)
+    assert len(p1__sub) == len(p1_val_result), "행 수 불일치!"
+    assert set(p1__sub['predicted_name']) <= set(p1_class_names), "label 미복원 의심 — 0점 위험!"
+    assert os.path.getsize(p1_SUBMIT_KERAS) > 0, "모델 파일 없음!"
+    print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
+
+# %%
+# --- 눈 검증 ★ 이미지를 직접 띄워 예측과 대조한다 ---
+# 초록 제목 = 실제와 일치, 빨강 = 불일치.
+# 그림과 예측이 상식적으로 안 맞으면(꽃인데 전부 한 클래스 등) 제출 전에 원인부터.
+p1_rng = np.random.RandomState(RANDOM_SEED)
+p1_pick = p1_rng.choice(len(p1_val_file_paths),
+                        size=min(12, len(p1_val_file_paths)), replace=False)
+plt.figure(figsize=(15, 8))
+for p1_j, p1_k in enumerate(p1_pick):
+    plt.subplot(3, 4, p1_j + 1)
+    plt.imshow(tf.keras.utils.load_img(p1_val_file_paths[p1_k]))
+    p1_ok = p1_all_preds[p1_k] == p1_val_true_idx[p1_k]
+    plt.title(f"P:{p1_class_names[p1_all_preds[p1_k]]} / T:{p1_val_true_names[p1_k]}",
+              fontsize=9, color='green' if p1_ok else 'red')
+    plt.axis('off')
+plt.suptitle('Eyeball check: prediction vs actual')
+plt.tight_layout(); plt.show()

@@ -220,7 +220,31 @@ import joblib, os
 # 벡터라이저와 모델을 함께 담아야 나중에 그대로 예측할 수 있습니다
 joblib.dump({'model': p1_best_ml_model, 'vectorizer': p1_tfidf}, p1_SUBMIT_MODEL)
 print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
-print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
+
+# %%
+# --- 제출물 검증 ★ (check_submission 은 세션 시작 셀에서 정의) ---
+# label 미복원(0점) 방지: 예측값이 train 타겟의 label 집합 안에 있는지까지 확인
+p1_allowed = p1_df_train[p1_TARGET].unique()
+try:
+    check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                     label_col='predicted', allowed_labels=p1_allowed,
+                     model_path=p1_SUBMIT_MODEL)
+except NameError:
+    p1__sub = pd.read_csv(p1_SUBMIT_CSV)
+    assert len(p1__sub) == len(p1_df_test), "행 수 불일치!"
+    assert not p1__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
+    assert set(p1__sub['predicted']) <= set(p1_allowed), "label 미복원 의심 — 0점 위험!"
+    print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
+
+# %%
+# --- 눈 검증 ★ 원문과 예측을 나란히 출력해 직접 읽어 본다 ---
+# 구조 검증이 통과해도 내용이 엉뚱할 수 있습니다.
+# 무작위 10건을 읽고 예측이 상식적으로 맞는지 확인하세요.
+# (전부 한 클래스로 쏠려 있거나, 명백한 문장을 반대로 찍고 있으면 제출 전에 원인부터)
+p1_eyeball = p1_submit_df.sample(min(10, len(p1_submit_df)), random_state=RANDOM_SEED)
+for p1__i, p1_row in p1_eyeball.iterrows():
+    p1_pred_str = p1_row['predicted_name'] if 'predicted_name' in p1_row else p1_row['predicted']
+    print(f"[예측: {p1_pred_str}]  {str(p1_row[p1_TEXT_COL])[:60]}")
 
 # %% [markdown]
 # ---
@@ -328,3 +352,18 @@ print(f"[갱신] {p1_SUBMIT_CSV} ({len(p1_bert_submit)}건)")
 p1_bert_model.save_pretrained(f'{PHONE}_{p1_PROB_NO}_bert')
 p1_tokenizer.save_pretrained(f'{PHONE}_{p1_PROB_NO}_bert')
 print(f"BERT 모델 저장 완료: {PHONE}_{p1_PROB_NO}_bert/")
+
+# %%
+# --- 제출물 재검증 ★ (B 로 덮어썼으므로 다시) ---
+try:
+    check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                     label_col='predicted',
+                     allowed_labels=p1_df_train[p1_TARGET].unique())
+except NameError:
+    print("check_submission 미정의 — 세션 시작 셀을 먼저 실행하세요")
+
+# 눈 검증 — B 결과도 직접 읽어 본다
+p1_eyeball_b = p1_bert_submit.sample(min(10, len(p1_bert_submit)), random_state=RANDOM_SEED)
+for p1__i, p1_row in p1_eyeball_b.iterrows():
+    p1_pred_str = p1_row['predicted_name'] if 'predicted_name' in p1_row else p1_row['predicted']
+    print(f"[예측: {p1_pred_str}]  {str(p1_row[p1_TEXT_COL])[:60]}")

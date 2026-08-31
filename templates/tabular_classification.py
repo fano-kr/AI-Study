@@ -349,13 +349,27 @@ p1_submission.to_csv(p1_SUBMIT_CSV, index=False)
 print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건)")
 print(p1_submission.head())
 
-# 제출 전 점검: 행 수 == len(p1_df_test), 컬럼명 일치, index=False, 결측 없음
-assert len(p1_submission) == len(p1_df_test), "행 수 불일치!"
-
 # %%
 joblib.dump(p1_best_model, p1_SUBMIT_MODEL)
 print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
 
-import os
-print("현재 폴더:", [f for f in os.listdir('.') if f.startswith(PHONE)])
-# 파일이 실제로 만들어졌는지 눈으로 확인. to_csv 가 조용히 다른 경로에 쓰는 일이 있습니다.
+# ============================================================
+# 10. 제출물 검증  ★ 문제를 끝낼 때마다
+# ============================================================
+# %%
+# check_submission 은 세션 시작 셀(00_session_start.py)에서 정의됩니다.
+# 행 수 / 요구 컬럼 / 결측 / index=False / label 미복원(0점) / 모델 파일을 한 번에 점검.
+p1_allowed = p1_target_encoder.classes_ if p1_target_encoder else p1_y.unique()
+try:
+    check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                     label_col='predicted', allowed_labels=p1_allowed,
+                     model_path=p1_SUBMIT_MODEL)
+except NameError:
+    # 세션 시작 셀 없이 단독 연습 중일 때의 최소 점검
+    import os
+    p1__sub = pd.read_csv(p1_SUBMIT_CSV)
+    assert len(p1__sub) == len(p1_df_test), "행 수 불일치!"
+    assert not p1__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
+    assert set(p1__sub['predicted']) <= set(p1_allowed), "label 미복원 의심 — 0점 위험!"
+    assert os.path.getsize(p1_SUBMIT_MODEL) > 0, "모델 파일 없음!"
+    print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")

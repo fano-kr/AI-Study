@@ -198,6 +198,23 @@ submission.to_csv('submission.csv', index=False)
 예측값은 `class_names` 문자열이므로 label 복원이 자동입니다.
 `np.argmax` 결과(0/1/2)를 그대로 내면 **0점**이니, 반드시 `class_names[i]`를 거치세요.
 
+제출 전 **눈 검증** — 이미지를 직접 띄워 예측과 대조합니다.
+
+```python
+pick = np.random.RandomState(42).choice(len(val_file_paths), 12, replace=False)
+plt.figure(figsize=(15, 8))
+for j, k in enumerate(pick):
+    plt.subplot(3, 4, j + 1)
+    plt.imshow(tf.keras.utils.load_img(val_file_paths[k]))
+    ok = all_preds[k] == val_true_idx[k]
+    plt.title(f"P:{class_names[all_preds[k]]} / T:{val_true_names[k]}",
+              color='green' if ok else 'red')
+    plt.axis('off')
+plt.show()
+```
+
+초록 제목은 일치, 빨강은 불일치입니다. 그림과 예측이 상식적으로 안 맞으면 제출 전에 원인부터.
+
 ## 8. 성능이 안 나올 때
 
 | 증상 | 원인 | 조치 |

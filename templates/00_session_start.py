@@ -7,7 +7,7 @@
 #
 # 단, **세션이 튕기면 이 셀을 처음부터 다시 실행해야 합니다.**
 # 런타임이 재시작되면 GPU 연결이 끊기고 커널 변수도 전부 사라집니다.
-# 자세한 복구 절차는 이 파일 맨 아래 6절에 있습니다.
+# 자세한 복구 절차는 이 파일 맨 아래 7절에 있습니다.
 #
 #   00_session_start.py        ← 지금 이 셀. 세션당 1회
 #   tabular_classification.py  ← 문제마다 붙여넣기
@@ -140,8 +140,73 @@ def remaining():
 
 remaining()
 
+
+# ============================================================
+# 5. 제출물 검증 도구 — 문제를 끝낼 때마다 호출
+# ============================================================
+# %%
+# 제출 직전 실수(행 수, 컬럼명, 결측, index, label 미복원)를 한 번에 잡습니다.
+# 어긋나면 assert 로 즉시 멈추고, 통과하면 요약을 출력합니다.
+# 세션 공용이므로 접두사가 없습니다. 각 도메인 템플릿 마지막 셀이 이 함수를 부릅니다.
+def check_submission(csv_path, n_rows=None, required_cols=None,
+                     label_col=None, allowed_labels=None, model_path=None):
+    """제출 파일 검증.
+
+    csv_path       : 제출 CSV 경로 (예: p1_SUBMIT_CSV)
+    n_rows         : len(df_test) — 행 수가 이와 같아야 함
+    required_cols  : 문제가 요구한 컬럼명 리스트 (지문에서 그대로 옮겨 적을 것)
+    label_col      : 예측값이 든 컬럼명
+    allowed_labels : 그 컬럼에 허용되는 label 목록 (train 타겟의 고유값)
+                     — 인코딩 숫자(0/1/2)가 섞여 있으면 여기서 걸린다. 0점 방지.
+    model_path     : 모델 파일도 함께 확인하려면 경로
+    """
+    import os
+
+    assert os.path.exists(csv_path), f"CSV 없음: {csv_path} — to_csv 경로 확인"
+    sub = pd.read_csv(csv_path)
+
+    bad = [c for c in sub.columns if str(c).startswith('Unnamed')]
+    assert not bad, f"index=False 누락 — {bad} 컬럼이 생겼다"
+
+    if n_rows is not None:
+        assert len(sub) == n_rows, f"행 수 불일치: {len(sub)} != {n_rows}"
+
+    if required_cols is not None:
+        missing = [c for c in required_cols if c not in sub.columns]
+        assert not missing, f"요구 컬럼 누락: {missing} (있는 컬럼: {list(sub.columns)})"
+
+    # 결측: 채점 대상 컬럼(required_cols·label_col)은 assert, 나머지는 경고만.
+    # 템플릿 제출물은 df_test 원본 컬럼을 함께 담고 있어 피처의 NaN 은 정상일 수 있다.
+    graded = set(required_cols or []) | ({label_col} if label_col else set())
+    graded = [c for c in graded if c in sub.columns]
+    check_cols = graded if graded else list(sub.columns)
+    null_cols = [c for c in check_cols if sub[c].isnull().any()]
+    assert not null_cols, f"채점 대상 컬럼에 결측: {null_cols}"
+    other_null = [c for c in sub.columns if c not in check_cols and sub[c].isnull().any()]
+    if other_null:
+        print(f"  (참고) 채점 외 컬럼에 결측 있음: {other_null} — 요구 컬럼만 제출한다면 무관")
+
+    if label_col is not None and allowed_labels is not None:
+        assert label_col in sub.columns, f"'{label_col}' 컬럼 없음"
+        got = set(sub[label_col].unique())
+        extra = got - set(allowed_labels)
+        assert not extra, (f"label 미복원 의심 — 허용 밖 값 {sorted(extra, key=str)[:5]} "
+                           f"(허용: {sorted(set(allowed_labels), key=str)[:5]}). 숫자 그대로면 0점!")
+
+    if model_path is not None:
+        assert os.path.exists(model_path), f"모델 파일 없음: {model_path}"
+        assert os.path.getsize(model_path) > 0, f"모델 파일이 비어 있음: {model_path}"
+
+    print(f"[검증 통과] {csv_path} — {len(sub)}행, 컬럼 {list(sub.columns)}")
+    if label_col is not None:
+        print(f"  {label_col} 값 예시: {sub[label_col].head(5).tolist()}")
+    if model_path is not None:
+        import os
+        print(f"  모델: {model_path} ({os.path.getsize(model_path):,} bytes)")
+    return sub
+
 # %% [markdown]
-# ## 5. 이제 문제를 연다
+# ## 6. 이제 문제를 연다
 #
 # 순서를 정하고 시작하세요. **GPU를 많이 쓰는 문제부터**입니다.
 #
@@ -156,7 +221,7 @@ remaining()
 # 긴 학습을 **먼저 걸어 두는 것**이 180분을 버는 유일한 방법입니다.
 
 # %% [markdown]
-# ## 6. 세션이 튕겼을 때 — 복구 절차
+# ## 7. 세션이 튕겼을 때 — 복구 절차
 #
 # 런타임이 재시작되면 **GPU 연결과 커널 변수가 전부 사라집니다.**
 # 코드는 중간저장한 지점까지 남아 있으므로, 아래 순서로 복구합니다.

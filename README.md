@@ -83,7 +83,7 @@ slides/      발표자료 (HTML 23장)
 
 | 템플릿 | 용도 |
 |---|---|
-| [00_session_start.py](templates/00_session_start.py) | GPU 연결, PHONE, 시드, 문제 순서 전략, **튕겼을 때 복구 절차** |
+| [00_session_start.py](templates/00_session_start.py) | GPU 연결, PHONE, 시드, **제출물 검증 `check_submission()`**, 문제 순서, 복구 절차 |
 | [tabular_classification.py](templates/tabular_classification.py) | 정형 데이터 분류 (이진/다중 자동 대응) |
 | [tabular_regression.py](templates/tabular_regression.py) | 정형 데이터 회귀 |
 | [text_classification.py](templates/text_classification.py) | 텍스트 분류 (TF-IDF 우선, BERT 선택) |

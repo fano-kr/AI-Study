@@ -159,7 +159,7 @@ p1_best_model = ...
 마지막 줄을 가장 자주 놓칩니다. 빠뜨리면 2번 결과가 `{PHONE}_1.csv`로 저장되어
 1번 제출물을 덮어씁니다.
 
-접두사가 없는 것은 세션 공용 셋뿐입니다 — `PHONE`, `RANDOM_SEED`, `remaining()`.
+접두사가 없는 것은 세션 공용 넷뿐입니다 — `PHONE`, `RANDOM_SEED`, `remaining()`, `check_submission()`.
 
 ## 5. 세션이 튕겼을 때 — 복구 절차
 
@@ -359,16 +359,32 @@ image_dataset_from_directory(label_mode='categorical') → 증강 레이어
 
 ## 12. 제출 전 최종 점검
 
-```python
-import os
-print(os.listdir('.'))            # 파일이 실제로 있는가
+검증은 두 단계입니다 — **구조는 함수로, 내용은 눈으로.**
+둘 다 각 도메인 템플릿의 마지막 셀에 들어 있습니다.
 
-sub = pd.read_csv(SUBMIT_CSV)
-print(sub.shape)                  # 행 수 == len(df_test) 인가
-print(sub.columns.tolist())       # 요구된 컬럼명과 같은가
-print(sub.isnull().sum())         # 결측 없는가
-sub.head()
+```python
+# ① 구조 — 세션 시작 셀의 check_submission
+#    행 수 · 요구 컬럼 · 결측 · index=False · label 미복원(0점) · 모델 파일
+p1_allowed = p1_target_encoder.classes_ if p1_target_encoder else p1_y.unique()
+check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                 label_col='predicted', allowed_labels=p1_allowed,
+                 model_path=p1_SUBMIT_MODEL)
 ```
+
+```python
+# ② 내용 — 도메인별 눈 검증
+# 텍스트: 원문과 예측을 나란히 출력해 직접 읽는다
+for _, row in submit_df.sample(10).iterrows():
+    print(f"[예측: {row['predicted_name']}]  {str(row[TEXT_COL])[:60]}")
+
+# 이미지: 그림을 띄워 예측과 대조한다 (초록 = 일치, 빨강 = 불일치)
+plt.imshow(tf.keras.utils.load_img(path)); plt.title(f"P:{pred} / T:{actual}")
+
+# 정형: submission.head() 로 값이 label 인지 본다
+```
+
+구조 검증이 통과해도 내용이 엉뚱할 수 있습니다 — 예측이 전부 한 클래스로 쏠려 있거나,
+명백한 문장을 반대로 찍고 있으면 제출 전에 원인부터 찾으세요.
 
 - [ ] 파일명이 `{휴대폰번호}_{문제번호}` 규칙과 정확히 일치 (하이픈 없음)
 - [ ] 모델 파일과 CSV 파일이 **둘 다** 저장됨

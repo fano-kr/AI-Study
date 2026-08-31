@@ -108,6 +108,9 @@ pred = target_encoder.inverse_transform(pred)  # ['cat', 'dog', ...]
 
 이미지는 `class_names[i]`, 텍스트는 `label_map`이 같은 역할을 합니다.
 
+템플릿 마지막 셀이 이걸 자동으로 점검합니다 — 세션 시작 셀에 정의된 `check_submission()`이
+행 수·컬럼·결측·label을 확인하고, 텍스트·이미지는 **눈 검증**(원문·그림과 예측 대조)이 뒤따릅니다.
+
 ### ⑥ 커널은 하나다
 
 여러 문제를 **주피터 커널 하나에서** 풉니다. 두 가지가 따라옵니다.
