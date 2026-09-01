@@ -176,6 +176,14 @@ code,kbd,.mono{
   max-width:180px;
 }
 
+/* 강조 장치 — 슬라이드당 하나만 쓴다 */
+.kw{color:var(--accent)}
+.kw-d{color:var(--danger)}
+mark{
+  background:linear-gradient(transparent 58%, var(--rail-fill) 58%);
+  color:inherit;padding:0 .06em;border-radius:2px;
+}
+
 h1{font-size:clamp(32px,5.2vw,68px);font-weight:900;line-height:1.08}
 h2{font-size:clamp(25px,3.3vw,44px);font-weight:800;line-height:1.16}
 h3{font-size:clamp(17px,1.5vw,23px);font-weight:700;line-height:1.3}
@@ -457,7 +465,7 @@ kbd{
   <div class="body">
     <div class="title-rule"></div>
     <h1>AICE Professional<br>n수생 탈출기</h1>
-    <p class="lede">떨어지는 이유는 대부분 모델이 아니라 <strong>절차</strong>입니다.
+    <p class="lede">떨어지는 이유는 대부분 모델이 아니라 <strong class="kw">절차</strong>입니다.
       Tabular · Text · Image를 같은 순서로 푸는 법과, 시험장에서 점수를 흘리는 지점을 봅니다.</p>
     <div class="meta">
       <span>실기 180분</span>
@@ -475,7 +483,7 @@ kbd{
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">이 시험의 성격</div>
-    <h2>점수를 잃는 곳은<br>모델이 아니라 절차다</h2>
+    <h2>점수를 잃는 곳은<br>모델이 아니라 <span class="kw">절차</span>다</h2>
     <div class="quote">0.93을 0.95로 올리는 것보다<br>끝까지 도는 코드가 먼저다.</div>
     <p class="dim">전처리를 test에 적용 안 함 · 스케일러를 test로 fit · 제출 형식 불일치 —
       실제 실점은 대부분 여기서 납니다.</p>
@@ -536,7 +544,7 @@ kbd{
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">준비 전략</div>
-    <h2>템플릿 네 벌이면 끝난다</h2>
+    <h2>템플릿 <span class="kw">네 벌</span>이면 끝난다</h2>
     <div class="grid g4">
       <div class="card"><span class="k">문제 1 · Tabular</span><h3>분류</h3><p>이진/다중 자동 대응</p></div>
       <div class="card"><span class="k">문제 1 · Tabular</span><h3>회귀</h3><p>모델·지표만 다르고 뼈대는 같다</p></div>
@@ -651,7 +659,7 @@ kbd{
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Tabular · 모델 선택</div>
-    <h2>다 돌린다.<br>단, CV를 함께 본다</h2>
+    <h2>다 돌린다.<br>단, <span class="kw">CV를 함께</span> 본다</h2>
     <div class="grid g2">
       <div class="tw">
         <table>
@@ -707,7 +715,7 @@ kbd{
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Text · 전략</div>
-    <h2>A를 먼저. B는 보험.</h2>
+    <h2><span class="kw">A를 먼저.</span> B는 보험.</h2>
     <div class="tw">
       <table>
         <thead><tr><th></th><th>A · TF-IDF + ML</th><th>B · BERT</th></tr></thead>
@@ -743,7 +751,7 @@ TfidfVectorizer(analyzer=<span class="hlgood">'char_wb'</span>, ngram_range=<spa
         </tbody>
       </table>
     </div>
-    <div class="quote" style="max-width:34em">모델을 바꾸기 전에<br>analyzer를 바꿔 보세요.</div>
+    <div class="quote" style="max-width:34em">모델을 바꾸기 전에<br><mark>analyzer를 바꿔 보세요.</mark></div>
   </div>
 </section>
 
@@ -752,7 +760,7 @@ TfidfVectorizer(analyzer=<span class="hlgood">'char_wb'</span>, ngram_range=<spa
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Text · 방법 B</div>
-    <h2>BERT는 세 개만<br>정확히 기억하면 된다</h2>
+    <h2>BERT는 <span class="kw">세 개만</span><br>정확히 기억하면 된다</h2>
     <div class="grid g3">
       <div class="card bad"><span class="k">01</span><h3>lr = 2e-5</h3><p>협상 대상 아님. <code>1e-3</code>을 넣으면 사전학습 지식이 첫 배치에 파괴됩니다.</p></div>
       <div class="card bad"><span class="k">02</span><h3>from_logits=True</h3><p>softmax 전 logits를 뱉습니다. 빠뜨리면 학습이 안 됩니다.</p></div>
@@ -778,7 +786,7 @@ TfidfVectorizer(analyzer=<span class="hlgood">'char_wb'</span>, ngram_range=<spa
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Image · 학습 구조</div>
-    <h2>학습률을 100배 낮추는 것이<br>Phase 2의 전부</h2>
+    <h2>학습률을 <span class="kw">100배</span> 낮추는 것이<br>Phase 2의 전부</h2>
     <div class="grid g2">
       <div class="card key"><span class="k">Phase 1 · Feature Extraction</span>
         <h3>base 동결 · <span class="mono">lr = 1e-3</span></h3>
@@ -814,7 +822,7 @@ model.compile(loss=<span class="hlgood">'categorical_crossentropy'</span>)</code
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">Image · 가장 위험한 함정</div>
-    <h2>검증 점수는 정상,<br>제출 점수만 랜덤</h2>
+    <h2>검증 점수는 정상,<br>제출 점수만 <span class="kw-d">랜덤</span></h2>
     <pre><code>val_ds = image_dataset_from_directory(..., shuffle=<span class="hlbad">True</span>)
 preds  = model.predict(val_ds)
 filenames = val_ds.file_paths        <span class="hlbad"># ← preds 와 순서가 다르다!</span></code></pre>
@@ -841,7 +849,7 @@ val_pred_ds = (tf.data.Dataset.from_tensor_slices(val_ds.file_paths)
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 순서</div>
-    <h2>GPU를 많이 쓰는<br>문제부터 건드린다</h2>
+    <h2><span class="kw">GPU를 많이 쓰는</span><br>문제부터 건드린다</h2>
     <div class="grid g2">
       <div class="tw">
         <table>
@@ -869,7 +877,7 @@ val_pred_ds = (tf.data.Dataset.from_tensor_slices(val_ds.file_paths)
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 변수</div>
-    <h2>커널은 하나.<br>전역 변수는 공유된다</h2>
+    <h2>커널은 하나.<br>전역 변수는 <span class="kw-d">공유된다</span></h2>
     <div class="grid g2">
       <div>
         <pre><code><span class="cm"># 1번 문제 (이미지)</span>
@@ -899,7 +907,7 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 총 180분 · 이미지 + 정형</div>
-    <h2>긴 학습을 먼저 걸고<br>그 시간에 다음 문제를 쓴다</h2>
+    <h2>긴 학습을 <span class="kw">먼저</span> 걸고<br>그 시간에 다음 문제를 쓴다</h2>
     <div class="tw">
       <table>
         <thead><tr><th>시각</th><th>무엇을</th></tr></thead>
@@ -914,7 +922,7 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
         </tbody>
       </table>
     </div>
-    <p><strong>40분 시점에 이미 제출 가능한 파일이 있어야 합니다.</strong>
+    <p><mark><strong>40분 시점에 이미 제출 가능한 파일이 있어야 합니다.</strong></mark>
       학습이 끝나면 즉시 파일로 저장하세요 — 튕기면 변수와 GPU가 날아가고, 중간저장은 코드만 지킵니다.</p>
   </div>
 </section>
@@ -925,7 +933,7 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
   <div class="gutter"></div>
   <div class="body">
     <div class="eyebrow">시험 당일 · 제출 CSV</div>
-    <h2>컬럼명과 값을 label로.<br>안 하면 0점</h2>
+    <h2>컬럼명과 값을 label로.<br>안 하면 <span class="kw-d">0점</span></h2>
     <pre><code><span class="cm"># 모델은 인코딩된 숫자로 예측한다. 채점은 원래 label 로 한다.</span>
 pred = p1_best_model.predict(p1_X_test_scaled)        <span class="cm"># [0, 2, 1, ...]</span>
 pred = p1_target_encoder.<span class="hlgood">inverse_transform</span>(pred)     <span class="cm"># ['cat', 'dog', ...]</span>
