@@ -226,6 +226,7 @@ p1_est, p1_params = p1_param_grids[p1_tune_name]
 print(f"튜닝 대상: {p1_tune_name}")
 
 # scoring: 'p1_r2' / 'neg_root_mean_squared_error' 중 문제 요구에 맞게 ★
+# Colab CPU 는 2코어 — 5분 넘게 돌면 RandomizedSearchCV(n_iter=20) 로 전환
 p1_grid = GridSearchCV(p1_est, p1_params, cv=5, scoring='r2', n_jobs=-1, verbose=1)
 p1_grid.fit(p1_X_train, p1_y_train)
 print(f"최적 파라미터: {p1_grid.best_params_}")

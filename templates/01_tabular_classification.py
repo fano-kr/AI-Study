@@ -264,6 +264,8 @@ p1_est, p1_params = p1_param_grids[p1_tune_name]
 print(f"튜닝 대상: {p1_tune_name}")
 
 # scoring 은 문제가 요구하는 지표로 ★ (accuracy / f1_macro / roc_auc ...)
+# Colab CPU 는 2코어 — 그리드가 크거나 데이터가 10만 행+ 이면 오래 걸립니다.
+# 5분 넘게 돌면 중단하고 RandomizedSearchCV(..., n_iter=20) 로 바꾸세요.
 p1_grid = GridSearchCV(p1_est, p1_params, cv=5, scoring='accuracy', n_jobs=-1, verbose=1)
 p1_grid.fit(p1_X_train, p1_y_train)
 print(f"최적 파라미터: {p1_grid.best_params_}")

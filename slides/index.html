@@ -929,6 +929,105 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
 
 <!-- 23 ------------------------------------------------------ -->
 <!-- 제출 label ------------------------------------------------ -->
+<!-- 흐름도 --------------------------------------------------- -->
+<section class="slide" data-min="42" data-track="4" data-title="문제 하나를 푸는 흐름도">
+  <div class="gutter"></div>
+  <div class="body">
+    <div class="eyebrow">시험 당일 · 흐름도</div>
+    <h2>저장이 먼저,<br>개선은 <span class="kw">루프</span>다</h2>
+    <figure style="margin:0">
+      <svg viewBox="0 0 1200 300" role="img" style="max-width:1140px;width:100%;height:auto;display:block"
+           aria-label="문제 하나를 푸는 흐름: 기본 모델로 저장까지 직행한 뒤, 검증 실패는 수정 루프로, 점수 부족은 시간이 남을 때만 튜닝 루프로 돌아온다"
+           font-size="13" fill="none" stroke-linejoin="round">
+        <defs>
+          <marker id="fa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" fill="currentColor" stroke="none"/>
+          </marker>
+          <marker id="fa-acc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" fill="var(--accent)" stroke="none"/>
+          </marker>
+          <marker id="fa-dgr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" fill="var(--danger)" stroke="none"/>
+          </marker>
+        </defs>
+
+        <!-- 메인 행: 시작 -> 저장 -> 검증 -> 분기 -->
+        <g stroke="var(--rule-strong)" fill="var(--surface)">
+          <rect x="8"   y="52" width="168" height="52" rx="3"/>
+          <rect x="204" y="52" width="250" height="52" rx="3"/>
+          <rect x="714" y="52" width="190" height="52" rx="3"/>
+        </g>
+        <rect x="486" y="52" width="200" height="52" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+
+        <g fill="currentColor" stroke="none" text-anchor="middle">
+          <text x="92"  y="74">자료 정독 →</text>
+          <text x="92"  y="92">템플릿 붙여넣기</text>
+          <text x="329" y="74">로드 → 전처리 → 분할</text>
+          <text x="329" y="92">→ 기본 모델 1개</text>
+          <text x="586" y="74" fill="var(--accent)" font-weight="600">label 복원 → 저장</text>
+          <text x="586" y="92" font-size="11" fill="var(--accent)">여기까지 40분</text>
+          <text x="809" y="74">check_submission()</text>
+          <text x="809" y="92">+ 눈 검증</text>
+        </g>
+
+        <!-- 분기 다이아몬드 -->
+        <g stroke="var(--rule-strong)" fill="var(--surface-2)">
+          <polygon points="1010,38 1098,78 1010,118 922,78"/>
+          <polygon points="620,196 740,240 620,284 500,240"/>
+        </g>
+        <g fill="currentColor" stroke="none" text-anchor="middle">
+          <text x="1010" y="83">점수 ≥ 목표?</text>
+          <text x="620"  y="245">시간 30분+ 남음?</text>
+        </g>
+
+        <!-- 종착 (초록) / 튜닝 -->
+        <g stroke="var(--pass)" fill="var(--pass-soft)">
+          <rect x="1003" y="210" width="190" height="52" rx="3"/>
+          <rect x="780"  y="214" width="180" height="52" rx="3"/>
+        </g>
+        <rect x="180" y="214" width="200" height="52" rx="3" fill="var(--surface)" stroke="var(--rule-strong)"/>
+        <g fill="currentColor" stroke="none" text-anchor="middle">
+          <text x="1098" y="241" fill="var(--pass)" font-weight="600">다음 문제로</text>
+          <text x="870"  y="245" fill="var(--pass)" font-weight="600">지금 제출물로 확정</text>
+          <text x="280"  y="236">튜닝 · 방법 B</text>
+          <text x="280"  y="254" font-size="11" fill="var(--ink-2)">GridSearch / BERT</text>
+        </g>
+
+        <!-- 메인 흐름 화살표 -->
+        <g stroke="currentColor" stroke-width="1.5" marker-end="url(#fa)">
+          <path d="M176,78 H200"/>
+          <path d="M454,78 H482"/>
+          <path d="M686,78 H710"/>
+          <path d="M904,78 H918"/>
+          <path d="M1010,118 V170 H620 V192"/>
+          <path d="M740,240 H776"/>
+        </g>
+        <!-- 통과 분기 (초록 예) -->
+        <path d="M1098,78 V206" stroke="var(--pass)" stroke-width="1.5" marker-end="url(#fa)"/>
+        <!-- 루프 1: 검증 실패 (빨강) -->
+        <path d="M809,104 V134 H650 V110" stroke="var(--danger)" stroke-width="1.5" marker-end="url(#fa-dgr)"/>
+        <!-- 루프 2: 튜닝 후 재저장 (파랑) -->
+        <path d="M500,240 H386" stroke="currentColor" stroke-width="1.5" marker-end="url(#fa)"/>
+        <path d="M280,214 V150 H586 V110" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#fa-acc)"/>
+
+        <!-- 화살표 라벨 -->
+        <g stroke="none" font-size="11" text-anchor="middle">
+          <text x="1112" y="140" fill="var(--pass)" font-weight="600">예</text>
+          <text x="1035" y="146" fill="currentColor">아니오</text>
+          <text x="757"  y="230" fill="currentColor">아니오</text>
+          <text x="443"  y="232" fill="currentColor">예</text>
+          <text x="742"  y="127" fill="var(--danger)">실패: 수정 후 재저장</text>
+          <text x="433"  y="142" fill="var(--accent-2)">점수 오르면 재저장 → 재검증</text>
+        </g>
+      </svg>
+      <figcaption class="dim" style="font-size:clamp(12px,1vw,15px);margin-top:.6em">
+        완벽해질 때까지 붙잡는 흐름이 아닙니다 — <strong>일단 저장</strong>하고,
+        점수와 남은 시간이 허락할 때만 루프를 돕니다. 두 루프 모두 <strong>저장으로 되돌아오는</strong> 것에 주목하세요.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
 <section class="slide" data-min="43" data-track="4" data-title="제출 CSV — label 복원">
   <div class="gutter"></div>
   <div class="body">
