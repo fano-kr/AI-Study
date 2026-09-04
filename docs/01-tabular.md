@@ -84,6 +84,7 @@ X_test[num_cols] = num_imputer.transform(X_test[num_cols])   # transform 만!
 | 선형 모델 | 위험 (없는 순서를 만들어냄) | **적합** |
 
 시험 주력은 트리 모델(RF/XGB/LGBM)이므로 **LabelEncoder가 기본값**입니다.
+단, 지문이 "원-핫 인코딩 하세요"라고 지정하면(공식 정답은 `pd.get_dummies` 스타일) 지시대로 하세요.
 
 단, test에만 나타나는 값이 있으면 `LabelEncoder.transform`이 에러로 죽습니다.
 그래서 train에서 배운 값을 **숫자 사전**으로 만들고, test는 사전으로 변환합니다.
@@ -213,7 +214,42 @@ r2   = r2_score(y_val, y_pred)
 
 타겟이 심하게 치우쳐 있으면 `np.log1p(y)`로 학습하고 예측 후 `np.expm1()`로 되돌립니다.
 
-## 7. 제출
+## 7. 딥러닝으로 풀라고 하면 — 지문이 정답이다
+
+AICE 정형 문항은 딥러닝(DNN)을 **명시적으로 지시**하는 경우가 있습니다.
+KT 공식 실습 정답(11·13·15번)이 그 스타일을 보여 줍니다 — 보통 지문이
+`input_shape`, 히든 레이어 수·유닛, 출력층 활성화까지 지정합니다.
+
+> **지문이 방법을 지정하면 그 방법이 정답입니다.** 이 교재의 기본값(LabelEncoder,
+> softmax 통일, StandardScaler)은 선택권이 있을 때의 이야기이고, 지시형 문항에서는
+> 지시대로 쓰는 것이 채점 기준입니다.
+
+전처리도 공식 정답 스타일이 다릅니다 — DNN에는 이쪽이 실제로 맞습니다.
+
+| | 트리 모델 (기본) | DNN (지시형) |
+|---|---|---|
+| 인코딩 | LabelEncoder | **`pd.get_dummies`** — 가짜 순서(0<1<2)가 DNN에 해로움 |
+| 스케일링 | StandardScaler | **`MinMaxScaler`** — 0~1 입력이 학습에 안정적 |
+
+모델 뼈대는 이 다섯 줄입니다. 숫자는 지문이 주면 지문 것으로.
+
+```python
+model = Sequential([
+    Input(shape=(N_FEATURES,)),
+    Dense(64, activation='relu'), Dropout(0.2),
+    Dense(32, activation='relu'),
+    Dense(1, activation='sigmoid'),          # 이진 — 다중이면 Dense(N, softmax)
+])
+model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])   # 다중: sparse_categorical_crossentropy
+model.fit(X_tr, y_tr, validation_data=(X_val, y_val), epochs=50, batch_size=32,
+          callbacks=[EarlyStopping(...), ModelCheckpoint('..._1_ckpt.h5', ...)])
+```
+
+지문이 loss/accuracy **학습 곡선 그래프**를 요구하는 경우도 흔합니다 —
+`history.history['loss']`를 그리는 셀까지 템플릿에 있습니다.
+전체 코드: [01_tabular_dl.py](../templates/01_tabular_dl.py) — 실행 검증 완료.
+
+## 8. 제출
 
 ```python
 test_predictions = best_model.predict(X_test_scaled)

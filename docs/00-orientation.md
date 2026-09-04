@@ -220,6 +220,9 @@ NUM_CLASSES = df_train[TARGET].nunique()
 딥러닝에서는 출력층을 `sigmoid` + `binary_crossentropy` 대신 항상
 `softmax` + `categorical_crossentropy`로 통일하면 클래스 수만 바꿔 끼우면 됩니다.
 
+단, **지문이 출력층 구조를 지정하면 지정이 우선입니다** (예: "Dense(1, sigmoid)로").
+이 습관은 선택권이 있을 때의 기본값입니다.
+
 ## 6. 성능 판단 기준
 
 "이 정도면 된 건가"를 매번 고민하지 않도록 기준선을 미리 정합니다.

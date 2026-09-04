@@ -701,6 +701,27 @@ kbd{
 </section>
 
 <!-- 11 ------------------------------------------------------ -->
+<!-- 지시형 문항 · Tabular DL --------------------------------- -->
+<section class="slide" data-min="17" data-track="1" data-title="지시형 문항 — Tabular 딥러닝">
+  <div class="gutter"></div>
+  <div class="body">
+    <div class="eyebrow">Tabular · 지시형 문항</div>
+    <h2>지문이 방법을 지정하면<br><span class="kw">지문이 정답</span>이다</h2>
+    <p>"딥러닝으로, 히든 4→3, sigmoid 출력" — 정형 문항은 구조까지 지시합니다.
+      그때는 기본값(LabelEncoder·softmax 통일)이 아니라 <strong>지시대로.</strong></p>
+    <pre><code>model = Sequential([Input(shape=(N,)),
+    Dense(64, <span class="hlgood">'relu'</span>), Dropout(0.2), Dense(32, <span class="hlgood">'relu'</span>),
+    Dense(1, <span class="hlgood">'sigmoid'</span>)])                       <span class="cm"># 숫자·구조는 지문 그대로</span>
+model.compile('adam', <span class="hlgood">'binary_crossentropy'</span>, metrics=['accuracy'])</code></pre>
+    <div class="grid g3">
+      <div class="card"><span class="k">인코딩</span><h3>get_dummies</h3><p>DNN엔 LabelEncoder의 가짜 순서(0&lt;1&lt;2)가 해롭다.</p></div>
+      <div class="card"><span class="k">스케일</span><h3>MinMaxScaler</h3><p>0~1 입력이 DNN 학습에 안정적.</p></div>
+      <div class="card"><span class="k">단골 요구</span><h3>학습 곡선 그리기</h3><p><code>history.history</code> loss/acc 플롯까지 템플릿에.</p></div>
+    </div>
+    <p class="dim">템플릿 <code>01_tabular_dl.py</code> — 공식 실습 정답 스타일, 실행 검증 완료.</p>
+  </div>
+</section>
+
 <section class="slide chapter" data-min="19" data-track="2" data-title="TEXT">
   <div class="gutter"></div>
   <div class="body">

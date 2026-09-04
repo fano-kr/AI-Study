@@ -109,6 +109,9 @@ def remaining():
 
 자료에 "결과를 사후 기록한 컬럼"이라 적혀 있으면 상관계수를 볼 것도 없이 제거합니다.
 
+**지문이 방법을 지정하면 그 방법이 정답입니다.** "딥러닝으로", "원-핫 인코딩으로",
+"h5로 저장" — 지시형 문항에서는 이 교재의 기본값보다 지시가 우선입니다.
+
 ### ④ 데이터 로드
 
 ```python
@@ -355,6 +358,7 @@ print(os.listdir('.'))     # 파일이 실제로 만들어졌는지 눈으로 �
 ```
 컬럼 요약표 → 누수/식별자 제거 → median·최빈값 결측 → LabelEncoder → StandardScaler
 → stratify 분할 → 5모델 비교 → 1위만 GridSearch → {PHONE}_{PROB_NO}.csv
+(딥러닝 지시 문항 → 01_tabular_dl.py: get_dummies + MinMax + Sequential + 학습 곡선)
 ```
 
 **Text**

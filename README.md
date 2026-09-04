@@ -88,6 +88,7 @@ kt-study/    KT 공식 실습 원본 (로컬 전용 — 용량·배포 문제로
 | [00_session_start.py](templates/00_session_start.py) | GPU 연결, PHONE, 시드, **제출물 검증 `check_submission()`**, 문제 순서, 복구 절차 |
 | [01_tabular_classification.py](templates/01_tabular_classification.py) | **문제 1** — 정형 분류 (이진/다중 자동 대응) |
 | [01_tabular_regression.py](templates/01_tabular_regression.py) | **문제 1** — 정형 회귀 |
+| [01_tabular_dl.py](templates/01_tabular_dl.py) | **문제 1 변형** — 정형 DNN (문제가 딥러닝을 지시할 때) |
 | [02_text_classification.py](templates/02_text_classification.py) | **문제 2** — 텍스트 분류 (TF-IDF 우선, BERT 선택) |
 | [03_image_classification.py](templates/03_image_classification.py) | **문제 3** — 이미지 분류 (MobileNetV2 전이학습) |
 | [03_image_localization.py](templates/03_image_localization.py) | **문제 3 변형** — BBox 회귀+분류 (문제가 객체 위치를 요구할 때) |
