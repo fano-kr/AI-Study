@@ -103,11 +103,17 @@ slides/      발표자료 (HTML 23장)
 3. 첫 셀부터 순서대로 실행
 
 노트북 3종은 Colab에 이미 있는 패키지만 씁니다.
-텍스트 템플릿의 KLUE 예제를 돌릴 때만 한 줄 추가하세요.
+텍스트 템플릿의 KLUE 예제(방법 A)나 BERT(방법 B)를 돌릴 때만 **첫 셀**에 한 줄 추가하세요.
 
 ```python
-!pip install -q datasets transformers
+!pip install -q tf-keras "transformers>=4.40,<5" datasets
 ```
+
+`tf-keras`가 필요한 이유: 요즘 Colab의 기본 Keras는 3인데, transformers의 TF BERT는
+Keras 3를 지원하지 않습니다. `tf-keras`가 설치돼 있으면 세션 시작 셀
+([templates/00_session_start.py](templates/00_session_start.py))이 자동으로 옛 Keras로
+전환합니다. 반드시 **tensorflow를 import하기 전에** 설치하세요 —
+이미 import한 뒤라면 런타임 재시작 후 처음부터 실행하면 됩니다.
 
 이미지 노트북은 GPU가 없으면 `assert`로 멈춥니다. 시험장과 같은 동작입니다.
 

@@ -58,12 +58,30 @@
 
 # !nvidia-smi
 
+# --- BERT(텍스트 방법 B)를 쓸 가능성이 있다면, 이 셀보다 먼저 설치 셀을 실행하세요 ---
+#   !pip install -q tf-keras "transformers>=4.40,<5" datasets
+#
+# 이유: 요즘 환경(TF 2.16+)의 기본 Keras 는 3인데, transformers 의 TF BERT 는
+# Keras 3 를 지원하지 않습니다. tf-keras(옛 Keras)를 설치해 두면 아래 두 줄이
+# tensorflow 를 import 하기 "전에" 옛 Keras 로 전환해 줍니다. 코드 수정은 없습니다.
+# (이미 tensorflow 를 import 한 뒤에 설치했다면: 런타임 재시작 → 이 셀부터 다시)
+import os
+import importlib.util
+if importlib.util.find_spec('tf_keras'):       # tf-keras 가 설치된 경우에만 켠다
+    os.environ['TF_USE_LEGACY_KERAS'] = '1'
+
 import tensorflow as tf
 
 gpus = tf.config.list_physical_devices('GPU')
-print(f"TensorFlow {tf.__version__}")
+# 옛 Keras(tf-keras)로 전환된 상태에서는 __version__ 속성이 없으므로 getattr 로 읽는다
+KERAS_VER = str(getattr(tf.keras, '__version__', '2 (legacy)'))
+print(f"TensorFlow {tf.__version__} / Keras {KERAS_VER}")
 print(f"GPU: {gpus}")
 assert gpus, "GPU 미연결! 런타임 설정을 확인하세요"
+
+if KERAS_VER.startswith('3'):
+    print("참고: Keras 3 로 동작 중 — Tabular·TF-IDF·이미지는 문제없지만 BERT(방법 B)는 불가.")
+    print("      BERT 를 쓰려면 !pip install -q tf-keras → 런타임 재시작 → 이 셀부터 다시.")
 
 # 확인 끝. 세션이 유지되는 동안에는 어떤 템플릿에서도 다시 확인하지 않습니다.
 # 세션이 튕겨서 런타임이 재시작되면 CPU 로 붙을 수 있으므로 이 셀부터 다시 실행하세요.

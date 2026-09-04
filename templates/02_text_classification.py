@@ -99,7 +99,9 @@ print(f"결측: {p2_df_train[p2_TEXT_COL].isnull().sum()}")
 # 3. 텍스트 정제
 # ============================================================
 # %%
-# TF-IDF 용은 세게, BERT 용은 약하게(문장부호가 문맥 정보이므로)
+# 단순함을 위해 방법 A(TF-IDF)와 B(BERT)가 같은 정제를 공유합니다.
+# 원칙은 "TF-IDF 는 세게, BERT 는 약하게"(문장부호도 문맥 정보) —
+# B 점수를 더 짜내고 싶을 때만 특수문자 제거 줄을 빼고 다시 돌리세요.
 def p2_clean_text(text):
     text = str(text)
     text = re.sub(r'<[^>]+>', ' ', text)                 # HTML 태그
@@ -254,7 +256,19 @@ for p2__i, p2_row in p2_eyeball.iterrows():
 # 방법 B — BERT Fine-tuning  (GPU 필요)
 # ============================================================
 # %%
+# ── 시작 전 확인 ──
+# transformers 의 TF BERT 는 Keras 3(요즘 기본)를 지원하지 않습니다.
+# 첫 셀에서 !pip install -q tf-keras "transformers>=4.40,<5" 를 실행했다면
+# 00 세션 시작 셀이 자동으로 옛 Keras 로 전환해 두었습니다. 아래 assert 가 그걸 확인합니다.
 import tensorflow as tf
+
+# 옛 Keras 로 전환되면 __version__ 속성이 없으므로 '3으로 시작하지 않으면 통과'로 판정
+assert not str(getattr(tf.keras, '__version__', '2')).startswith('3'), (
+    "Keras 3 로 동작 중이라 BERT(TF)를 쓸 수 없습니다. "
+    "!pip install -q tf-keras → 런타임 재시작 → 00 세션 시작 셀부터 다시 실행하세요. "
+    "(시간이 없으면 방법 A 제출물로 충분합니다)"
+)
+
 from transformers import BertTokenizerFast, TFBertForSequenceClassification
 
 tf.random.set_seed(RANDOM_SEED)
@@ -297,6 +311,7 @@ p2_val_ds = (tf.data.Dataset.from_tensor_slices((dict(p2_val_enc), p2_y_val_b))
 
 # %%
 # from_pt=True : HF 의 한국어 모델은 PyTorch 가중치만 있는 경우가 많다
+#                (변환에 torch 가 필요합니다 — Colab 에는 기본 포함)
 p2_bert_model = TFBertForSequenceClassification.from_pretrained(
     p2_BERT_MODEL_NAME, num_labels=p2_NUM_CLASSES, from_pt=True
 )

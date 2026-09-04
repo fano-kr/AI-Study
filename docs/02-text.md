@@ -129,6 +129,17 @@ Tabular의 주력 모델이 여기서는 후보에도 못 듭니다.
 
 ## 4. 방법 B — BERT Fine-tuning
 
+**시작 전에 환경부터.** transformers의 TF BERT는 Keras 3(요즘 Colab 기본)를 지원하지 않아,
+준비 없이 import하면 그 자리에서 에러가 납니다. 노트북 **첫 셀**(tensorflow를 import하기 전)에서:
+
+```python
+!pip install -q tf-keras "transformers>=4.40,<5" datasets
+```
+
+`tf-keras`가 설치돼 있으면 세션 시작 셀이 자동으로 옛 Keras로 전환합니다.
+이미 tensorflow를 import한 뒤에 설치했다면 **런타임 재시작 → 처음부터 재실행**이 필요합니다.
+시험장에서 이 준비가 안 되면 미련 없이 방법 A로 제출하세요.
+
 ```python
 BERT_MODEL_NAME = 'klue/bert-base'      # 한국어
 # BERT_MODEL_NAME = 'bert-base-uncased' # 영어
@@ -163,7 +174,7 @@ model.compile(
 세 가지 함정:
 
 - **`from_logits=True`** — 이 모델은 softmax를 거치지 않은 logits를 뱉습니다. 빠뜨리면 학습이 안 됩니다.
-- **`from_pt=True`** — HF의 한국어 모델 다수가 PyTorch 가중치만 있습니다.
+- **`from_pt=True`** — HF의 한국어 모델 다수가 PyTorch 가중치만 있습니다. (변환에 torch 필요 — Colab 기본 포함)
 - **예측은 `.logits`에서** — `model.predict(ds)`의 결과는 객체입니다. `np.argmax(preds.logits, axis=1)`.
 
 ### MAX_LENGTH 정하는 법

@@ -292,30 +292,34 @@ print(p3_val_result.head(10))
 # 9. 테스트 예측 및 제출  ★
 # ============================================================
 # %%
-def p3_predict_test_directory(p3_model, test_dir, p3_class_names,
-                           image_size=p3_IMAGE_SIZE, batch_size=p3_BATCH_SIZE):
-    """라벨 없는 test 폴더의 이미지를 예측해 DataFrame 으로 반환."""
+def p3_predict_test_directory(model, test_dir, class_names, batch_size=p3_BATCH_SIZE):
+    """라벨 없는 test 폴더의 이미지를 예측해 DataFrame 으로 반환.
+
+    2절의 순서 보장 데이터셋과 같은 방식(tf.data)이라
+    수천 장이어도 메모리에 한꺼번에 올리지 않습니다.
+    컬럼명도 검증 결과(p3_val_result)와 같아서 10절 검증을 그대로 쓸 수 있습니다.
+    """
     exts = ('.jpg', '.jpeg', '.png', '.bmp')
     filenames = sorted(f for f in os.listdir(test_dir) if f.lower().endswith(exts))
-    p3_images = np.array([
-        tf.keras.utils.img_to_array(
-            tf.keras.utils.load_img(os.path.join(test_dir, f), target_size=image_size))
-        for f in filenames
-    ])
-    preds = p3_model.predict(p3_images, batch_size=batch_size, verbose=1)
-    idx = np.argmax(preds, axis=1)
+    paths = [os.path.join(test_dir, f) for f in filenames]
+    ds = (tf.data.Dataset.from_tensor_slices(paths)
+          .map(p3__load_image, num_parallel_calls=p3_AUTOTUNE)
+          .batch(batch_size).prefetch(p3_AUTOTUNE))
+    probs = model.predict(ds, verbose=1)
+    idx = np.argmax(probs, axis=1)
     return pd.DataFrame({
         'filename': filenames,
-        'predicted': [p3_class_names[p3_i] for p3_i in idx],
-        'confidence': preds.max(axis=1),
+        'predicted_name': [class_names[i] for i in idx],
+        'confidence': probs.max(axis=1),
     })
 
 
 # --- 시험 환경: 별도 test 폴더가 있는 경우 ★ ---
-# TEST_DIR = './test'
-# submission = p3_predict_test_directory(p3_model, TEST_DIR, p3_class_names)
-# submission.to_csv(p3_SUBMIT_CSV, index=False)
-# print(f"[저장] {p3_SUBMIT_CSV} ({len(submission)}건)")
+# p3_TEST_DIR = './test'
+# p3_submission = p3_predict_test_directory(p3_model, p3_TEST_DIR, p3_class_names)
+# ★ 컬럼명은 문제가 요구하는 이름 그대로 (다르면 채점 불가 — 필요하면 rename)
+# p3_submission.to_csv(p3_SUBMIT_CSV, index=False)
+# print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건)")
 
 # --- test 폴더가 없으면 검증 결과를 제출물로 ---
 p3_val_result.to_csv(p3_SUBMIT_CSV, index=False)
@@ -335,7 +339,8 @@ print("작업 파일:", [f for f in _files if '_ckpt' in f])
 # ============================================================
 # %%
 # label 미복원(0점) 방지: 예측 컬럼 값이 class_names 문자열인지까지 확인.
-# (별도 test 폴더로 제출했다면 n_rows 를 그 파일 수로 바꿀 것)
+# 별도 test 폴더로 제출했다면 n_rows 만 len(p3_submission) 으로 바꾸세요.
+# (컬럼명은 검증 결과와 같은 predicted_name 이라 나머지는 그대로 통과합니다)
 try:
     check_submission(p3_SUBMIT_CSV, n_rows=len(p3_val_result),
                      label_col='predicted_name', allowed_labels=p3_class_names,

@@ -341,9 +341,10 @@ print(os.listdir('.'))     # 파일이 실제로 만들어졌는지 눈으로 �
 | `NameError: p2_...` | 해당 템플릿 셀을 아직 실행 안 함 | 위에서부터 순서대로 실행 |
 | `could not convert string to float` | 범주형이 인코딩 안 됨 | `select_dtypes`로 남은 object 컬럼 확인 |
 | `Input contains NaN` | 결측 처리 누락 | `X.isnull().sum().sum()` 확인 |
-| `y contains previously unseen labels` | test에만 있는 범주 | 인코딩을 `map(...) else -1` 방식으로 |
+| `y contains previously unseen labels` | test에만 있는 범주 | 인코딩을 사전 `map(...)` + `fillna(-1)` 방식으로 |
 | `Found input variables with inconsistent numbers of samples` | X와 y 행 수 불일치 | `reset_index(drop=True)` 후 재시도 |
 | `Number of features of the model must match` | train/test 컬럼 불일치 | `X_test = X_test.reindex(columns=X.columns, fill_value=0)` |
+| `Keras is Keras 3, ... not yet supported in Transformers` | tf-keras 미설치 (BERT) | 첫 셀에서 `!pip install -q tf-keras` → 런타임 재시작 → 세션 시작 셀부터 |
 | `ResourceExhaustedError` (OOM) | 배치가 큼 | BATCH_SIZE 32→16→8, MAX_LENGTH 128→64 |
 | `loss: nan` | 학습률 과대 | BERT는 2e-5, 파인튜닝은 1e-5 |
 | `ValueError: Shapes ... incompatible` | 출력층/손실 불일치 | `categorical` ↔ `categorical_crossentropy` 짝 확인 |
@@ -361,6 +362,7 @@ print(os.listdir('.'))     # 파일이 실제로 만들어졌는지 눈으로 �
 clean_text → TfidfVectorizer → LinearSVC/LogReg/NB 비교 → 제출 파일 확보
              (한국어면 analyzer='char_wb', ngram_range=(2,4) — 공백 토큰화보다 확실히 낫다)
 → (시간 남으면) klue/bert-base, lr=2e-5, from_logits=True, from_pt=True
+             (BERT 전제: 첫 셀 !pip install -q tf-keras → 세션 시작 셀이 옛 Keras 로 전환)
 ```
 
 **Image**

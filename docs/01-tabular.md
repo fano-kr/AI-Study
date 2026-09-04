@@ -86,17 +86,18 @@ X_test[num_cols] = num_imputer.transform(X_test[num_cols])   # transform 만!
 시험 주력은 트리 모델(RF/XGB/LGBM)이므로 **LabelEncoder가 기본값**입니다.
 
 단, test에만 나타나는 값이 있으면 `LabelEncoder.transform`이 에러로 죽습니다.
+그래서 train에서 배운 값을 **숫자 사전**으로 만들고, test는 사전으로 변환합니다.
 
 ```python
 for col in cat_cols:
     le = LabelEncoder()
     X[col] = le.fit_transform(X[col].astype(str))
-    X_test[col] = X_test[col].astype(str).map(
-        lambda x, _le=le: _le.transform([x])[0] if x in _le.classes_ else -1
-    )
+    code = {v: i for i, v in enumerate(le.classes_)}   # 배운 값 → 숫자 사전
+    X_test[col] = X_test[col].astype(str).map(code).fillna(-1).astype(int)
 ```
 
-처음 보는 값은 `-1`로 보냅니다. 트리 모델은 하나의 분기로 처리하므로 안전합니다.
+사전에 없는(처음 보는) 값은 `NaN → -1`이 됩니다. 에러 대신 안전한 기본값이고,
+트리 모델은 하나의 분기로 처리하므로 문제없습니다.
 
 ### 스케일링
 

@@ -136,13 +136,13 @@ if p1_cat_cols:
     p1_X[p1_cat_cols] = p1_cat_imputer.fit_transform(p1_X[p1_cat_cols])
     p1_X_test[p1_cat_cols] = p1_cat_imputer.transform(p1_X_test[p1_cat_cols])
 
-# 인코딩
+# 인코딩 — train 에서 배운 값을 숫자 사전으로 만들고, test 는 사전으로 변환.
+# test 에만 있는 값은 사전에 없으므로 NaN → -1 이 된다 (에러 대신 안전한 기본값)
 for p1_col in p1_cat_cols:
     p1_le = LabelEncoder()
     p1_X[p1_col] = p1_le.fit_transform(p1_X[p1_col].astype(str))
-    p1_X_test[p1_col] = p1_X_test[p1_col].astype(str).map(
-        lambda v, _le=p1_le: _le.transform([v])[0] if v in _le.classes_ else -1
-    )
+    p1_code = {v: i for i, v in enumerate(p1_le.classes_)}
+    p1_X_test[p1_col] = p1_X_test[p1_col].astype(str).map(p1_code).fillna(-1).astype(int)
 
 # 스케일링
 p1_scaler = StandardScaler()
@@ -298,9 +298,12 @@ print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
 # 10. 제출물 검증  ★ 문제를 끝낼 때마다
 # ============================================================
 # %%
-# 회귀는 label 복원이 없으므로 행 수 / 결측 / index / 모델 파일만 점검합니다.
+# 회귀는 label 복원 검사가 없으므로 행 수 / 결측 / index / 모델 파일만 점검합니다.
+# label_col 을 넘겨야 결측 assert 가 예측 컬럼에만 걸립니다 —
+# 제출물에는 df_test 원본 컬럼이 같이 들어 있어 피처의 NaN 은 정상일 수 있습니다.
 try:
     check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
+                     label_col='predicted',
                      model_path=p1_SUBMIT_MODEL)
 except NameError:
     import os

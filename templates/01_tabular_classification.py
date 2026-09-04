@@ -164,14 +164,14 @@ print(f"결측 남은 개수 - train {p1_X.isnull().sum().sum()} / test {p1_X_te
 # %%
 # [선택] 이상치 클리핑·피처 엔지니어링은 점수가 부족할 때만 — 코드는 docs/01-tabular.md
 # --- 3-5. 인코딩 (LabelEncoder: 트리 모델에 충분하고 빠름)
-# test 에만 있는 미지의 값은 -1 로 보내 에러를 막는다
+# train 에서 배운 값을 숫자 사전으로 만들고, test 는 사전으로 변환.
+# test 에만 있는 값은 사전에 없으므로 NaN → -1 이 된다 (에러 대신 안전한 기본값)
 p1_label_encoders = {}
 for p1_col in p1_cat_cols:
     p1_le = LabelEncoder()
     p1_X[p1_col] = p1_le.fit_transform(p1_X[p1_col].astype(str))
-    p1_X_test[p1_col] = p1_X_test[p1_col].astype(str).map(
-        lambda v, _le=p1_le: _le.transform([v])[0] if v in _le.classes_ else -1
-    )
+    p1_code = {v: i for i, v in enumerate(p1_le.classes_)}
+    p1_X_test[p1_col] = p1_X_test[p1_col].astype(str).map(p1_code).fillna(-1).astype(int)
     p1_label_encoders[p1_col] = p1_le
 
 # [선택] 선형 모델 주력이면 OneHot — 코드는 docs/01-tabular.md
