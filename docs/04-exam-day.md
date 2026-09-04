@@ -371,7 +371,8 @@ image_dataset_from_directory(label_mode='categorical') → 증강 레이어
 → MobileNetV2 동결 Phase1 lr=1e-3 → 상위 30층 해제 + 재컴파일 → Phase2 lr=1e-5
 → 순서 보장 데이터셋으로 예측 → 제출 파일
 ```
-(GPU는 세션 시작 셀에서 이미 확인했습니다)
+(GPU는 세션 시작 셀에서 이미 확인했습니다.
+객체 위치(BBox)를 요구하면 → 03_image_localization.py: XML→xywh, 출력층 4+N, 커스텀 손실, IoU)
 
 ## 12. 제출 전 최종 점검
 

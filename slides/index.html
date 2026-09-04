@@ -549,7 +549,7 @@ kbd{
       <div class="card"><span class="k">문제 1 · Tabular</span><h3>분류</h3><p>이진/다중 자동 대응</p></div>
       <div class="card"><span class="k">문제 1 · Tabular</span><h3>회귀</h3><p>모델·지표만 다르고 뼈대는 같다</p></div>
       <div class="card key"><span class="k">문제 2 · Text</span><h3>다중분류 한 벌</h3><p>이진용을 따로 만들지 않는다</p></div>
-      <div class="card key"><span class="k">문제 3 · Image</span><h3>다중분류 한 벌</h3><p>이진용을 따로 만들지 않는다</p></div>
+      <div class="card key"><span class="k">문제 3 · Image</span><h3>다중분류 한 벌</h3><p>이진용 없음 · BBox 문제용 변형 한 벌 별도</p></div>
     </div>
     <div class="quote" style="max-width:34em">클래스 2개짜리 다중분류가<br>곧 이진분류다.</div>
     <p class="dim">시험 순서는 <strong>1번 Tabular · 2번 Text · 3번 Image</strong>로 고정 —
@@ -835,6 +835,24 @@ val_pred_ds = (tf.data.Dataset.from_tensor_slices(val_ds.file_paths)
 </section>
 
 <!-- 19 ------------------------------------------------------ -->
+<!-- 로컬라이제이션 -------------------------------------------- -->
+<section class="slide" data-min="36" data-track="3" data-title="로컬라이제이션 — 출력층만 바꾼다">
+  <div class="gutter"></div>
+  <div class="body">
+    <div class="eyebrow">Image · 공식 실습에 있는 유형</div>
+    <h2>로컬라이제이션이 나오면<br><span class="kw">출력층만</span> 바꾼다</h2>
+    <pre><code>xywh = Dense(<span class="hlgood">4</span>, activation=<span class="hlgood">'sigmoid'</span>)(x)          <span class="cm"># 좌표 회귀 (0~1 정규화)</span>
+cls  = Dense(NUM_CLASSES, activation=<span class="hlgood">'softmax'</span>)(x)
+outputs = <span class="hlgood">Concatenate</span>()([xywh, cls])            <span class="cm"># 손실: 앞 4개 MSE + 뒤 분류 CE</span></code></pre>
+    <div class="grid g3">
+      <div class="card"><span class="k">라벨</span><h3>XML → x,y,w,h</h3><p>픽셀 좌표를 이미지 크기로 나눠 0~1 중심점+크기로.</p></div>
+      <div class="card bad"><span class="k">함정</span><h3>증강 금지</h3><p>반전·회전은 좌표를 안 따라갑니다. 라벨이 통째로 틀려짐.</p></div>
+      <div class="card"><span class="k">평가</span><h3>IoU ≥ 0.5 양호</h3><p>제출 좌표 형식은 문제 지문 그대로. label 복원도 동일.</p></div>
+    </div>
+    <p class="dim">템플릿 <code>03_image_localization.py</code> — 백본·콜백·검증은 분류와 같고, KT 데이터로 실측 검증했습니다.</p>
+  </div>
+</section>
+
 <section class="slide chapter" data-min="38" data-track="4" data-title="시험 당일">
   <div class="gutter"></div>
   <div class="body">

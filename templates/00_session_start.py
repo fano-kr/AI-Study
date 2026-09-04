@@ -12,7 +12,7 @@
 #   00_session_start.py           ← 지금 이 셀. 세션당 1회
 #   01_tabular_classification.py  ← 1번 문제 (회귀면 01_tabular_regression.py)
 #   02_text_classification.py     ← 2번 문제
-#   03_image_classification.py    ← 3번 문제
+#   03_image_classification.py    ← 3번 문제 (BBox 요구 시 03_image_localization.py)
 #
 # ── 문제 푸는 순서: GPU 를 많이 쓰는 것부터 ──
 #

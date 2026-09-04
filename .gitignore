@@ -28,3 +28,6 @@ data/
 *.tgz
 flower_photos/
 cats_and_dogs_filtered/
+
+# 로컬 학습 자료 (대용량 데이터셋 + 배포 불가 자료)
+kt-study/

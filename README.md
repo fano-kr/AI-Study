@@ -69,7 +69,8 @@ SUBMIT_MODEL = f'{PHONE}_{PROB_NO}.pkl'
 docs/        강의 교재 (차시별 1개)
 notebooks/   축약 실습 — 강의 후 각자 돌려 보는 자료
 templates/   시험장에서 복사해 쓰는 완성 파이프라인
-slides/      발표자료 (HTML 23장)
+slides/      발표자료 (HTML)
+kt-study/    KT 공식 실습 원본 (로컬 전용 — 용량·배포 문제로 git 미포함)
 ```
 
 `notebooks/`는 개념 확인용 축약본, `templates/`는 시험장에서 통째로 붙여넣는 전체본입니다.
@@ -89,6 +90,7 @@ slides/      발표자료 (HTML 23장)
 | [01_tabular_regression.py](templates/01_tabular_regression.py) | **문제 1** — 정형 회귀 |
 | [02_text_classification.py](templates/02_text_classification.py) | **문제 2** — 텍스트 분류 (TF-IDF 우선, BERT 선택) |
 | [03_image_classification.py](templates/03_image_classification.py) | **문제 3** — 이미지 분류 (MobileNetV2 전이학습) |
+| [03_image_localization.py](templates/03_image_localization.py) | **문제 3 변형** — BBox 회귀+분류 (문제가 객체 위치를 요구할 때) |
 
 발표자료는 [slides/index.html](slides/index.html)을 브라우저에서 열면 됩니다.
 <kbd>←</kbd> <kbd>→</kbd> 이동, <kbd>O</kbd> 목차. 하단 막대는 슬라이드 수가 아니라

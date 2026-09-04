@@ -83,8 +83,9 @@ X_test  = tfidf.transform(df_test[TEXT_COL])     # test:  transform
 "영화가"  "영화는"  "영화를"  "영화도"   →  전부 다른 피처로 흩어진다
 ```
 
-정석은 형태소 분석기(KoNLPy, Mecab)지만 시험 환경에 설치돼 있으리라는 보장이 없습니다.
-설치 없이 쓰는 우회로가 문자 단위 n-gram입니다.
+정석은 형태소 분석기입니다 — KT 공식 실습(001·002번)도 KoNLPy(Okt)를 씁니다.
+다만 `!pip install konlpy` 설치와 형태소 분석 시간이 들어, **설치 없이 즉시 되는
+문자 단위 n-gram을 기본값**으로 둡니다. 점수는 아래 실측대로 충분합니다.
 
 ```python
 tfidf = TfidfVectorizer(
@@ -123,6 +124,9 @@ ml_models = {
 
 RandomForest는 일부러 뺐습니다. 1만 차원 희소 행렬에서 트리를 키우면 느린 데다 성능도 밀립니다.
 Tabular의 주력 모델이 여기서는 후보에도 못 듭니다.
+
+KT 공식 실습(008번)의 `Tokenizer + Embedding + LSTM` 경로도 같은 이유로 뺐습니다 —
+작성량은 BERT급인데 성능은 대개 A와 B 사이입니다. A/B 두 길이면 충분합니다.
 
 > `LinearSVC`는 `predict_proba`가 없습니다. AUC가 필요하면 `LogisticRegression`을 쓰거나
 > `CalibratedClassifierCV`로 감싸세요.

@@ -224,6 +224,62 @@ plt.show()
 | Phase 2에서 급락 | 학습률이 높음 | `1e-5` 확인, 그래도 나쁘면 `1e-6` |
 | 학습이 아예 안 됨 | 입력 정규화 불일치 | `Rescaling` 범위가 백본 요구와 맞는지 |
 
+## 9. 로컬라이제이션이 나오면 — 출력층만 바꾼다
+
+KT 공식 실습 과정(Oxford Pet 12·13번)에 포함된 유형입니다. 이미지에서 **객체 위치(Bounding Box)**까지
+맞혀야 하며, 분류 템플릿에서 바뀌는 것은 셋뿐입니다.
+전체 코드는 [03_image_localization.py](../templates/03_image_localization.py) — KT 데이터로 실측 검증했습니다.
+
+**① 라벨** — 폴더명 대신 XML에서 읽습니다. 픽셀 좌표(xmin~ymax)를
+이미지 크기로 나눠 **0~1 중심점(x,y)+크기(w,h)**로 정규화합니다.
+
+```python
+t = et.parse(xml_path)
+W, H = float(t.find('./size/width').text), float(t.find('./size/height').text)
+xmin = float(t.find('./object/bndbox/xmin').text)   # ymin/xmax/ymax 동일
+x, y = (xmin+xmax)/2/W, (ymin+ymax)/2/H
+w, h = (xmax-xmin)/W, (ymax-ymin)/H
+```
+
+**② 출력층** — 좌표 4개(sigmoid 회귀)와 클래스 N개(softmax)를 이어 붙입니다.
+
+```python
+xywh = Dense(4, activation='sigmoid', name='xywh')(x)     # 0~1 좌표 회귀
+cls  = Dense(NUM_CLASSES, activation='softmax', name='cls')(x)
+outputs = Concatenate()([xywh, cls])
+```
+
+**③ 손실** — 앞 4개는 MSE, 뒤는 분류 CE를 합친 커스텀 함수 하나.
+
+```python
+def loss_fn(y_true, y_pred):          # y_true = [x,y,w,h,label_idx] 5개
+    loc = tf.reduce_mean(tf.square(y_true[:, :4] - y_pred[:, :4]))
+    cls = tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
+        tf.cast(y_true[:, 4], tf.int32), y_pred[:, 4:]))
+    return 5.0 * loc + cls            # bbox 가 안 맞으면 loc 가중을 올린다
+```
+
+주의 둘:
+
+- **증강 금지** — 반전·회전은 이미지만 바꾸고 정답 좌표는 그대로라 라벨이 통째로 틀려집니다.
+- **평가는 IoU** — 예측 상자와 정답 상자의 겹침 비율. 평균 0.5 이상이면 대체로 양호.
+  제출 좌표 형식(x,y,w,h vs xmin~ymax 픽셀)은 문제 지문 그대로 따르세요.
+
+## 10. 시험 코드가 ImageDataGenerator 를 쓰면
+
+KT 공식 실습(08·09번)은 옛 API인 `ImageDataGenerator`를 씁니다.
+시험 제공 코드가 그쪽이어도 하는 일은 같습니다 — 당황하지 말고 대응만 알아 두세요.
+
+| 하는 일 | 이 과정 (tf.data) | KT 공식 실습 |
+|---|---|---|
+| 폴더에서 로드 | `image_dataset_from_directory` | `ImageDataGenerator().flow_from_directory` |
+| 정규화 | `Rescaling` 레이어 | 생성자 인자 `rescale=1/255` |
+| 증강 | 모델 안 레이어 | 생성자 인자 (`rotation_range=` 등) |
+
+**섞지 마세요.** `rescale=1/255`로 이미 나눈 데이터에 `Rescaling` 레이어까지 붙이면
+정규화가 이중으로 걸립니다. MobileNetV2(−1~1 입력)를 ImageDataGenerator와 쓸 때는
+`preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input`이 정석입니다.
+
 ---
 
 **정리** — 이미지는 레시피 도메인입니다. `categorical` 통일, 2단계 학습(1e-3 → 1e-5),
