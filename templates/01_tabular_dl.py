@@ -75,6 +75,15 @@ print(f"Train {p1_dl_df_train.shape} / Test {p1_dl_df_test.shape} / 클래스 {p
 # %%
 p1_dl_X = p1_dl_df_train.drop(columns=[p1_dl_TARGET])
 p1_dl_y = p1_dl_df_train[p1_dl_TARGET].copy()
+
+# 타겟이 문자열이면 숫자로 — Keras 는 object 타겟을 못 받는다 (제출 시 inverse_transform 으로 복원)
+from sklearn.preprocessing import LabelEncoder
+p1_dl_target_encoder = None
+if p1_dl_y.dtype == 'object' or p1_dl_y.dtype.name == 'category':
+    p1_dl_target_encoder = LabelEncoder()
+    p1_dl_y = pd.Series(p1_dl_target_encoder.fit_transform(p1_dl_y))
+    print(f"타겟 클래스: {p1_dl_target_encoder.classes_}")
+
 p1_dl_has_label = p1_dl_TARGET in p1_dl_df_test.columns
 p1_dl_X_test = p1_dl_df_test.drop(columns=[p1_dl_TARGET]) if p1_dl_has_label else p1_dl_df_test.copy()
 
@@ -170,9 +179,13 @@ print(f"Val Accuracy {accuracy_score(p1_dl_y_val, p1_dl_val_pred):.4f} / "
       f"F1(macro) {f1_score(p1_dl_y_val, p1_dl_val_pred, average='macro'):.4f}")
 print(classification_report(p1_dl_y_val, p1_dl_val_pred))
 
-# ★ 타겟을 인코딩했다면 여기서 label 복원 — 숫자 그대로 내면 0점
+# ★ label 복원 — 인코딩된 숫자 그대로 내면 0점
+if p1_dl_target_encoder:
+    p1_dl_test_pred_labels = p1_dl_target_encoder.inverse_transform(p1_dl_test_pred)
+else:
+    p1_dl_test_pred_labels = p1_dl_test_pred
 p1_dl_submission = p1_dl_df_test.copy()
-p1_dl_submission['predicted'] = p1_dl_test_pred
+p1_dl_submission['predicted'] = p1_dl_test_pred_labels
 p1_dl_submission.to_csv(p1_dl_SUBMIT_CSV, index=False)
 p1_dl_model.save(p1_dl_SUBMIT_H5)
 print(f"[저장] {p1_dl_SUBMIT_CSV} ({len(p1_dl_submission)}건) / {p1_dl_SUBMIT_H5}")
@@ -180,13 +193,17 @@ print(f"[저장] {p1_dl_SUBMIT_CSV} ({len(p1_dl_submission)}건) / {p1_dl_SUBMIT
 # %%
 # --- 제출물 검증 (check_submission 은 세션 시작 셀에서 정의) ---
 try:
+    p1_dl_allowed = (p1_dl_target_encoder.classes_ if p1_dl_target_encoder
+                     else p1_dl_y.unique())
     check_submission(p1_dl_SUBMIT_CSV, n_rows=len(p1_dl_df_test),
-                     label_col='predicted', allowed_labels=p1_dl_y.unique(),
+                     label_col='predicted', allowed_labels=p1_dl_allowed,
                      model_path=p1_dl_SUBMIT_H5)
 except NameError:
     import os
     p1_dl__sub = pd.read_csv(p1_dl_SUBMIT_CSV)
     assert len(p1_dl__sub) == len(p1_dl_df_test), "행 수 불일치!"
-    assert set(p1_dl__sub['predicted']) <= set(p1_dl_y.unique()), "label 미복원 — 0점 위험!"
+    p1_dl_allowed = (p1_dl_target_encoder.classes_ if p1_dl_target_encoder
+                     else p1_dl_y.unique())
+    assert set(p1_dl__sub['predicted']) <= set(p1_dl_allowed), "label 미복원 — 0점 위험!"
     assert os.path.getsize(p1_dl_SUBMIT_H5) > 0, "모델 파일 없음!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
