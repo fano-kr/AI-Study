@@ -120,6 +120,12 @@ Keras 3를 지원하지 않습니다. `tf-keras`가 설치돼 있으면 세션 �
 
 이미지 노트북은 GPU가 없으면 `assert`로 멈춥니다. 시험장과 같은 동작입니다.
 
+### T4 실측 (선택)
+
+자료의 소요 시간은 **T4 기준 추정치**입니다. 실측하려면
+[notebooks/99_colab_benchmark.ipynb](notebooks/99_colab_benchmark.ipynb)를
+Colab T4에서 위에서부터 실행하세요. 마지막 셀이 도메인별 실제 시간을 표로 출력합니다.
+
 ## 사전 지식
 
 - Python 문법, `pandas` DataFrame 조작 (`groupby`, `merge` 수준까지)
