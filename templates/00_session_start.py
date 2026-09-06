@@ -56,7 +56,6 @@
 # Tabular 문제만 풀 계획이어도 확인은 지금 하세요.
 # 문제를 다 읽고 "이미지 문제가 있네" 하고 되돌아오면 이미 늦습니다.
 
-# !nvidia-smi
 
 # --- BERT(텍스트 방법 B)를 쓸 가능성이 있다면, 이 셀보다 먼저 설치 셀을 실행하세요 ---
 #   !pip install -q tf-keras "transformers>=4.40,<5" datasets

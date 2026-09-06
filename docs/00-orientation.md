@@ -44,7 +44,6 @@ train을 다시 쪼갠 내부 검증(`X_val`)과 헷갈리지 마세요.
 
 ```python
 # 시험 시작 후 첫 번째 셀
-!nvidia-smi
 
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')

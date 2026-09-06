@@ -20,7 +20,6 @@
 성능은 Colab 무료 T4와 비슷한 수준입니다.
 
 ```python
-!nvidia-smi
 
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')

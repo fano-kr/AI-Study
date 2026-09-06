@@ -50,7 +50,6 @@ Tabular에 시간을 가장 많이 배정한 이유는 [00-orientation.md](docs/
 
 ```python
 # ── 세션 시작 셀 (templates/00_session_start.py) — 시작할 때, 그리고 튕길 때마다 ──
-!nvidia-smi
 import tensorflow as tf
 gpus = tf.config.list_physical_devices('GPU')
 assert gpus, "GPU 미연결!"          # 없으면 에러 없이 CPU로 떨어진다
