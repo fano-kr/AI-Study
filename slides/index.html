@@ -741,7 +741,7 @@ model.compile('adam', <span class="hlgood">'binary_crossentropy'</span>, metrics
       <table>
         <thead><tr><th></th><th>A · TF-IDF + ML</th><th>B · BERT</th></tr></thead>
         <tbody>
-          <tr><td><strong>시간 (T4)</strong></td><td class="win">1~5분</td><td>20~40분</td></tr>
+          <tr><td><strong>시간 (T4 실측)</strong></td><td class="win">10초</td><td>3만건 3에폭 40분</td></tr>
           <tr><td><strong>실패 위험</strong></td><td class="win">거의 없음</td><td class="no">OOM · 다운로드 · 시간초과</td></tr>
         </tbody>
       </table>
@@ -894,20 +894,20 @@ outputs = <span class="hlgood">Concatenate</span>()([xywh, cls])            <spa
         <table>
           <thead><tr><th>순서</th><th>유형</th><th>학습</th></tr></thead>
           <tbody>
-            <tr><td class="num"><strong>1</strong></td><td><strong>이미지</strong> (3번 문제)</td><td class="num">10~30분</td></tr>
-            <tr><td class="num"><strong>2</strong></td><td><strong>텍스트 BERT</strong> (2번 문제)</td><td class="num">20~40분</td></tr>
-            <tr><td class="num">3</td><td>텍스트 TF-IDF (2번 문제)</td><td class="num lose">몇 분</td></tr>
-            <tr><td class="num">4</td><td>정형 (1번 문제)</td><td class="num lose">몇 분</td></tr>
+            <tr><td class="num"><strong>1</strong></td><td><strong>텍스트 BERT</strong> (2번 문제)</td><td class="num">3만건 40분</td></tr>
+            <tr><td class="num"><strong>2</strong></td><td><strong>이미지</strong> (3번 문제)</td><td class="num">3~6분</td></tr>
+            <tr><td class="num">3</td><td>텍스트 TF-IDF (2번 문제)</td><td class="num lose">10초</td></tr>
+            <tr><td class="num">4</td><td>정형 (1번 문제)</td><td class="num lose">1분 미만</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="card key"><span class="k">이유</span><h3>학습이 도는 동안<br>손이 빈다</h3>
-        <p>정형부터 풀면 그걸 다 끝낸 뒤에야 학습이 시작되고,
-          <strong>그 30분은 화면만 보게 됩니다.</strong></p></div>
+      <div class="card key"><span class="k">이유</span><h3>BERT 40분이<br>가장 길다</h3>
+        <p>가장 긴 학습을 <strong>먼저</strong> 걸어 두고, 그 40분에 나머지를 씁니다.
+          <strong class="kw-d">train 6만건이면 80분</strong> — 3만 이하로 줄이세요.</p></div>
     </div>
     <pre><code><span class="cm"># 커널이 하나라는 뜻</span>
-18분  이미지 fit() 실행 <span class="hl">─┐</span>  학습 중엔 다른 셀을 <span class="hlbad">실행</span> 못 한다. <span class="hlgood">작성</span>은 된다.
-48분  학습 종료         <span class="hl">─┘</span>  대기하던 셀이 자동으로 이어서 실행</code></pre>
+18분  BERT fit() 실행 <span class="hl">─┐</span>  학습(약 40분) 중엔 다른 셀 <span class="hlbad">실행</span> 못 함. <span class="hlgood">작성</span>은 됨.
+58분  학습 종료        <span class="hl">─┘</span>  대기하던 이미지·정형 셀이 이어서 실행</code></pre>
   </div>
 </section>
 
@@ -952,10 +952,10 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
         <thead><tr><th>시각</th><th>무엇을</th></tr></thead>
         <tbody>
           <tr><td class="num">0–3</td><td>세션 시작 셀 — GPU 연결(한 번), PHONE, 시드</td></tr>
-          <tr><td class="num">3–18</td><td><strong>이미지(3번)</strong>: 자료 정독 → 데이터 로드 → 모델 구축</td></tr>
+          <tr><td class="num">3–18</td><td><strong>BERT(2번)</strong>: 자료 정독 → train 3만 이하 → 모델 구축</td></tr>
           <tr><td class="num"><strong>18</strong></td><td><strong class="win">fit() 실행</strong> — 여기서부터 손이 빈다</td></tr>
-          <tr><td class="num">18–48</td><td>학습 중 <strong>정형(1번) 셀 작성</strong> (<code>p1_</code> 그대로)</td></tr>
-          <tr><td class="num">48–75</td><td>이미지 → <code>_3</code> 저장, 대기하던 정형 셀 → <code>_1</code> 저장</td></tr>
+          <tr><td class="num">18–48</td><td>BERT 학습(약 40분) 중 <strong>이미지·정형 셀 작성</strong></td></tr>
+          <tr><td class="num">48–75</td><td>이미지(3~6분)·정형·TF-IDF 실행 → <code>_1</code>·<code>_2</code>·<code>_3</code> 저장</td></tr>
           <tr><td class="num">75–150</td><td><strong>점수 낮은 쪽부터</strong> 튜닝</td></tr>
           <tr><td class="num">150–180</td><td>여유분, 최종 점검 및 제출</td></tr>
         </tbody>

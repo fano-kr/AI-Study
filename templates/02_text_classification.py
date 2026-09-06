@@ -292,13 +292,14 @@ p2_X_test_text = p2_df_test[p2_TEXT_COL].tolist()
 p2_y_train_b = p2_df_tr[p2_TARGET].tolist()
 p2_y_val_b = p2_df_val[p2_TARGET].tolist()
 
-# ★ T4 시간 안전장치 — BERT 는 T4 에서 6만 건이면 에폭당 약 8~10분입니다.
-#   train 이 그보다 크면 아래를 풀어 샘플링하세요. 안 그러면 180분을 위협합니다.
-# if len(p2_X_train_text) > 60000:
-#     p2_df_tr = p2_df_tr.sample(60000, random_state=RANDOM_SEED).reset_index(drop=True)
+# ★ T4 시간 안전장치 (실측) — 에폭당: 6천건 2.7분 / 3만건 13분 / 6만건 27분.
+#   6만 건을 3에폭 돌리면 80분 — 한 문제에 이만큼은 치명적입니다.
+#   train 이 3만 건을 넘으면 아래를 풀어 샘플링하세요.
+# if len(p2_X_train_text) > 30000:
+#     p2_df_tr = p2_df_tr.sample(30000, random_state=RANDOM_SEED).reset_index(drop=True)
 #     p2_X_train_text = p2_df_tr[p2_TEXT_COL].tolist()
 #     p2_y_train_b = p2_df_tr[p2_TARGET].tolist()
-print(f"BERT 학습량: {len(p2_X_train_text):,}건 (6만+ 이면 샘플링 검토)")
+print(f"BERT 학습량: {len(p2_X_train_text):,}건 — T4 에폭당 약 {len(p2_X_train_text)/6000*2.7:.0f}분 (3만+ 이면 샘플링)")
 
 # %%
 p2_tokenizer = BertTokenizerFast.from_pretrained(p2_BERT_MODEL_NAME)
