@@ -147,9 +147,10 @@ history_ft = model.fit(train_ds, validation_data=val_ds, epochs=20, callbacks=ca
 `EarlyStopping(restore_best_weights=True)` 덕분에 `epochs`를 넉넉히 잡아도 안전합니다.
 "몇 에폭이 적당할까"를 고민하지 말고 30을 넣고 콜백에 맡기세요.
 
-**T4 실측**: flowers 5클래스(train 약 2,900장) 기준 에폭당 Phase1 10초 / Phase2 13초.
-이미지는 생각보다 빠릅니다 — EarlyStopping 포함 두 단계 합쳐 보통 3~6분입니다.
-데이터가 크면 비례해 늘지만, BERT 같은 시간 폭탄은 아닙니다.
+**T4 실측 (증강 포함)**: 2클래스 약 1,000장에서 step당 2~3초, 에폭당 Phase1 ~80초 / Phase2 ~110초.
+EarlyStopping 포함 두 단계 합쳐 **약 15~25분**입니다. 증강 레이어(RandomRotation·Zoom 등)가
+step 비용을 크게 올리므로, 증강을 뺀 측정치(에폭당 10초)를 믿으면 안 됩니다.
+그래도 BERT(3만건 40분)보다는 짧아 순서는 BERT 다음입니다.
 
 ## 6. 예측 순서 함정 — 이 차시에서 가장 중요한 함정
 
