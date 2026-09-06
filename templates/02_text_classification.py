@@ -70,14 +70,22 @@ print(f"제출 파일: {p2_SUBMIT_CSV} / {p2_SUBMIT_MODEL} / 결과 컬럼: {p2_
 # p2_TARGET   = 'label'           # ★ 타겟 컬럼명
 # p2_target_names = None          # ★ 클래스 이름 리스트 (있으면)
 
-# --- 연습용: KLUE-YNAT 뉴스 토픽 (7클래스) ---
-# pip install datasets
-from datasets import load_dataset
-p2_klue = load_dataset('klue', 'ynat')
-p2_df_train = pd.DataFrame({'text': p2_klue['train']['title'], 'label': p2_klue['train']['label']})
-p2_df_test = pd.DataFrame({'text': p2_klue['validation']['title'], 'label': p2_klue['validation']['label']})
-p2_target_names = ['IT과학', '경제', '사회', '생활문화', '세계', '스포츠', '정치']
-p2_TEXT_COL, p2_TARGET = 'text', 'label'
+# --- 연습용: NSMC 네이버 영화 감성 (2클래스, raw TSV — HF Hub 불필요) ---
+# 시험 실데이터는 CSV 로 제공되므로 연습 로더는 버전 영향 없는 raw TSV 를 씁니다.
+_NSMC = 'https://raw.githubusercontent.com/e9t/nsmc/master/ratings'
+p2_df_train = pd.read_csv(f'{_NSMC}_train.txt', sep='	').dropna().sample(30000, random_state=RANDOM_SEED).reset_index(drop=True)
+p2_df_test = pd.read_csv(f'{_NSMC}_test.txt', sep='	').dropna().sample(6000, random_state=RANDOM_SEED).reset_index(drop=True)
+p2_target_names = ['부정', '긍정']
+p2_TEXT_COL, p2_TARGET = 'document', 'label'
+
+# --- (대안) KLUE-YNAT 7클래스: datasets 버전에 따라 로딩법이 다름 ---
+# 최신 datasets 에서 load_dataset('klue','ynat') 가 HfUriError 로 깨지면 아래처럼:
+#   from datasets import load_dataset
+#   klue = load_dataset('klue/ynat')                       # 또는 trust_remote_code=True
+#   p2_df_train = pd.DataFrame({'text': klue['train']['title'], 'label': klue['train']['label']})
+#   p2_df_test  = pd.DataFrame({'text': klue['validation']['title'], 'label': klue['validation']['label']})
+#   p2_target_names = ['IT과학','경제','사회','생활문화','세계','스포츠','정치']
+#   p2_TEXT_COL, p2_TARGET = 'text', 'label'
 
 p2_NUM_CLASSES = p2_df_train[p2_TARGET].nunique()
 p2_label_map = {i: n for i, n in enumerate(p2_target_names)} if p2_target_names else None
