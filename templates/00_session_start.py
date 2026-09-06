@@ -79,8 +79,11 @@ print(f"GPU: {gpus}")
 assert gpus, "GPU 미연결! 런타임 설정을 확인하세요"
 
 if KERAS_VER.startswith('3'):
-    print("참고: Keras 3 로 동작 중 — Tabular·TF-IDF·이미지는 문제없지만 BERT(방법 B)는 불가.")
+    print("참고: Keras 3 로 동작 중(요즘 Colab) — Tabular·TF-IDF·이미지는 문제없지만 BERT(방법 B)는 불가.")
     print("      BERT 를 쓰려면 !pip install -q tf-keras → 런타임 재시작 → 이 셀부터 다시.")
+    print("      ★ 시험장은 Keras 2(TF 2.13). Colab 예제에서 본 '최신 인자'를 그대로 쓰면")
+    print("        시험에서 TypeError: unexpected keyword argument 로 죽을 수 있음")
+    print("        (대표: image_dataset_from_directory(..., verbose=...) — 2.13 엔 없음).")
 
 # 확인 끝. 세션이 유지되는 동안에는 어떤 템플릿에서도 다시 확인하지 않습니다.
 # 세션이 튕겨서 런타임이 재시작되면 CPU 로 붙을 수 있으므로 이 셀부터 다시 실행하세요.

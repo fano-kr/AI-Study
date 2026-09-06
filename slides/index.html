@@ -546,13 +546,13 @@ kbd{
     <div class="eyebrow">준비 전략</div>
     <h2>템플릿 <span class="kw">네 벌</span>이면 끝난다</h2>
     <div class="grid g4">
-      <div class="card"><span class="k">문제 1 · Tabular</span><h3>분류</h3><p>이진/다중 자동 대응</p></div>
-      <div class="card"><span class="k">문제 1 · Tabular</span><h3>회귀</h3><p>모델·지표만 다르고 뼈대는 같다</p></div>
-      <div class="card key"><span class="k">문제 2 · Text</span><h3>다중분류 한 벌</h3><p>이진용을 따로 만들지 않는다</p></div>
-      <div class="card key"><span class="k">문제 3 · Image</span><h3>다중분류 한 벌</h3><p>이진용 없음 · BBox 문제용 변형 한 벌 별도</p></div>
+      <div class="card"><span class="k">문제 1 · Tabular · 30점</span><h3>분류</h3><p>이진/다중 자동 대응</p></div>
+      <div class="card"><span class="k">문제 1 · Tabular · 30점</span><h3>회귀</h3><p>모델·지표만 다르고 뼈대는 같다</p></div>
+      <div class="card key"><span class="k">문제 2 · Text · 35점</span><h3>다중분류 한 벌</h3><p>이진용을 따로 만들지 않는다</p></div>
+      <div class="card key"><span class="k">문제 3 · Image · 35점</span><h3>다중분류 한 벌</h3><p>이진용 없음 · BBox 문제용 변형 한 벌 별도</p></div>
     </div>
     <div class="quote" style="max-width:34em">클래스 2개짜리 다중분류가<br>곧 이진분류다.</div>
-    <p class="dim">시험 순서는 <strong>1번 Tabular · 2번 Text · 3번 Image</strong>로 고정 —
+    <p class="dim"><strong>배점: Tabular 30 · Text 35 · Image 35 = 100점.</strong><br>시험 순서는 <strong>1번 Tabular · 2번 Text · 3번 Image</strong>로 고정 —
       파일명과 변수 접두사(<code>p1_</code>·<code>p2_</code>·<code>p3_</code>)가 이 순서에 미리 맞춰져 있습니다.</p>
   </div>
 </section>
@@ -892,17 +892,17 @@ outputs = <span class="hlgood">Concatenate</span>()([xywh, cls])            <spa
     <div class="grid g2">
       <div class="tw">
         <table>
-          <thead><tr><th>순서</th><th>유형</th><th>학습</th></tr></thead>
+          <thead><tr><th>순서</th><th>유형</th><th>배점</th><th>학습</th></tr></thead>
           <tbody>
-            <tr><td class="num"><strong>1</strong></td><td><strong>텍스트 BERT</strong> (2번 문제)</td><td class="num">3만건 40분</td></tr>
-            <tr><td class="num"><strong>2</strong></td><td><strong>이미지</strong> (3번 문제)</td><td class="num">15~25분</td></tr>
-            <tr><td class="num">3</td><td>텍스트 TF-IDF (2번 문제)</td><td class="num lose">10초</td></tr>
-            <tr><td class="num">4</td><td>정형 (1번 문제)</td><td class="num lose">1분 미만</td></tr>
+            <tr><td class="num"><strong>1</strong></td><td><strong>텍스트 BERT</strong> (2번 문제)</td><td class="num">35</td><td class="num">3만건 40분</td></tr>
+            <tr><td class="num"><strong>2</strong></td><td><strong>이미지</strong> (3번 문제)</td><td class="num">35</td><td class="num">15~25분</td></tr>
+            <tr><td class="num">3</td><td>텍스트 TF-IDF (2번 문제)</td><td class="num">35</td><td class="num lose">10초</td></tr>
+            <tr><td class="num">4</td><td>정형 (1번 문제)</td><td class="num">30</td><td class="num lose">1분 미만</td></tr>
           </tbody>
         </table>
       </div>
       <div class="card key"><span class="k">이유</span><h3>BERT 40분이<br>가장 길다</h3>
-        <p>가장 긴 학습을 <strong>먼저</strong> 걸어 두고, 그 40분에 나머지를 씁니다.
+        <p><strong class="kw-d">Text·Image가 각 35점</strong>으로 크고 학습도 깁니다. 가장 긴 학습을 <strong>먼저</strong> 걸어 두고, 그 40분에 나머지를 씁니다.
           <strong class="kw-d">train 6만건이면 80분</strong> — 3만 이하로 줄이세요.</p></div>
     </div>
     <pre><code><span class="cm"># 커널이 하나라는 뜻</span>

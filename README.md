@@ -17,12 +17,14 @@ AICE Professional 실기는 새 모델을 발명하는 시험이 아니라
 
 ## 타임라인 — 발표 45분 + Q&A 15분
 
-| 시간 | 차시 | 교재 | 노트북 |
-|---|---|---|---|
-| 00–06 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | [00-orientation.md](docs/00-orientation.md) | — |
-| 06–19 | **Tabular** 분류/회귀 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
-| 19–29 | **Text** 분류 (TF-IDF / BERT) | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
-| 29–38 | **Image** 분류 (전이학습) | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
+시험 배점은 **Tabular 30 · Text 35 · Image 35 = 100점**입니다.
+
+| 시간 | 차시 | 배점 | 교재 | 노트북 |
+|---|---|---|---|---|
+| 00–06 | 오리엔테이션 · 시험 환경 · 공통 파이프라인 | — | [00-orientation.md](docs/00-orientation.md) | — |
+| 06–19 | **Tabular** 분류/회귀 | 30 | [01-tabular.md](docs/01-tabular.md) | [01_tabular.ipynb](notebooks/01_tabular_quickstart.ipynb) |
+| 19–29 | **Text** 분류 (TF-IDF / BERT) | 35 | [02-text.md](docs/02-text.md) | [02_text.ipynb](notebooks/02_text_quickstart.ipynb) |
+| 29–38 | **Image** 분류 (전이학습) | 35 | [03-image.md](docs/03-image.md) | [03_image.ipynb](notebooks/03_image_quickstart.ipynb) |
 | 38–45 | 시험 당일 — 순서·변수·시간 배분 | [04-exam-day.md](docs/04-exam-day.md) | — |
 | **45–60** | **Q&A** | — | — |
 

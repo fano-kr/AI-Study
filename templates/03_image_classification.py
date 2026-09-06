@@ -198,10 +198,11 @@ p3_model.compile(
 # 5. Phase 1 — Feature Extraction
 # ============================================================
 # %%
+p3_CKPT = f'{PHONE}_{p3_PROB_NO}_ckpt.weights.h5'   # 버전 무관 가중치 저장
 p3_callbacks = [
     tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
-    # 학습 도중 세션이 튕겨도 여기까지의 최고 성능 가중치는 파일로 남는다
-    tf.keras.callbacks.ModelCheckpoint(f'{PHONE}_{p3_PROB_NO}_ckpt.keras', save_best_only=True,
+    # 학습 도중 세션이 튕겨도 최고 성능 가중치는 파일로 남는다 (재시작 시 모델 재구성 후 load_weights)
+    tf.keras.callbacks.ModelCheckpoint(p3_CKPT, save_best_only=True, save_weights_only=True,
                                        monitor='val_accuracy', mode='max'),
     tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-7),
 ]
@@ -228,6 +229,9 @@ p3_model.compile(
 
 p3_history_ft = p3_model.fit(p3_train_ds, validation_data=p3_val_ds,
                        epochs=p3_FINE_TUNE_EPOCHS, callbacks=p3_callbacks, verbose=1)
+
+# ★ best 가중치 보장 — 두 단계 통틀어 val_accuracy 최고 시점을 다시 읽는다 (restore_best_weights 비의존)
+p3_model.load_weights(p3_CKPT)
 
 # ============================================================
 # 7. 학습 곡선
@@ -317,15 +321,16 @@ def p3_predict_test_directory(model, test_dir, class_names, batch_size=p3_BATCH_
 # p3_TEST_DIR = './test'
 # p3_submission = p3_predict_test_directory(p3_model, p3_TEST_DIR, p3_class_names)
 # ★ 컬럼명은 문제가 요구하는 이름 그대로 (다르면 채점 불가 — 필요하면 rename)
-# p3_submission.to_csv(p3_SUBMIT_CSV, index=False)
+# p3_submission.to_csv(p3_SUBMIT_CSV, index=False, encoding='utf-8-sig')
 # print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건)")
 
 # --- (연습용) test 폴더가 없으면 내부 검증 결과를 지문 형식으로 제출 ---
+# ★ 제출 규격(공식 샘플문항 방식): 식별자(filename) + 결과 컬럼. 값은 복원된 클래스명(숫자 아님).
 p3_submission = pd.DataFrame({
     'filename': p3_val_result['filename'],
     p3_PRED_COL: p3_val_result['predicted_name'],
 })
-p3_submission.to_csv(p3_SUBMIT_CSV, index=False)
+p3_submission.to_csv(p3_SUBMIT_CSV, index=False, encoding='utf-8-sig')
 print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건)")
 
 # %%

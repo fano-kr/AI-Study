@@ -80,6 +80,10 @@ def remaining():
 *T4 실측 기준. **BERT 가 가장 오래 걸립니다** — 이미지가 아니라 BERT 를 먼저 거세요.
 train 6만 건을 그대로 쓰면 3에폭에 80분이라 다른 문항을 잡아먹습니다.*
 
+**배점(Tabular 30 · Text 35 · Image 35)도 순서에 반영하세요.**
+Text·Image가 각 35점으로 크고 학습도 길므로 먼저 착수합니다. 정형(30점)은 몇 분이면
+끝나니 학습 대기 중에 처리합니다. 배점이 큰 문제를 미완성으로 남기는 게 가장 큰 손실입니다.
+
 문제 번호(1 Tabular · 2 Text · 3 Image)와 푸는 순서는 별개입니다.
 번호는 제출 파일명과 변수 접두사에만 쓰이므로, 3번부터 풀어도 아무 문제 없습니다.
 
@@ -356,6 +360,8 @@ print(os.listdir('.'))     # 파일이 실제로 만들어졌는지 눈으로 �
 | `Keras is Keras 3, ... not yet supported in Transformers` | tf-keras 미설치 (BERT) | 첫 셀에서 `!pip install -q tf-keras` → 런타임 재시작 → 세션 시작 셀부터 |
 | `ResourceExhaustedError` (OOM) | 배치가 큼 | BATCH_SIZE 32→16→8, MAX_LENGTH 128→64 |
 | `loss: nan` | 학습률 과대 | BERT는 2e-5, 파인튜닝은 1e-5 |
+| **`TypeError: ... unexpected keyword argument`** (콜백·데이터셋 생성 시 1에폭 근처에서 멈춤) | **Colab(Keras 3) 전용 인자를 시험장(Keras 2/TF 2.13)에서 사용** | 그 인자를 **빼라**. 대표: `image_dataset_from_directory(..., verbose=...)`, 최신 콜백 인자. 세션 시작 배너로 **Keras 버전 먼저 확인** |
+| EarlyStopping 이 best 를 안 살리는 듯(끝까지 학습) | `restore_best_weights` 동작이 Keras 버전마다 다름 | 콜백에 의존 말고 **학습 후 `model.load_weights(CKPT)`** — 템플릿에 반영됨 |
 | `ValueError: Shapes ... incompatible` | 출력층/손실 불일치 | `categorical` ↔ `categorical_crossentropy` 짝 확인 |
 
 ## 11. 도메인별 한 줄 요약

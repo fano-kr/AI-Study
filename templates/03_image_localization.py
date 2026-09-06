@@ -182,16 +182,20 @@ p3_model.compile(optimizer=tf.keras.optimizers.Adam(p3_LEARNING_RATE), loss=p3_l
 # 5. 학습
 # ============================================================
 # %%
+p3_CKPT = f'{PHONE}_{p3_PROB_NO}_ckpt.weights.h5'   # 버전 무관 가중치 저장 (커스텀 loss → load_weights 로 복원)
 p3_callbacks = [
     tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
-    # 학습 도중 세션이 튕겨도 여기까지의 최고 가중치는 파일로 남는다
-    tf.keras.callbacks.ModelCheckpoint(f'{PHONE}_{p3_PROB_NO}_ckpt.keras',
-                                       save_best_only=True, monitor='val_loss'),
+    # 학습 도중 세션이 튕겨도 최고 가중치는 파일로 남는다
+    tf.keras.callbacks.ModelCheckpoint(p3_CKPT,
+                                       save_best_only=True, save_weights_only=True, monitor='val_loss'),
     tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-7),
 ]
 
 p3_history = p3_model.fit(p3_train_ds, validation_data=p3_val_ds,
                           epochs=p3_EPOCHS, callbacks=p3_callbacks, verbose=1)
+
+# ★ best 가중치 보장 — restore_best_weights 에 의존하지 않고 체크포인트를 다시 읽는다
+p3_model.load_weights(p3_CKPT)
 
 # ============================================================
 # 6. 평가 — 좌표는 IoU, 클래스는 정확도

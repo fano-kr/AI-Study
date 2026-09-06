@@ -64,7 +64,8 @@ except NameError:
 p1_SUBMIT_CSV = f'{PHONE}_{p1_PROB_NO}.csv'
 p1_SUBMIT_MODEL = f'{PHONE}_{p1_PROB_NO}.pkl'
 # 지문 ③: 결과물 컬럼명 — 지문이 지정한 이름 그대로 (임의로 지으면 채점 불가)
-p1_PRED_COL = 'pred'                              # ★ 지문의 컬럼명으로 교체
+p1_PRED_COL = 'pred'                              # ★ 지문의 컬럼명으로 교체 (값도 복원 label)
+p1_KEEP_TEST_COLS = True                          # ★ 공식 규격: test 원본 + 결과 컬럼(train 과 동일 구조). 단일 컬럼만 원하면 False
 print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL} / 결과 컬럼: {p1_PRED_COL}")
 
 # ============================================================
@@ -131,6 +132,7 @@ if p1_TARGET in p1_numeric_cols:
 # --- 3-1. 불필요 컬럼 제거 (train, test 동시에) ★
 p1_drop_cols = ['alive', 'pclass', 'deck']       # ★ 위 표를 보고 결정
 p1_df_train = p1_df_train.drop(columns=[c for c in p1_drop_cols if c in p1_df_train.columns], errors='ignore')
+p1_df_test_orig = p1_df_test.copy()   # ★ 제출용 원본 보존 (컬럼 변형 전 · 로더 위치와 무관)
 p1_df_test = p1_df_test.drop(columns=[c for c in p1_drop_cols if c in p1_df_test.columns], errors='ignore')
 print(f"제거: {p1_drop_cols}")
 
@@ -324,18 +326,21 @@ if p1_target_encoder:
 else:
     p1_test_pred_labels = p1_test_predictions
 
-# 지문 ③이 지정한 컬럼만 담는다. 값은 복원된 label (예: 0/1 이 아니라 Y/N)
-p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_pred_labels})
-# 지문이 ID 류 컬럼도 요구하면 지문 컬럼명 그대로 추가:
-# p1_submission.insert(0, 'ID', p1_df_test['ID'].values)
+# ★ 제출 규격(공식 샘플문항): test 원본을 그대로 두고 결과 컬럼을 '마지막에' 추가
+#    → 훈련셋과 동일한 컬럼 구조. 값은 복원된 label(예: 0/1 이 아니라 Y/N — 숫자 그대로면 0점).
+if p1_KEEP_TEST_COLS:
+    p1_submission = p1_df_test_orig.drop(columns=[c for c in [p1_TARGET] if c in p1_df_test_orig.columns])
+    p1_submission[p1_PRED_COL] = pd.Series(p1_test_pred_labels).values
+else:
+    p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_pred_labels})
 
 if p1_has_test_label:
     p1_y_cmp = p1_target_encoder.transform(p1_df_test[p1_TARGET]) if p1_target_encoder else p1_df_test[p1_TARGET]
     print(f"[Test] Acc={accuracy_score(p1_y_cmp, p1_test_predictions):.4f} "
           f"F1={f1_score(p1_y_cmp, p1_test_predictions, average='macro'):.4f}")
 
-p1_submission.to_csv(p1_SUBMIT_CSV, index=False)
-print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건)")
+p1_submission.to_csv(p1_SUBMIT_CSV, index=False, encoding='utf-8-sig')
+print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건) 컬럼 {list(p1_submission.columns)}")
 print(p1_submission.head())
 
 # %%

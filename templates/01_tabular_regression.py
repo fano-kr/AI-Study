@@ -56,6 +56,7 @@ except NameError:
 p1_SUBMIT_CSV = f'{PHONE}_{p1_PROB_NO}.csv'
 p1_SUBMIT_MODEL = f'{PHONE}_{p1_PROB_NO}.pkl'
 p1_PRED_COL = 'pred'                              # ★ 지문 ③의 결과 컬럼명 그대로
+p1_KEEP_TEST_COLS = True                          # ★ 공식 규격: test 원본 + 결과 컬럼(train 과 동일 구조). 단일 컬럼만 원하면 False
 print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL} / 결과 컬럼: {p1_PRED_COL}")
 
 # ============================================================
@@ -118,6 +119,7 @@ if p1_drop_cols:
 p1_X = p1_df_train.drop(columns=[p1_TARGET])
 p1_y = p1_df_train[p1_TARGET].copy()
 
+p1_df_test_orig = p1_df_test.copy()   # ★ 제출용 원본 보존 (컬럼 변형 전 · 로더 위치와 무관)
 p1_has_test_label = p1_TARGET in p1_df_test.columns
 p1_X_test = p1_df_test.drop(columns=[p1_TARGET]) if p1_has_test_label else p1_df_test.copy()
 p1_y_test = p1_df_test[p1_TARGET].copy() if p1_has_test_label else None
@@ -280,15 +282,19 @@ p1_test_predictions = p1_best_model.predict(p1_X_test_scaled)
 if p1_USE_LOG_TARGET:
     p1_test_predictions = np.expm1(p1_test_predictions)
 
-# 지문 ③이 지정한 컬럼만 담는다
-p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_predictions})
+# ★ 제출 규격(공식 샘플문항): test 원본 + 결과 컬럼(train 과 동일 구조)
+if p1_KEEP_TEST_COLS:
+    p1_submission = p1_df_test_orig.drop(columns=[c for c in [p1_TARGET] if c in p1_df_test_orig.columns])
+    p1_submission[p1_PRED_COL] = pd.Series(p1_test_predictions).values
+else:
+    p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_predictions})
 
 if p1_has_test_label:
     print(f"[Test] RMSE={np.sqrt(mean_squared_error(p1_df_test[p1_TARGET], p1_test_predictions)):.4f} "
           f"R2={r2_score(p1_df_test[p1_TARGET], p1_test_predictions):.4f}")
 
-p1_submission.to_csv(p1_SUBMIT_CSV, index=False)
-print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건)")
+p1_submission.to_csv(p1_SUBMIT_CSV, index=False, encoding='utf-8-sig')
+print(f"[저장] {p1_SUBMIT_CSV} ({len(p1_submission)}건) 컬럼 {list(p1_submission.columns)}")
 print(p1_submission.head())
 
 # %%

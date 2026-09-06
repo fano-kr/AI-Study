@@ -56,7 +56,8 @@ except NameError:
 p2_SUBMIT_CSV = f'{PHONE}_{p2_PROB_NO}.csv'
 p2_SUBMIT_MODEL = f'{PHONE}_{p2_PROB_NO}.pkl'          # sklearn 계열
 p2_SUBMIT_KERAS = f'{PHONE}_{p2_PROB_NO}.keras'        # 지문 ④의 확장자 그대로
-p2_PRED_COL = 'pred'                                   # ★ 지문 ③의 결과 컬럼명 그대로
+p2_PRED_COL = 'pred'                                   # ★ 지문 ③의 결과 컬럼명 그대로 (공식 예: '카테고리')
+p2_KEEP_TEST_COLS = True                               # ★ 공식 규격: test 원본 + 결과 컬럼(train 과 동일 구조). 단일 컬럼만 원하면 False
 print(f"제출 파일: {p2_SUBMIT_CSV} / {p2_SUBMIT_MODEL} / 결과 컬럼: {p2_PRED_COL}")
 
 # ============================================================
@@ -120,6 +121,7 @@ def p2_clean_text(text):
     return text
 
 p2_df_train[p2_TEXT_COL] = p2_df_train[p2_TEXT_COL].apply(p2_clean_text)
+p2_df_test_orig = p2_df_test.copy()   # ★ 제출은 원본 컬럼 구조로 — 전처리 전 보존
 p2_df_test[p2_TEXT_COL] = p2_df_test[p2_TEXT_COL].apply(p2_clean_text)
 
 # 정제 후 빈 문자열이 생겼는지 확인 (벡터화 단계에서 조용히 문제를 일으킴)
@@ -217,14 +219,20 @@ if p2_label_map:
     p2_pred_out = pd.Series(p2_y_pred_test).map(p2_label_map)
 else:
     p2_pred_out = pd.Series(p2_y_pred_test)
-p2_submit_df = pd.DataFrame({p2_PRED_COL: p2_pred_out})
+# ★ 제출 규격(공식 샘플문항): test 원본을 그대로 두고 결과 컬럼을 '마지막에' 추가
+#    → 훈련셋과 동일한 컬럼 구조. 값은 복원된 label(숫자 그대로면 0점).
+if p2_KEEP_TEST_COLS:
+    p2_submit_df = p2_df_test_orig.drop(columns=[c for c in [p2_TARGET] if c in p2_df_test_orig.columns])
+    p2_submit_df[p2_PRED_COL] = pd.Series(p2_pred_out).values
+else:
+    p2_submit_df = pd.DataFrame({p2_PRED_COL: p2_pred_out})
 
 if p2_TARGET in p2_df_test.columns:   # 연습용에서만 (시험 test 엔 정답 없음)
     print(f"[연습 확인] Acc={accuracy_score(p2_df_test[p2_TARGET], p2_y_pred_test):.4f} "
           f"F1={f1_score(p2_df_test[p2_TARGET], p2_y_pred_test, average='macro'):.4f}")
 
-p2_submit_df.to_csv(p2_SUBMIT_CSV, index=False)
-print(f"[저장] {p2_SUBMIT_CSV} ({len(p2_submit_df)}건)")
+p2_submit_df.to_csv(p2_SUBMIT_CSV, index=False, encoding='utf-8-sig')  # 한글 라벨 안전
+print(f"[저장] {p2_SUBMIT_CSV} ({len(p2_submit_df)}건) 컬럼 {list(p2_submit_df.columns)}")
 
 import joblib, os
 # 벡터라이저와 모델을 함께 담아야 나중에 그대로 예측할 수 있습니다
