@@ -60,20 +60,26 @@ try:
 except NameError:
     PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
+# 지문 ④: 제출 파일명 형식을 지문 표기 그대로 (밑줄·확장자까지) 확인
 p1_SUBMIT_CSV = f'{PHONE}_{p1_PROB_NO}.csv'
 p1_SUBMIT_MODEL = f'{PHONE}_{p1_PROB_NO}.pkl'
-print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL}")
+# 지문 ③: 결과물 컬럼명 — 지문이 지정한 이름 그대로 (임의로 지으면 채점 불가)
+p1_PRED_COL = 'pred'                              # ★ 지문의 컬럼명으로 교체
+print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL} / 결과 컬럼: {p1_PRED_COL}")
 
 # ============================================================
 # 1. 데이터 로드  ★
 # ============================================================
 # %%
-# --- 시험 환경 ---
+# --- 시험 환경 (실제 문항 형식) ---
+# 지문 4단계: ① 데이터 설명 (train, test — test 는 정답 없음)
+#             ② 무엇을 맞출지  ③ 결과물 형식 (컬럼명·값. 예: 0/1 이 아니라 Y/N)
+#             ④ 제출 파일명 (모델 = 휴대폰번호_문제번호.확장자 / 결과 = 휴대폰번호_문제번호.csv)
 # p1_df_train = pd.read_csv('train.csv')
-# p1_df_test  = pd.read_csv('test.csv')
-# p1_TARGET   = 'target'          # ★ 실제 타겟 컬럼명
+# p1_df_test  = pd.read_csv('test.csv')    # ★ 정답 없음 — 예측해서 제출하는 대상
+# p1_TARGET   = 'target'                   # ★ 지문 ②의 타겟 컬럼명
 
-# --- 연습용: Titanic (이진분류) ---
+# --- 연습용: Titanic (이진분류) — train 을 쪼개 test 역할을 만든다 ---
 p1_df_all = sns.load_dataset('titanic')
 p1_TARGET = 'survived'
 p1_df_train, p1_df_test = train_test_split(
@@ -82,8 +88,12 @@ p1_df_train, p1_df_test = train_test_split(
 p1_df_train = p1_df_train.reset_index(drop=True)
 p1_df_test = p1_df_test.reset_index(drop=True)
 
+# ── 용어 주의 ──
+# df_test / X_test = 시험이 준 파일(정답 없음). 예측해서 제출하는 대상.
+# X_val            = train 을 우리가 쪼갠 내부 검증. 점수 확인용.
+
 p1_NUM_CLASSES = p1_df_train[p1_TARGET].nunique()
-print(f"Train {p1_df_train.shape} / Test {p1_df_test.shape}")
+print(f"Train {p1_df_train.shape} / Test(제출 대상·정답 없음) {p1_df_test.shape}")
 print(f"클래스 {p1_NUM_CLASSES}개 ({'이진분류' if p1_NUM_CLASSES == 2 else '다중분류'})")
 print(p1_df_train[p1_TARGET].value_counts().sort_index())
 p1_df_train.head()
@@ -196,7 +206,7 @@ if p1_minority_ratio < 0.2:
 p1_X_train, p1_X_val, p1_y_train, p1_y_val = train_test_split(
     p1_X_scaled, p1_y, test_size=0.2, random_state=RANDOM_SEED, stratify=p1_y
 )
-print(f"Train {p1_X_train.shape} / Val {p1_X_val.shape} / Test(제출용) {p1_X_test_scaled.shape}")
+print(f"내부: Train {p1_X_train.shape} / Val {p1_X_val.shape}   제출 대상: Test {p1_X_test_scaled.shape}")
 
 # ============================================================
 # 5. 모델 비교 — 5개를 같은 조건으로
@@ -314,9 +324,10 @@ if p1_target_encoder:
 else:
     p1_test_pred_labels = p1_test_predictions
 
-# ★ 컬럼명도 문제가 요구하는 이름 그대로 (다르면 채점 불가)
-p1_submission = p1_df_test.copy()
-p1_submission['predicted'] = p1_test_pred_labels
+# 지문 ③이 지정한 컬럼만 담는다. 값은 복원된 label (예: 0/1 이 아니라 Y/N)
+p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_pred_labels})
+# 지문이 ID 류 컬럼도 요구하면 지문 컬럼명 그대로 추가:
+# p1_submission.insert(0, 'ID', p1_df_test['ID'].values)
 
 if p1_has_test_label:
     p1_y_cmp = p1_target_encoder.transform(p1_df_test[p1_TARGET]) if p1_target_encoder else p1_df_test[p1_TARGET]
@@ -340,14 +351,15 @@ print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
 p1_allowed = p1_target_encoder.classes_ if p1_target_encoder else p1_y.unique()
 try:
     check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
-                     label_col='predicted', allowed_labels=p1_allowed,
+                     required_cols=[p1_PRED_COL],
+                     label_col=p1_PRED_COL, allowed_labels=p1_allowed,
                      model_path=p1_SUBMIT_MODEL)
 except NameError:
     # 세션 시작 셀 없이 단독 연습 중일 때의 최소 점검
     import os
     p1__sub = pd.read_csv(p1_SUBMIT_CSV)
     assert len(p1__sub) == len(p1_df_test), "행 수 불일치!"
-    assert not p1__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
-    assert set(p1__sub['predicted']) <= set(p1_allowed), "label 미복원 의심 — 0점 위험!"
+    assert not p1__sub[p1_PRED_COL].isnull().any(), "예측 컬럼에 결측!"
+    assert set(p1__sub[p1_PRED_COL]) <= set(p1_allowed), "label 미복원 의심 — 0점 위험!"
     assert os.path.getsize(p1_SUBMIT_MODEL) > 0, "모델 파일 없음!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")

@@ -47,8 +47,9 @@ except NameError:
     PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
 p3_SUBMIT_CSV = f'{PHONE}_{p3_PROB_NO}.csv'
-p3_SUBMIT_KERAS = f'{PHONE}_{p3_PROB_NO}.keras'
-print(f"제출 파일: {p3_SUBMIT_CSV} / {p3_SUBMIT_KERAS}")
+p3_SUBMIT_KERAS = f'{PHONE}_{p3_PROB_NO}.keras'        # 지문 ④의 확장자 그대로
+p3_PRED_COL = 'pred'                                   # ★ 지문 ③의 클래스 컬럼명 그대로
+print(f"제출 파일: {p3_SUBMIT_CSV} / {p3_SUBMIT_KERAS} / 결과 컬럼: {p3_PRED_COL}")
 
 # ============================================================
 # 1. 하이퍼파라미터
@@ -250,11 +251,12 @@ plt.tight_layout(); plt.show()
 # 8. 제출  ★ 좌표 형식(x,y,w,h vs xmin,ymin,xmax,ymax)은 문제 지문 그대로!
 # ============================================================
 # %%
+# 좌표 컬럼명(x,y,w,h vs xmin~ymax)과 클래스 컬럼명 모두 지문 ③ 그대로
 p3_submission = pd.DataFrame({
     'filename': p3_df_val['filename'].values,
     'x': p3_pred[:, 0], 'y': p3_pred[:, 1],
     'w': p3_pred[:, 2], 'h': p3_pred[:, 3],
-    'predicted_name': [p3_class_names[i] for i in p3_cls_pred],   # label 복원 — 숫자면 0점
+    p3_PRED_COL: [p3_class_names[i] for i in p3_cls_pred],   # label 복원 — 숫자면 0점
 })
 # 문제가 xmin/ymin/xmax/ymax 픽셀 좌표를 요구하면 여기서 변환해서 내세요.
 
@@ -266,12 +268,12 @@ print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건) / {p3_SUBMIT_KERAS}")
 # --- 제출물 검증 (check_submission 은 세션 시작 셀에서 정의) ---
 try:
     check_submission(p3_SUBMIT_CSV, n_rows=len(p3_df_val),
-                     label_col='predicted_name', allowed_labels=p3_class_names,
+                     label_col=p3_PRED_COL, allowed_labels=p3_class_names,
                      model_path=p3_SUBMIT_KERAS)
 except NameError:
     p3__sub = pd.read_csv(p3_SUBMIT_CSV)
     assert len(p3__sub) == len(p3_df_val), "행 수 불일치!"
-    assert set(p3__sub['predicted_name']) <= set(p3_class_names), "label 미복원 — 0점 위험!"
+    assert set(p3__sub[p3_PRED_COL]) <= set(p3_class_names), "label 미복원 — 0점 위험!"
     p3__xy = p3__sub[['x', 'y', 'w', 'h']].values
     assert ((p3__xy >= 0) & (p3__xy <= 1)).all(), "좌표가 0~1 을 벗어남!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")

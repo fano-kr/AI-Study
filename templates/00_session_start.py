@@ -194,7 +194,7 @@ def check_submission(csv_path, n_rows=None, required_cols=None,
         assert not missing, f"요구 컬럼 누락: {missing} (있는 컬럼: {list(sub.columns)})"
 
     # 결측: 채점 대상 컬럼(required_cols·label_col)은 assert, 나머지는 경고만.
-    # 템플릿 제출물은 df_test 원본 컬럼을 함께 담고 있어 피처의 NaN 은 정상일 수 있다.
+    # 지문이 여러 컬럼(ID 등)을 요구할 때, 채점 외 컬럼의 NaN 은 경고만 한다.
     graded = set(required_cols or []) | ({label_col} if label_col else set())
     graded = [c for c in graded if c in sub.columns]
     check_cols = graded if graded else list(sub.columns)

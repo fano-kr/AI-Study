@@ -1067,22 +1067,21 @@ X_train = ...   <span class="hlbad"># 1번이 사라졌다</span></code></pre>
   </div>
 </section>
 
-<section class="slide" data-min="43" data-track="4" data-title="제출 CSV — label 복원">
+<section class="slide" data-min="43" data-track="4" data-title="지문은 4단계 — ③④ 어기면 0점">
   <div class="gutter"></div>
   <div class="body">
-    <div class="eyebrow">시험 당일 · 제출 CSV</div>
-    <h2>컬럼명과 값을 label로.<br>안 하면 <span class="kw-d">0점</span></h2>
-    <pre><code><span class="cm"># 모델은 인코딩된 숫자로 예측한다. 채점은 원래 label 로 한다.</span>
-pred = p1_best_model.predict(p1_X_test_scaled)        <span class="cm"># [0, 2, 1, ...]</span>
-pred = p1_target_encoder.<span class="hlgood">inverse_transform</span>(pred)     <span class="cm"># ['cat', 'dog', ...]</span>
-
-p1_submission = pd.DataFrame({<span class="hlgood">'label'</span>: pred})        <span class="cm"># 컬럼명은 문제 지문 그대로</span>
-p1_submission.to_csv(p1_SUBMIT_CSV, index=<span class="hl">False</span>)</code></pre>
-    <div class="grid g3">
-      <div class="card bad"><span class="k">컬럼명</span><h3>요구된 이름 그대로</h3><p>임의로 지으면 채점이 안 됩니다.</p></div>
-      <div class="card bad"><span class="k">값</span><h3>원래 label로 복원</h3><p>0/1/2 숫자 그대로 내면 <strong>0점.</strong></p></div>
-      <div class="card good"><span class="k">확인</span><h3>check_submission()</h3><p>구조는 함수로, 내용은 눈으로 — 텍스트는 원문·예측 출력, 이미지는 그림 대조.</p></div>
+    <div class="eyebrow">시험 당일 · 지문 읽는 법</div>
+    <h2>지문은 4단계.<br>③④ 어기면 <span class="kw-d">0점</span></h2>
+    <div class="grid g4">
+      <div class="card"><span class="k">① 데이터</span><h3>train · test</h3><p><strong>test 엔 정답 없음</strong> — 예측해 제출하는 대상. 내부 검증 X_val 과 다름.</p></div>
+      <div class="card"><span class="k">② 맞출 것</span><h3>타겟 · 지표</h3><p>분류/회귀, 요구 지표를 튜닝 scoring 에.</p></div>
+      <div class="card bad"><span class="k">③ 결과물</span><h3>컬럼명 · 값</h3><p>지문 표기 그대로. 값은 label(0/1 아니라 <strong>Y/N</strong>).</p></div>
+      <div class="card bad"><span class="k">④ 파일명</span><h3>번호_문제.확장자</h3><p>모델 <code>_1.pkl</code> / 결과 <code>_1.csv</code>.</p></div>
     </div>
+    <pre><code><span class="cm"># ③ 결과물: 모델은 숫자로 예측 → 지문의 컬럼명·label 로 바꿔 제출</span>
+pred = p1_target_encoder.<span class="hlgood">inverse_transform</span>(pred)      <span class="cm"># [0,1] → ['N','Y']</span>
+pd.DataFrame({<span class="hlgood">PRED_COL</span>: pred}).to_csv(SUBMIT_CSV, index=<span class="hl">False</span>)</code></pre>
+    <p class="dim">③ 컬럼명·값, ④ 파일명은 모델 성능과 무관한 <strong class="kw-d">0점 지대</strong>입니다. 지문 표기를 그대로 옮기세요.</p>
   </div>
 </section>
 

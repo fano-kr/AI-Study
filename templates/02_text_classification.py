@@ -54,9 +54,10 @@ except NameError:
     PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
 p2_SUBMIT_CSV = f'{PHONE}_{p2_PROB_NO}.csv'
-p2_SUBMIT_MODEL = f'{PHONE}_{p2_PROB_NO}.pkl'      # sklearn 계열
-p2_SUBMIT_KERAS = f'{PHONE}_{p2_PROB_NO}.keras'    # 딥러닝 (문제가 형식을 지정하면 그쪽을)
-print(f"제출 파일: {p2_SUBMIT_CSV} / {p2_SUBMIT_MODEL}")
+p2_SUBMIT_MODEL = f'{PHONE}_{p2_PROB_NO}.pkl'          # sklearn 계열
+p2_SUBMIT_KERAS = f'{PHONE}_{p2_PROB_NO}.keras'        # 지문 ④의 확장자 그대로
+p2_PRED_COL = 'pred'                                   # ★ 지문 ③의 결과 컬럼명 그대로
+print(f"제출 파일: {p2_SUBMIT_CSV} / {p2_SUBMIT_MODEL} / 결과 컬럼: {p2_PRED_COL}")
 
 # ============================================================
 # 1. 데이터 로드  ★
@@ -125,7 +126,7 @@ p2_df_tr, p2_df_val = train_test_split(
 )
 p2_df_tr = p2_df_tr.reset_index(drop=True)
 p2_df_val = p2_df_val.reset_index(drop=True)
-print(f"Train {len(p2_df_tr)} / Val {len(p2_df_val)} / Test {len(p2_df_test)}")
+print(f"내부: Train {len(p2_df_tr)} / Val {len(p2_df_val)}   제출 대상: Test {len(p2_df_test)}")
 
 # ============================================================
 # 방법 A — TF-IDF + ML   (먼저 이걸로 submission 을 확보한다)
@@ -202,14 +203,16 @@ print(f"-> {p2_grade}")
 # %%
 # --- 제출 파일 (방법 A) ★ ---
 p2_y_pred_test = p2_best_ml_model.predict(p2_X_test)
-p2_submit_df = p2_df_test.copy()
-p2_submit_df['predicted'] = p2_y_pred_test
-# ★ 문제가 label명('긍정'/'부정' 등)을 요구하면 반드시 매핑 — 숫자 그대로 내면 0점
-if p2_label_map:
-    p2_submit_df['predicted_name'] = p2_submit_df['predicted'].map(p2_label_map)
 
-if p2_TARGET in p2_df_test.columns:
-    print(f"[Test] Acc={accuracy_score(p2_df_test[p2_TARGET], p2_y_pred_test):.4f} "
+# 지문 ③: 값은 지문이 지정한 label 로 (예: 0/1 이 아니라 '긍정'/'부정') — 숫자 그대로 내면 0점
+if p2_label_map:
+    p2_pred_out = pd.Series(p2_y_pred_test).map(p2_label_map)
+else:
+    p2_pred_out = pd.Series(p2_y_pred_test)
+p2_submit_df = pd.DataFrame({p2_PRED_COL: p2_pred_out})
+
+if p2_TARGET in p2_df_test.columns:   # 연습용에서만 (시험 test 엔 정답 없음)
+    print(f"[연습 확인] Acc={accuracy_score(p2_df_test[p2_TARGET], p2_y_pred_test):.4f} "
           f"F1={f1_score(p2_df_test[p2_TARGET], p2_y_pred_test, average='macro'):.4f}")
 
 p2_submit_df.to_csv(p2_SUBMIT_CSV, index=False)
@@ -223,16 +226,17 @@ print(f"모델 저장 완료: {p2_SUBMIT_MODEL}")
 # %%
 # --- 제출물 검증 ★ (check_submission 은 세션 시작 셀에서 정의) ---
 # label 미복원(0점) 방지: 예측값이 train 타겟의 label 집합 안에 있는지까지 확인
-p2_allowed = p2_df_train[p2_TARGET].unique()
+p2_allowed = p2_target_names if p2_label_map else p2_df_train[p2_TARGET].unique()
 try:
     check_submission(p2_SUBMIT_CSV, n_rows=len(p2_df_test),
-                     label_col='predicted', allowed_labels=p2_allowed,
+                     required_cols=[p2_PRED_COL],
+                     label_col=p2_PRED_COL, allowed_labels=p2_allowed,
                      model_path=p2_SUBMIT_MODEL)
 except NameError:
     p2__sub = pd.read_csv(p2_SUBMIT_CSV)
     assert len(p2__sub) == len(p2_df_test), "행 수 불일치!"
-    assert not p2__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
-    assert set(p2__sub['predicted']) <= set(p2_allowed), "label 미복원 의심 — 0점 위험!"
+    assert not p2__sub[p2_PRED_COL].isnull().any(), "예측 컬럼에 결측!"
+    assert set(p2__sub[p2_PRED_COL]) <= set(p2_allowed), "label 미복원 의심 — 0점 위험!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
 
 # %%
@@ -240,10 +244,10 @@ except NameError:
 # 구조 검증이 통과해도 내용이 엉뚱할 수 있습니다.
 # 무작위 10건을 읽고 예측이 상식적으로 맞는지 확인하세요.
 # (전부 한 클래스로 쏠려 있거나, 명백한 문장을 반대로 찍고 있으면 제출 전에 원인부터)
-p2_eyeball = p2_submit_df.sample(min(10, len(p2_submit_df)), random_state=RANDOM_SEED)
-for p2__i, p2_row in p2_eyeball.iterrows():
-    p2_pred_str = p2_row['predicted_name'] if 'predicted_name' in p2_row else p2_row['predicted']
-    print(f"[예측: {p2_pred_str}]  {str(p2_row[p2_TEXT_COL])[:60]}")
+p2_rng = np.random.RandomState(RANDOM_SEED)
+for p2__i in p2_rng.choice(len(p2_df_test), min(10, len(p2_df_test)), replace=False):
+    print(f"[예측: {p2_submit_df[p2_PRED_COL].iloc[p2__i]}]  "
+          f"{str(p2_df_test[p2_TEXT_COL].iloc[p2__i])[:60]}")
 
 # %% [markdown]
 # ---
@@ -361,11 +365,11 @@ p2_test_enc = p2_tokenizer(p2_X_test_text, truncation=True, padding=True,
 p2_test_ds = tf.data.Dataset.from_tensor_slices(dict(p2_test_enc)).batch(p2_BATCH_SIZE)
 p2_test_pred_labels = np.argmax(p2_bert_model.predict(p2_test_ds).logits, axis=1)
 
-p2_bert_submit = p2_df_test.copy()
-p2_bert_submit['predicted'] = p2_test_pred_labels
 if p2_label_map:
-    p2_bert_submit['predicted_name'] = p2_bert_submit['predicted'].map(p2_label_map)
-
+    p2_bert_out = pd.Series(p2_test_pred_labels).map(p2_label_map)
+else:
+    p2_bert_out = pd.Series(p2_test_pred_labels)
+p2_bert_submit = pd.DataFrame({p2_PRED_COL: p2_bert_out})
 p2_bert_submit.to_csv(p2_SUBMIT_CSV, index=False)
 print(f"[갱신] {p2_SUBMIT_CSV} ({len(p2_bert_submit)}건)")
 
@@ -377,13 +381,13 @@ print(f"BERT 모델 저장 완료: {PHONE}_{p2_PROB_NO}_bert/")
 # --- 제출물 재검증 ★ (B 로 덮어썼으므로 다시) ---
 try:
     check_submission(p2_SUBMIT_CSV, n_rows=len(p2_df_test),
-                     label_col='predicted',
-                     allowed_labels=p2_df_train[p2_TARGET].unique())
+                     required_cols=[p2_PRED_COL], label_col=p2_PRED_COL,
+                     allowed_labels=p2_allowed)
 except NameError:
     print("check_submission 미정의 — 세션 시작 셀을 먼저 실행하세요")
 
 # 눈 검증 — B 결과도 직접 읽어 본다
-p2_eyeball_b = p2_bert_submit.sample(min(10, len(p2_bert_submit)), random_state=RANDOM_SEED)
-for p2__i, p2_row in p2_eyeball_b.iterrows():
-    p2_pred_str = p2_row['predicted_name'] if 'predicted_name' in p2_row else p2_row['predicted']
-    print(f"[예측: {p2_pred_str}]  {str(p2_row[p2_TEXT_COL])[:60]}")
+p2_rng_b = np.random.RandomState(RANDOM_SEED)
+for p2__i in p2_rng_b.choice(len(p2_df_test), min(10, len(p2_df_test)), replace=False):
+    print(f"[예측: {p2_bert_submit[p2_PRED_COL].iloc[p2__i]}]  "
+          f"{str(p2_df_test[p2_TEXT_COL].iloc[p2__i])[:60]}")

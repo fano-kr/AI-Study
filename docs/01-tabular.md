@@ -257,9 +257,13 @@ test_predictions = best_model.predict(X_test_scaled)
 if target_encoder:                       # 타겟이 문자열이었다면 원래 라벨로 복원
     test_predictions = target_encoder.inverse_transform(test_predictions)
 
-submission = pd.DataFrame({'id': df_test['id'], 'predicted': test_predictions})
+# 지문 ③이 정한 컬럼명·값 그대로. PRED_COL 은 지문 표기로 교체.
+submission = pd.DataFrame({PRED_COL: test_predictions})
 submission.to_csv(SUBMIT_CSV, index=False)
 ```
+
+지문이 `id` 같은 컬럼도 함께 요구하면 그 컬럼명 그대로 추가하세요.
+아무 지정이 없을 때만 `pred` 같은 기본값을 씁니다.
 
 **컬럼명과 값이 요구된 label과 다르면 그 문제는 0점입니다.**
 모델 출력(0/1/2)을 그대로 내지 말고 `inverse_transform`으로 복원하세요.

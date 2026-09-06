@@ -53,9 +53,9 @@ except NameError:
     PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
 p3_SUBMIT_CSV = f'{PHONE}_{p3_PROB_NO}.csv'
-p3_SUBMIT_MODEL = f'{PHONE}_{p3_PROB_NO}.pkl'      # sklearn 계열
-p3_SUBMIT_KERAS = f'{PHONE}_{p3_PROB_NO}.keras'    # 딥러닝 (문제가 형식을 지정하면 그쪽을)
-print(f"제출 파일: {p3_SUBMIT_CSV} / {p3_SUBMIT_MODEL}")
+p3_SUBMIT_KERAS = f'{PHONE}_{p3_PROB_NO}.keras'        # 지문 ④의 확장자 그대로
+p3_PRED_COL = 'pred'                                   # ★ 지문 ③의 결과 컬럼명 그대로
+print(f"제출 파일: {p3_SUBMIT_CSV} / {p3_SUBMIT_KERAS} / 결과 컬럼: {p3_PRED_COL}")
 
 # ============================================================
 # 1. 하이퍼파라미터
@@ -309,21 +309,24 @@ def p3_predict_test_directory(model, test_dir, class_names, batch_size=p3_BATCH_
     idx = np.argmax(probs, axis=1)
     return pd.DataFrame({
         'filename': filenames,
-        'predicted_name': [class_names[i] for i in idx],
-        'confidence': probs.max(axis=1),
+        p3_PRED_COL: [class_names[i] for i in idx],   # 지문 ③의 컬럼명·label 값
     })
 
 
-# --- 시험 환경: 별도 test 폴더가 있는 경우 ★ ---
+# --- 시험 환경: 정답 없는 test 폴더(이미지만)가 제공되는 경우 ★ ---
 # p3_TEST_DIR = './test'
 # p3_submission = p3_predict_test_directory(p3_model, p3_TEST_DIR, p3_class_names)
 # ★ 컬럼명은 문제가 요구하는 이름 그대로 (다르면 채점 불가 — 필요하면 rename)
 # p3_submission.to_csv(p3_SUBMIT_CSV, index=False)
 # print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건)")
 
-# --- test 폴더가 없으면 검증 결과를 제출물로 ---
-p3_val_result.to_csv(p3_SUBMIT_CSV, index=False)
-print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_val_result)}건)")
+# --- (연습용) test 폴더가 없으면 내부 검증 결과를 지문 형식으로 제출 ---
+p3_submission = pd.DataFrame({
+    'filename': p3_val_result['filename'],
+    p3_PRED_COL: p3_val_result['predicted_name'],
+})
+p3_submission.to_csv(p3_SUBMIT_CSV, index=False)
+print(f"[저장] {p3_SUBMIT_CSV} ({len(p3_submission)}건)")
 
 # %%
 p3_model.save(p3_SUBMIT_KERAS)
@@ -343,12 +346,13 @@ print("작업 파일:", [f for f in _files if '_ckpt' in f])
 # (컬럼명은 검증 결과와 같은 predicted_name 이라 나머지는 그대로 통과합니다)
 try:
     check_submission(p3_SUBMIT_CSV, n_rows=len(p3_val_result),
-                     label_col='predicted_name', allowed_labels=p3_class_names,
+                     required_cols=[p3_PRED_COL],
+                     label_col=p3_PRED_COL, allowed_labels=p3_class_names,
                      model_path=p3_SUBMIT_KERAS)
 except NameError:
     p3__sub = pd.read_csv(p3_SUBMIT_CSV)
     assert len(p3__sub) == len(p3_val_result), "행 수 불일치!"
-    assert set(p3__sub['predicted_name']) <= set(p3_class_names), "label 미복원 의심 — 0점 위험!"
+    assert set(p3__sub[p3_PRED_COL]) <= set(p3_class_names), "label 미복원 의심 — 0점 위험!"
     assert os.path.getsize(p3_SUBMIT_KERAS) > 0, "모델 파일 없음!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
 

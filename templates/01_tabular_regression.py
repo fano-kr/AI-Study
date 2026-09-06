@@ -55,7 +55,8 @@ except NameError:
 
 p1_SUBMIT_CSV = f'{PHONE}_{p1_PROB_NO}.csv'
 p1_SUBMIT_MODEL = f'{PHONE}_{p1_PROB_NO}.pkl'
-print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL}")
+p1_PRED_COL = 'pred'                              # ★ 지문 ③의 결과 컬럼명 그대로
+print(f"제출 파일: {p1_SUBMIT_CSV} / {p1_SUBMIT_MODEL} / 결과 컬럼: {p1_PRED_COL}")
 
 # ============================================================
 # 1. 데이터 로드  ★
@@ -76,7 +77,7 @@ p1_df_train, p1_df_test = train_test_split(p1_df_all, test_size=0.2, random_stat
 p1_df_train = p1_df_train.reset_index(drop=True)
 p1_df_test = p1_df_test.reset_index(drop=True)
 
-print(f"Train {p1_df_train.shape} / Test {p1_df_test.shape}")
+print(f"Train {p1_df_train.shape} / Test(제출 대상·정답 없음) {p1_df_test.shape}")
 print(p1_df_train[p1_TARGET].describe())
 p1_df_train.head()
 
@@ -162,7 +163,7 @@ p1_y_model = np.log1p(p1_y) if p1_USE_LOG_TARGET else p1_y
 p1_X_train, p1_X_val, p1_y_train, p1_y_val = train_test_split(
     p1_X_scaled, p1_y_model, test_size=0.2, random_state=RANDOM_SEED
 )
-print(f"Train {p1_X_train.shape} / Val {p1_X_val.shape} / Test(제출용) {p1_X_test_scaled.shape}")
+print(f"내부: Train {p1_X_train.shape} / Val {p1_X_val.shape}   제출 대상: Test {p1_X_test_scaled.shape}")
 
 # ============================================================
 # 5. 모델 비교
@@ -279,8 +280,8 @@ p1_test_predictions = p1_best_model.predict(p1_X_test_scaled)
 if p1_USE_LOG_TARGET:
     p1_test_predictions = np.expm1(p1_test_predictions)
 
-p1_submission = p1_df_test.copy()
-p1_submission['predicted'] = p1_test_predictions        # ★ 요구 컬럼명으로
+# 지문 ③이 지정한 컬럼만 담는다
+p1_submission = pd.DataFrame({p1_PRED_COL: p1_test_predictions})
 
 if p1_has_test_label:
     print(f"[Test] RMSE={np.sqrt(mean_squared_error(p1_df_test[p1_TARGET], p1_test_predictions)):.4f} "
@@ -300,15 +301,14 @@ print(f"모델 저장 완료: {p1_SUBMIT_MODEL}")
 # %%
 # 회귀는 label 복원 검사가 없으므로 행 수 / 결측 / index / 모델 파일만 점검합니다.
 # label_col 을 넘겨야 결측 assert 가 예측 컬럼에만 걸립니다 —
-# 제출물에는 df_test 원본 컬럼이 같이 들어 있어 피처의 NaN 은 정상일 수 있습니다.
 try:
     check_submission(p1_SUBMIT_CSV, n_rows=len(p1_df_test),
-                     label_col='predicted',
+                     required_cols=[p1_PRED_COL], label_col=p1_PRED_COL,
                      model_path=p1_SUBMIT_MODEL)
 except NameError:
     import os
     p1__sub = pd.read_csv(p1_SUBMIT_CSV)
     assert len(p1__sub) == len(p1_df_test), "행 수 불일치!"
-    assert not p1__sub['predicted'].isnull().any(), "예측 컬럼에 결측!"
+    assert not p1__sub[p1_PRED_COL].isnull().any(), "예측 컬럼에 결측!"
     assert os.path.getsize(p1_SUBMIT_MODEL) > 0, "모델 파일 없음!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")

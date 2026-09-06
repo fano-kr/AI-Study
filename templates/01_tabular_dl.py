@@ -43,8 +43,9 @@ except NameError:
     PHONE = '01012345678'  # ★ 본인 휴대폰 번호 (하이픈 없이)
 
 p1_dl_SUBMIT_CSV = f'{PHONE}_{p1_PROB_NO}.csv'
-p1_dl_SUBMIT_H5 = f'{PHONE}_{p1_PROB_NO}.h5'     # 공식 실습은 h5 — 문제 지정 형식 우선
-print(f"제출 파일: {p1_dl_SUBMIT_CSV} / {p1_dl_SUBMIT_H5}")
+p1_dl_SUBMIT_H5 = f'{PHONE}_{p1_PROB_NO}.h5'     # 지문 ④의 확장자 그대로 (h5 등)
+p1_dl_PRED_COL = 'pred'                          # ★ 지문 ③의 결과 컬럼명 그대로
+print(f"제출 파일: {p1_dl_SUBMIT_CSV} / {p1_dl_SUBMIT_H5} / 결과 컬럼: {p1_dl_PRED_COL}")
 
 # ============================================================
 # 1. 데이터 로드  ★
@@ -67,7 +68,7 @@ p1_dl_df_train = p1_dl_df_train.reset_index(drop=True)
 p1_dl_df_test = p1_dl_df_test.reset_index(drop=True)
 
 p1_dl_NUM_CLASSES = p1_dl_df_train[p1_dl_TARGET].nunique()
-print(f"Train {p1_dl_df_train.shape} / Test {p1_dl_df_test.shape} / 클래스 {p1_dl_NUM_CLASSES}개")
+print(f"Train {p1_dl_df_train.shape} / Test(제출 대상·정답 없음) {p1_dl_df_test.shape} / 클래스 {p1_dl_NUM_CLASSES}개")
 
 # ============================================================
 # 2. 전처리 — get_dummies + MinMaxScaler (공식 정답 스타일)
@@ -84,8 +85,8 @@ if p1_dl_y.dtype == 'object' or p1_dl_y.dtype.name == 'category':
     p1_dl_y = pd.Series(p1_dl_target_encoder.fit_transform(p1_dl_y))
     print(f"타겟 클래스: {p1_dl_target_encoder.classes_}")
 
-p1_dl_has_label = p1_dl_TARGET in p1_dl_df_test.columns
-p1_dl_X_test = p1_dl_df_test.drop(columns=[p1_dl_TARGET]) if p1_dl_has_label else p1_dl_df_test.copy()
+p1_dl_has_test_label = p1_dl_TARGET in p1_dl_df_test.columns
+p1_dl_X_test = p1_dl_df_test.drop(columns=[p1_dl_TARGET]) if p1_dl_has_test_label else p1_dl_df_test.copy()
 
 # 결측: 수치형 중앙값, 범주형 최빈값 (train 기준으로 test 채움)
 for p1_dl_c in p1_dl_X.columns:
@@ -184,8 +185,8 @@ if p1_dl_target_encoder:
     p1_dl_test_pred_labels = p1_dl_target_encoder.inverse_transform(p1_dl_test_pred)
 else:
     p1_dl_test_pred_labels = p1_dl_test_pred
-p1_dl_submission = p1_dl_df_test.copy()
-p1_dl_submission['predicted'] = p1_dl_test_pred_labels
+# 지문 ③이 지정한 컬럼만, 값은 복원된 label (0/1 이 아니라 Y/N 등)
+p1_dl_submission = pd.DataFrame({p1_dl_PRED_COL: p1_dl_test_pred_labels})
 p1_dl_submission.to_csv(p1_dl_SUBMIT_CSV, index=False)
 p1_dl_model.save(p1_dl_SUBMIT_H5)
 print(f"[저장] {p1_dl_SUBMIT_CSV} ({len(p1_dl_submission)}건) / {p1_dl_SUBMIT_H5}")
@@ -196,7 +197,8 @@ try:
     p1_dl_allowed = (p1_dl_target_encoder.classes_ if p1_dl_target_encoder
                      else p1_dl_y.unique())
     check_submission(p1_dl_SUBMIT_CSV, n_rows=len(p1_dl_df_test),
-                     label_col='predicted', allowed_labels=p1_dl_allowed,
+                     required_cols=[p1_dl_PRED_COL],
+                     label_col=p1_dl_PRED_COL, allowed_labels=p1_dl_allowed,
                      model_path=p1_dl_SUBMIT_H5)
 except NameError:
     import os
@@ -204,6 +206,6 @@ except NameError:
     assert len(p1_dl__sub) == len(p1_dl_df_test), "행 수 불일치!"
     p1_dl_allowed = (p1_dl_target_encoder.classes_ if p1_dl_target_encoder
                      else p1_dl_y.unique())
-    assert set(p1_dl__sub['predicted']) <= set(p1_dl_allowed), "label 미복원 — 0점 위험!"
+    assert set(p1_dl__sub[p1_dl_PRED_COL]) <= set(p1_dl_allowed), "label 미복원 — 0점 위험!"
     assert os.path.getsize(p1_dl_SUBMIT_H5) > 0, "모델 파일 없음!"
     print("최소 점검 통과 (전체 검증은 세션 시작 셀의 check_submission)")
