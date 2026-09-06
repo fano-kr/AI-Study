@@ -159,7 +159,13 @@ LEARNING_RATE = 2e-5   # BERT 표준. 1e-5 ~ 5e-5 를 벗어나지 말 것
 **`LEARNING_RATE = 2e-5`는 협상 대상이 아닙니다.**
 Tabular에서 쓰던 `1e-3`을 넣으면 사전학습 지식이 첫 배치에서 파괴되고 정확도가 랜덤 수준에 머뭅니다.
 
+> **이 스니펫은 교재 설명용입니다.** 실제로는 자족적인 [02_text_classification.py](../templates/02_text_classification.py)의
+> 방법 B 구간을 쓰세요 — 아래는 핵심만 발췌한 것이라 그대로 복붙하면 import 누락으로 `NameError`가 납니다.
+
 ```python
+import tensorflow as tf
+from transformers import BertTokenizerFast, TFBertForSequenceClassification
+
 tokenizer = BertTokenizerFast.from_pretrained(BERT_MODEL_NAME)
 train_enc = tokenizer(X_train_text, truncation=True, padding=True,
                       max_length=MAX_LENGTH, return_tensors='tf')
