@@ -16,7 +16,6 @@ submission*.csv
 *.keras
 *.h5
 best_model*
-text_bert_model/
 image_val_result.csv
 *_summary.csv
 *_result.csv
@@ -31,3 +30,6 @@ cats_and_dogs_filtered/
 
 # 로컬 학습 자료 (대용량 데이터셋 + 배포 불가 자료)
 kt-study/
+
+# PDF 내보내기 (슬라이드·노트북에서 재생성)
+pdf/
