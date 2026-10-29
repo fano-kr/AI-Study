@@ -1,11 +1,11 @@
-# AICE Professional 속성 과정 (2026)
+# AI Study 속성 과정 (2026)
 
-Tabular · Text · Image 세 도메인의 **시험용 파이프라인 하나**를 익히는 과정입니다.
-[fano-kr/AI-Study](https://github.com/fano-kr/AI-Study)의 실습 코드를 강의 순서에 맞게 재구성했습니다.
+Tabular · Text · Image 세 도메인의 **파이프라인 하나**를 익히는 과정입니다.
+[fano-kr/AI-Study_old](https://github.com/fano-kr/AI-Study_old)의 실습 코드를 강의 순서에 맞게 재구성했습니다.
 
 ## 이 과정이 노리는 것
 
-AICE Professional 실기는 새 모델을 발명하는 시험이 아니라
+AI Study 실기는 새 모델을 발명하는 시험이 아니라
 **정해진 순서를 시간 안에 정확히 밟는 시험**입니다. 그래서 알고리즘 이론 대신
 아래 한 줄을 세 도메인에 반복 적용합니다.
 
@@ -14,10 +14,6 @@ AICE Professional 실기는 새 모델을 발명하는 시험이 아니라
 ```
 
 세 도메인에서 바뀌는 것은 **전처리와 모델뿐**이고 나머지 뼈대는 그대로입니다.
-
-## 타임라인 — 발표 45분 + Q&A 15분
-
-시험 배점은 **Tabular 30 · Text 35 · Image 35 = 100점**입니다.
 
 | 시간 | 차시 | 배점 | 노트북 |
 |---|---|---|---|
@@ -35,8 +31,6 @@ AICE Professional 실기는 새 모델을 발명하는 시험이 아니라
 > 발표 중에는 필요한 셀만 시연하고, `notebooks/`는 강의 후 각자 돌려 보는 자료로 안내하세요.
 
 ## 시험 환경 여섯 가지
-
-실력과 무관하게 점수를 잃는 지점입니다. 시험 시간은 **총 180분**.
 
 **시험장 사양(공식):** GPU T4급(16GB) · Python 3.10 · **TF 2.13(Keras 2)** · PyTorch 2.1.
 **연습은 Colab T4 에서** 합니다(로컬 미사용). Colab 은 Keras 3 라 이미지 노트북은 **Keras 2 모드**로
@@ -60,7 +54,6 @@ AICE Professional 실기는 새 모델을 발명하는 시험이 아니라
 notebooks/   완성형 실습 노트북 (시험장에서 그대로 쓰는 전체본)
 slides/      발표자료 (HTML)
 pdf/         발표·실습 PDF 내보내기
-kt-study/    KT 공식 실습 원본 (로컬 전용 — 용량·배포 문제로 git 미포함)
 ```
 
 `notebooks/`에는 네 개의 완성형 노트북이 있습니다.
@@ -96,15 +89,14 @@ kt-study/    KT 공식 실습 원본 (로컬 전용 — 용량·배포 문제로
 
 - Python 문법, `pandas` DataFrame 조작 (`groupby`, `merge` 수준까지)
 - `scikit-learn`의 `fit` / `transform` / `predict` 개념
-- AICE Associate 수준의 머신러닝 용어 (과적합, 검증 데이터, 정확도)
+- 머신러닝 용어 (과적합, 검증 데이터, 정확도)
 
 셋 중 하나라도 흔들리면 45분 안에 소화하기 어렵습니다. 노트북을 먼저 혼자 돌려 보고 오세요.
 
 ## 주의
 
-시험 시간을 **180분**으로 놓고 시간 배분을 설계했습니다.
+시간을 **180분**으로 놓고 시간 배분을 설계했습니다.
 문항 수·채점 기준 같은 나머지 운영 정보는 회차마다 바뀔 수 있으므로
-**응시 전 [AICE 공식 사이트](https://aice.study/)에서 확인**하세요.
-[공식 샘플 문항](https://aice.study/certi/practice)도 미리 풀어 보세요 —
-**Associate·Professional 문항을 모두 참고**하면 지문 형식에 빨리 익숙해집니다.
+**응시 전 [공식 사이트](https://aice.study/)에서 확인**하세요.
+[샘플 문항](https://aice.study/certi/practice)도 미리 풀어 보세요 —
 이 저장소가 보장하는 것은 운영 정보가 아니라 **코드 파이프라인**입니다.
